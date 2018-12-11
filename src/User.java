@@ -9,7 +9,7 @@ public class User {
 	protected InetAddress address;
 	
 	/*** Constructors ***/
-	public void User(String pseudo, int numPort, InetAddress address) {
+	public void User(String pseudo, InetAddress address, int numPort) {
 		this.pseudo = pseudo;
 		this.numPort = numPort;
 		this.address = address;
