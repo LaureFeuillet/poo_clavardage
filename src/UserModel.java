@@ -9,7 +9,7 @@ public class UserModel {
 	/*** Constructors ***/
 	public void UserModel( ArrayList<User> connectedUsers) {
 		// Here we need to get the list of all users active on the server.
-		this.connectedUsers = ???;
+		this.connectedUsers = getAllConected(); // bref un truc comme ça
 	}
 
 	/*** Methods ***/

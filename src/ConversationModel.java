@@ -9,14 +9,18 @@ public class ConversationModel {
 
 	/*** Constructors ***/
 	public void ConversationModel(ArrayList<Conversation> history) {
-		this.history = history;
+		this.history = history; // Need to get the list from the database ???
 	}
 
 	/*** Methods ***/
 	// Asks the database about a conversion between myself and "pseudo" at a given date
 	public Conversation getConversation(String pseudo, Date date){
-
-		return conv;
+		// 
+		for(Conversation conv : this.history){
+			if((conv.getStartingDate() == date && (conv.getDestinationUser().getPseudo() == pseudo)){
+				return conv;
+			}
+		}
 	}
 
 	// Deletes a specific conversation from the history of conversations
