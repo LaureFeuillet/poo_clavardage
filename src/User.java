@@ -4,9 +4,9 @@ import java.lang.*;
 public class User {
 
 	/*** Attributes ***/
-	protected String pseudo;
-	protected int numPort;
-	protected InetAddress address;
+	protected String pseudo; // Unique name for a session of a user 
+	protected int numPort; // Number of the port the application is listening on
+	protected InetAddress address; // IP address of the user
 	
 	/*** Constructors ***/
 	public void User(String pseudo, InetAddress address, int numPort) {

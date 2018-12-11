@@ -4,29 +4,36 @@ import java.lang.*;
 public class Message {
 
 	/*** Attributes ***/
-	protected Date date;
-	protected String content;
+	protected Date date; // The date the message was SENT at from the user
+	protected String content; // Content of the message, for now, we focus on textual messages
 	// Links to other classes
-	protected Conversation conv;
+	protected Conversation conv; // ONE message always belongs to ONE conversation
 	
 	/*** Constructors ***/
-	public void Message(Date date, String content) {
+	public void Message(Date date, String content, Conversation conv) {
 		this.date = date;
 		this.content = content;
+		this.conv = conv;
 	}
 
 	/*** Getters & setters ***/
-	public Date getdate(){
+	public Date getDate(){
 		return this.date;
 	}
 	public String getContent(){
 		return this.content;
 	}
-	public void setdate(String newDate){
+	public Conversation getConversation(){
+		return this.conv;
+	}
+	public void setDate(String newDate){
 		this.date = newDate;
 	}
 	public void setContent(Int newContent){
 		this.content = newContent;
+	}
+	public void setConversation(Conversation newConv){
+		this.conv = newConv;
 	}
 }
 

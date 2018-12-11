@@ -4,28 +4,34 @@ import java.lang.*;
 public class UserModel {
 
 	/*** Attributes ***/
-	protected User[] connectedUsers;
+	protected ArrayList<User> connectedUsers;
 	
 	/*** Constructors ***/
-	public void UserModel( User[] connectedUsers) {
+	public void UserModel( ArrayList<User> connectedUsers) {
 		// Here we need to get the list of all users active on the server.
 		this.connectedUsers = ???;
 	}
 
 	/*** Methods ***/
-	public User[] getConnectedUsers() {
+	// Method that returns the list of connected users, with their name, IP@ and port
+	public ArrayList<User> getConnectedUsers() {
 		// This might be done by something else, and thus, we would not need an attribute for it.
 		return this.connectedUsers;
 	}
 
-	public void add(String pseudo, InetAddress address, int numPort) {
+	// Method that creates a specific user and adds it to the list of the connected users
+	public ArrayList<User> addUser(String pseudo, InetAddress address, int numPort) {
 		User user = new User(pseudo, address, numPort);
+		connectedUsers.add(user);
+		return this.connectedUsers;
 	}
 
-	public void delete(User userToDelete) {
-		userToDelete = null;
+	// Method that removes a specific user from the list of the connected users
+	public ArrayList<User> deleteUser(User userToDelete) {
+		connectedUsers.remove(userToDelete);
+		return this.connectedUsers;
 	}
 
 	/*** Getters & setters ***/
-	
+
 }
