@@ -16,22 +16,22 @@ public class User {
 	}
 
 	/*** Getters & setters ***/
-	public getPseudo(){
+	public String getPseudo(){
 		return this.pseudo;
 	}
-	public getNumPort(){
+	public int getNumPort(){
 		return this.numPort;
 	}
-	public getAddress(){
+	public InetAddress getAddress(){
 		return this.address;
 	}
-	public setPseudo(String newPseudo){
+	public void setPseudo(String newPseudo){
 		this.pseudo = newPseudo;
 	}
-	public setNumPort(Int newNumPort){
+	public void setNumPort(Int newNumPort){
 		this.numPort = newNumPort;
 	}
-	public setAddress(InetAddress newAddress){
+	public void setAddress(InetAddress newAddress){
 		this.address = newAddress;
 	}
 }

@@ -14,11 +14,11 @@ public class Conversation {
 	}
 
 	/*** Getters & setters ***/
-	public getStartingDate(){
+	public Date getStartingDate(){
 		return this.startingDate;
 	}
 
-	public setStartingDate(String newStartingDate){
+	public void setStartingDate(String newStartingDate){
 		this.startingDate = newStartingDate;
 	}
 }

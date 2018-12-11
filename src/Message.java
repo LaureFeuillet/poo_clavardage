@@ -16,16 +16,16 @@ public class Message {
 	}
 
 	/*** Getters & setters ***/
-	public getdate(){
+	public Date getdate(){
 		return this.date;
 	}
-	public getContent(){
+	public String getContent(){
 		return this.content;
 	}
-	public setdate(String newDate){
+	public void setdate(String newDate){
 		this.date = newDate;
 	}
-	public setContent(Int newContent){
+	public void setContent(Int newContent){
 		this.content = newContent;
 	}
 }
