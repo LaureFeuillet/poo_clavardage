@@ -20,7 +20,7 @@ public class Conversation {
 		return this.startingDate;
 	}
 	public User getDestinationUser(){
-		return this.startingDate;
+		return this.destinationUser;
 	}
 	public void setStartingDate(String newStartingDate){
 		this.startingDate = newStartingDate;
