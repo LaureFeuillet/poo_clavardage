@@ -2,6 +2,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+enum Action{
+	CONNECT,
+	DISCONNECT,
+	UPDATE
+};
+
 public class Controller {
 	protected User myself;
 	protected ArrayList<User> connectedUsers;
@@ -12,13 +18,15 @@ public class Controller {
 	protected ConversationView cv;
 	protected UserModel um;
 	protected ConversationModel cm;
+	protected Network nw;
 
 	public Controller() {
+		nw = new Network();
 		myself = new User();
 		pv = new PseudoView();
 		hv = new HomeView();
 		cv = new ConversationView();
-		um = new UserModel();
+		um = new UserModel(nw.findConnectedUsers());
 		cm = new ConversationModel();
 		connectedUsers = um.getConnectedUsers();
 		startedConversations = new ArrayList<Conversation>();
@@ -30,11 +38,12 @@ public class Controller {
 	/***************************************************/
 
 	//Envoie un message
-	public void sendMsg(Conversation conv, Message msg) {
-		//Il va bien nous falloir une classe pour gérer les envois physiques...
-		//XXX.sendMsg(conv, msg)
-		cv.displayMessage(msg);
-		addMsg(conv, msg);
+	public void sendMsg(String pseudo, String content) {
+		User u = um.getUser(pseudo);
+		cm.addMessage(u, content);
+		nw.sendMessage(u,content);
+		currentConv = cm.getCurrentConv();
+		cv.refreshView(currentConv);
 	}
 
 	//Affiche un message dans la conversation courante
@@ -56,7 +65,7 @@ public class Controller {
 		//La conversation ouverte devient celle que l'on vient de commencer
 		currentConv = conv;
 		//On affiche la vue
-		displayConversationView();
+		displayConversationView(conv);
 	}
 	//Ouvre une conversation
 	public void openConversation(User u) {
