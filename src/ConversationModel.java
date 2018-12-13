@@ -1,6 +1,5 @@
-
-package poo_clavardage;
-import java.lang.*;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class ConversationModel {
 
@@ -9,23 +8,26 @@ public class ConversationModel {
 	// List of the conversation that are remembered
 
 	/*** Constructors ***/
-	public void ConversationModel(ArrayList<Conversation> history) {
+	public ConversationModel(ArrayList<Conversation> history) {
 		this.history = history; // Need to get the list from the database ???
 	}
 
 	/*** Methods ***/
 	// Asks the database about a conversion between myself and "pseudo" at a given date
 	public Conversation getConvHistory(String pseudo, Date date){
-		// 
+		Conversation goodConv = null;
 		for(Conversation conv : this.history){
-			if((conv.getStartingDate() == date && (conv.getDestinationUser().getPseudo() == pseudo)){
-				return conv;
+			if((conv.getStartingDate() == date && (conv.getDestinationUser().getPseudo() == pseudo))){
+				goodConv = conv;
+				break;
 			}
 		}
+		return goodConv;
 	}
-
-	public Conversation getConvUser() {
-		// ...
+	
+	
+	public Conversation startConvUser(User userConcerned) {
+		
 		return conv;
 	}
 
@@ -41,5 +43,12 @@ public class ConversationModel {
 	}
 
 	/*** Getters & setters ***/
+	public ArrayList<Conversation> getHistory() {
+		return history;
+	}
 
+	public void setHistory(ArrayList<Conversation> history) {
+		this.history = history;
+	}
+		
 }

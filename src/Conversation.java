@@ -1,5 +1,4 @@
-package poo_clavardage;
-import java.lang.*;
+import java.util.Date;
 
 public class Conversation {
 
@@ -10,7 +9,7 @@ public class Conversation {
 	// ONE conversation occurs between two users but only ONE is given here since the other is "myself"
 	
 	/*** Constructors ***/
-	public void Conversation(Date startingDate, User destinationUser) {
+	public Conversation(Date startingDate, User destinationUser) {
 		this.startingDate = startingDate;
 		this.destinationUser = destinationUser;
 	}
@@ -22,7 +21,7 @@ public class Conversation {
 	public User getDestinationUser(){
 		return this.destinationUser;
 	}
-	public void setStartingDate(String newStartingDate){
+	public void setStartingDate(Date newStartingDate){
 		this.startingDate = newStartingDate;
 	}
 	public void setDestinationUser(User newDestinationUser){

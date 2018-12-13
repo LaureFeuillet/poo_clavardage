@@ -1,24 +1,19 @@
-
-package poo_clavardage;
-import java.lang.*;
+import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class UserModel {
 
 	/*** Attributes ***/
+	protected User myself;
 	protected ArrayList<User> connectedUsers;
 	
 	/*** Constructors ***/
-	public void UserModel( ArrayList<User> connectedUsers) {
+	public UserModel( ArrayList<User> connectedUsers) {
 		// Here we need to get the list of all users active on the server.
-		this.connectedUsers = getAllConected(); // bref un truc comme ça
+		//this.connectedUsers = getAllConected(); // bref un truc comme ça
 	}
 
 	/*** Methods ***/
-	// Method that returns the list of connected users, with their name, IP@ and port
-	public ArrayList<User> getConnectedUsers() {
-		// This might be done by something else, and thus, we would not need an attribute for it.
-		return this.connectedUsers;
-	}
 
 	// Method that creates a specific user and adds it to the list of the connected users
 	public ArrayList<User> addUser(String pseudo, InetAddress address, int numPort) {
@@ -35,18 +30,33 @@ public class UserModel {
 
 	// Returns TRUE if we can use this pseudo, false if its already used.
 	public boolean availablePseudo(String pseudoToCheck){
-		boolean bool = true;
+		boolean available = true;
 		for(User user : this.connectedUsers)
 		{
 			if(user.getPseudo() == pseudoToCheck)
 			{
-				bool = false;
+				available = false;
 			}
 		}
-		return bool;
+		if(available) {
+			
+		}
+		return available;
+	}
+ 
+	/*** Getters & setters ***/
+	public User getMyself() {
+		return myself;
 	}
 
-	public 
-	/*** Getters & setters ***/
+	public void setMyself(User myself) {
+		this.myself = myself;
+	}
+	public ArrayList<User> getConnectedUsers() {
+		return this.connectedUsers;
+	}
+	public void setConnectedUsers(ArrayList<User> connectedUsers) {
+		this.connectedUsers = connectedUsers;
+	}
 
 }
