@@ -1,5 +1,4 @@
-package poo_clavardage;
-import java.lang.*;
+import java.net.InetAddress;
 
 public class User {
 
@@ -9,7 +8,7 @@ public class User {
 	protected InetAddress address; // IP address of the user
 	
 	/*** Constructors ***/
-	public void User(String pseudo, InetAddress address, int numPort) {
+	public User(String pseudo, InetAddress address, int numPort) {
 		this.pseudo = pseudo;
 		this.numPort = numPort;
 		this.address = address;
@@ -28,7 +27,7 @@ public class User {
 	public void setPseudo(String newPseudo){
 		this.pseudo = newPseudo;
 	}
-	public void setNumPort(Int newNumPort){
+	public void setNumPort(int newNumPort){
 		this.numPort = newNumPort;
 	}
 	public void setAddress(InetAddress newAddress){
