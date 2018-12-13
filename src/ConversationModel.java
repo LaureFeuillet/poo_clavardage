@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 
-public class ConversationModel {
-
-=======
 package poo_clavardage;
 import java.lang.*;
 
@@ -46,5 +42,4 @@ public class ConversationModel {
 
 	/*** Getters & setters ***/
 
->>>>>>> 212a042ae326676247c1631dcd55a5218404065a
 }

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 
-public class UserModel {
-
-=======
 package poo_clavardage;
 import java.lang.*;
 
@@ -39,5 +35,4 @@ public class UserModel {
 
 	/*** Getters & setters ***/
 
->>>>>>> 212a042ae326676247c1631dcd55a5218404065a
 }
