@@ -12,8 +12,6 @@ public class Controller {
 	protected ConversationView cv;
 	protected UserModel um;
 	protected ConversationModel cm;
-	protected MessageModel mm;
-	protected Conversation currentConv;
 
 	public Controller() {
 		myself = new User();
@@ -22,13 +20,9 @@ public class Controller {
 		cv = new ConversationView();
 		um = new UserModel();
 		cm = new ConversationModel();
-		mm = new MessageModel();
 		connectedUsers = um.getConnectedUsers();
-		//Aucune conversation au démarrage
-		currentConv = null;
 		startedConversations = new ArrayList<Conversation>();
 		history = cm.getHistory();
-
 	}
 
 	/***************************************************/
@@ -66,14 +60,14 @@ public class Controller {
 	}
 	//Ouvre une conversation
 	public void openConversation(User u) {
-		if
-		currentConv = conv;
-		displayConversationView();
+		Conversation c = cm.getConvUser(u);
+		cv.displayView(c);	
 	}
 
 	//Permet de flush la table conversation de la BD locale
 	public void deleteHistory() {
 		cm.deleteHistory();
+		hv.refreshView();
 	}
 
 	/***************************************************/
@@ -82,19 +76,13 @@ public class Controller {
 
 	//Choisir un nouveau pseudo (Appelée depuis la pseudoView)
 	public boolean setPseudo(String pseudo) {
-		boolean available = true;
-		//On parcourt la liste des utilisateurs connectés pour vérifier qu'aucun n'a
-		//déjà le pseudo qu'on souhaite s'attribuer
-		for(User u : connectedUsers){
-			if (u.pseudo == pseudo ) {
-				available = false;
-				break;
-			}
+		if (um.availablePseudo(pseudo)) {
+			myself = um.getMyself();
+			hv.displayView();
 		}
-		if (available) {
-			myself.pseudo = pseudo;
+		else {
+			pv.printMsgError();
 		}
-		return available;
 	}
 
 	/***************************************************/
