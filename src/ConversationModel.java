@@ -14,13 +14,18 @@ public class ConversationModel {
 
 	/*** Methods ***/
 	// Asks the database about a conversion between myself and "pseudo" at a given date
-	public Conversation getConversation(String pseudo, Date date){
+	public Conversation getConvHistory(String pseudo, Date date){
 		// 
 		for(Conversation conv : this.history){
 			if((conv.getStartingDate() == date && (conv.getDestinationUser().getPseudo() == pseudo)){
 				return conv;
 			}
 		}
+	}
+
+	public Conversation getConvUser() {
+		// ...
+		return conv;
 	}
 
 	// Deletes a specific conversation from the history of conversations
@@ -30,6 +35,7 @@ public class ConversationModel {
 
 	// Adds a specific conversation to the history of conversations
 	public void addConversation(Conversation conv){
+		
 
 	}
 
