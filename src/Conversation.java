@@ -1,31 +1,37 @@
-import java.util.Date;
+import java.util.ArrayList;
 
 public class Conversation {
 
 	/*** Attributes ***/
-	protected Date startingDate; // The date at wich the conversation between two users started
+	protected String startingDate; // The date at which the conversation between two users started
 	// Links to other classes
-	protected User destinationUser; 
-	// ONE conversation occurs between two users but only ONE is given here since the other is "myself"
-	
+	protected User destinationUser; // ONE conversation occurs between two users but only ONE is given here since the other is "myself"
+	protected ArrayList<Message> messages; // A conversation has a list of messages.
+
 	/*** Constructors ***/
-	public Conversation(Date startingDate, User destinationUser) {
+	public Conversation(String startingDate, User destinationUser) {
 		this.startingDate = startingDate;
 		this.destinationUser = destinationUser;
 	}
 
 	/*** Getters & setters ***/
-	public Date getStartingDate(){
+	public String getStartingDate(){
 		return this.startingDate;
 	}
 	public User getDestinationUser(){
 		return this.destinationUser;
 	}
-	public void setStartingDate(Date newStartingDate){
+	public void setStartingDate(String newStartingDate){
 		this.startingDate = newStartingDate;
 	}
 	public void setDestinationUser(User newDestinationUser){
 		this.destinationUser = newDestinationUser;
+	}
+	public ArrayList<Message> getMessages() {
+		return messages;
+	}
+	public void setMessages(ArrayList<Message> messages) {
+		this.messages = messages;
 	}
 }
 

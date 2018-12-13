@@ -16,16 +16,14 @@ public class UserModel {
 	/*** Methods ***/
 
 	// Method that creates a specific user and adds it to the list of the connected users
-	public ArrayList<User> addUser(String pseudo, InetAddress address, int numPort) {
+	public void addUser(String pseudo, InetAddress address, int numPort) {
 		User user = new User(pseudo, address, numPort);
-		connectedUsers.add(user);
-		return this.connectedUsers;
+		this.connectedUsers.add(user);
 	}
 
 	// Method that removes a specific user from the list of the connected users
-	public ArrayList<User> deleteUser(User userToDelete) {
-		connectedUsers.remove(userToDelete);
-		return this.connectedUsers;
+	public void deleteUser(User userToDelete) {
+		this.connectedUsers.remove(userToDelete);
 	}
 
 	// Returns TRUE if we can use this pseudo, false if its already used.
@@ -39,11 +37,45 @@ public class UserModel {
 			}
 		}
 		if(available) {
-			
+			myself.setPseudo(pseudoToCheck);
 		}
 		return available;
 	}
  
+	// Returns the user corresponding to a pseudo
+	public User getUser(String pseudo) {
+		User goodUser = null;
+		for(User user : this.connectedUsers) {
+			if(user.getPseudo() == pseudo) {
+				goodUser = user;
+				break;
+			}
+		}
+		return goodUser;
+	}
+	
+	// Depending on the action required, we either add, delete a user from the list of connected users or change its pseudo in it.
+	public void refreshUser(User userToUpdate, Action action) {
+		switch (action) {
+        case CONNECT: 
+        			this.connectedUsers.add(userToUpdate);
+                 break;
+        case DISCONNECT: 
+        			deleteUser(userToUpdate);
+                 break;
+        case UPDATE: 
+        			User updatedUser = null;
+        			for(User user : this.connectedUsers) {
+        				if((user.getAddress() == userToUpdate.getAddress()) && (user.getNumPort() == userToUpdate.getNumPort())) {
+        					updatedUser = user;
+        					updatedUser.setPseudo(userToUpdate.getPseudo());
+        					break;
+        				}
+        			}
+                 break;
+		}
+	}
+	
 	/*** Getters & setters ***/
 	public User getMyself() {
 		return myself;
