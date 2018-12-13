@@ -21,7 +21,7 @@ public class Controller {
 	protected Network nw;
 
 	public Controller() {
-		nw = new Network();
+		nw = new Network(this);
 		myself = new User();
 		pv = new PseudoView();
 		hv = new HomeView();
@@ -40,32 +40,26 @@ public class Controller {
 	//Envoie un message
 	public void sendMsg(String pseudo, String content) {
 		User u = um.getUser(pseudo);
-		cm.addMessage(u, content);
+		addMsg(u, content);
 		nw.sendMessage(u,content);
 		currentConv = cm.getCurrentConv();
 		cv.refreshView(currentConv);
 	}
 
 	//Affiche un message dans la conversation courante
-	public void receiveMsg(Conversation conv, Message msg) {
-		cv.displayMsg(msg);
-		addMsg(conv, msg);
+	public void receiveMsg(Conversation conv, String content) {
+		addMsg(conv, content, false);
 	}
+	
 	//Stocke un message en base de données locale
-	private void addMsg(Conversation conv, Message msg) {
-		mm.addMsg(conv, msg);
+	private void addMsg(Conversation conv, String content, boolean sent) {
+		mm.addMsg(conv, msg, sent);
 	}
 	//Créé une nouvelle conversation
 	public void startConversation(User u) {
-		//On créé un format de date
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		//On créé une nouvelle conversation avec la date actuelle
-		Conversation conv = new Conversation(u, dateFormat.format(LocalDateTime.now()));
-		startedConversations = cm.addConversation();
-		//La conversation ouverte devient celle que l'on vient de commencer
-		currentConv = conv;
+		Conversation c = cm.startConv(u);
 		//On affiche la vue
-		displayConversationView(conv);
+		displayConversationView(c);
 	}
 	//Ouvre une conversation
 	public void openConversation(User u) {
