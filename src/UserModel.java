@@ -33,6 +33,20 @@ public class UserModel {
 		return this.connectedUsers;
 	}
 
+	// Returns TRUE if we can use this pseudo, false if its already used.
+	public boolean availablePseudo(String pseudoToCheck){
+		boolean bool = true;
+		for(User user : this.connectedUsers)
+		{
+			if(user.getPseudo() == pseudoToCheck)
+			{
+				bool = false;
+			}
+		}
+		return bool;
+	}
+
+	public 
 	/*** Getters & setters ***/
 
 }
