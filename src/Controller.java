@@ -38,10 +38,10 @@ public class Controller {
 
 	//Sends a message
 	public void sendMsg(String pseudo, String content) {
-		User u = um.getUser(pseudo);
+		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getCurrentConv();
 		c = addMsg(c, content, true);
-		nw.sendMessage(u,content);
+		nw.sendMsg(u,content);
 		//The conversation view is refreshed to display the newly sent message
 		cv.refreshView(c);
 	}
@@ -57,13 +57,13 @@ public class Controller {
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
-	private void addMsg(Conversation conv, String content, boolean sent) {
-		mm.addMsg(conv, msg, sent);
+	private Conversation addMsg(Conversation conv, String content, boolean sent) {
+		return cm.addMsg(conv, content, sent);
 	}
 	
 	//Creates a new conversation and displays it if it was initiated by the user
 	public void startConversation(String pseudo, boolean startedByMe) {
-		User u = um.getUser(pseudo);
+		User u = um.getUserByPseudo(pseudo);
 		cm.startConv(u);
 		//If the user chose to start this conversation, then it must be displayed
 		if (startedByMe) {
@@ -73,8 +73,8 @@ public class Controller {
 	
 	//Opens an already started conversation
 	public void displayConversation(String pseudo) {
-		User u = um.getUser(pseudo);
-		Conversation c = cm.getConvUser(u);
+		User u = um.getUserByPseudo(pseudo);
+		Conversation c = cm.getConvByUser(u);
 		cm.setCurrentConv(c);
 		displayConversationView();	
 	}
