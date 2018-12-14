@@ -113,12 +113,12 @@ public class Controller {
 	//Called from the pseudo view
 	public void displayHomeView() {
 		ArrayList<User> connectedUsers = um.getConnectedUsers();
-		String myPseudo = um.getPseudo();
+		String myPseudo = um.getMyself();
 		hv.displayView(myPseudo, connectedUsers);
 	}
 	//Called from the home view
 	public void displayConversationView() {
-		String myPseudo = um.getPseudo();
+		String myPseudo = um.getMyself();
 		cv.displayView(myPseudo, cm.getCurrentConv());
 	}
 }

@@ -2,9 +2,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,9 +187,29 @@ public class Network
 	private class WatchdogThread extends Thread
 	{
 		private int nport = 1234;
+		DatagramSocket sock;
+		DatagramPacket receivedPacket, sentPacket;
 		
+		public WatchdogThread() {
+			start();
+		}
 		
+		public void run() {
+			while(true) {
+				try {
+					sock = new DatagramSocket(nport);
+				} catch (SocketException e) {
+					e.printStackTrace();
+				}
+				try {
+					sock.receive(receivedPacket);
+					sentPacket = new DatagramPacket(null,0,receivedPacket.getAddress(), receivedPacket.getPort());
+					sock.send(sentPacket);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
-
 }
 
