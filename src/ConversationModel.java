@@ -11,8 +11,8 @@ public class ConversationModel {
 	protected Conversation currentConv;
 
 	/*** Constructors ***/
-	public ConversationModel(ArrayList<Conversation> history) {
-		this.history = history; // Need to get the list from the database ???
+	public ConversationModel() {
+		// Need to get the list from the database ???
 	}
 
 	/*** Methods ***/

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class UserModel {
 
 	/*** Attributes ***/
-	protected User myself;
+	protected String myself;
 	protected ArrayList<User> connectedUsers;
 	
 	/*** Constructors ***/
@@ -37,7 +37,7 @@ public class UserModel {
 			}
 		}
 		if(available) {
-			myself.setPseudo(pseudoToCheck);
+			this.setMyself(pseudoToCheck);
 		}
 		return available;
 	}
@@ -89,11 +89,10 @@ public class UserModel {
 	}
 	
 	/*** Getters & setters ***/
-	public User getMyself() {
+	public String getMyself() {
 		return myself;
 	}
-
-	public void setMyself(User myself) {
+	public void setMyself(String myself) {
 		this.myself = myself;
 	}
 	public ArrayList<User> getConnectedUsers() {
