@@ -4,10 +4,10 @@ public class Message {
 	/*** Attributes ***/
 	protected String date; // The date the message was SENT at from the user
 	protected String content; // Content of the message, for now, we focus on textual messages
-	// Links to other classes
-	
+	protected Boolean sent;
+
 	/*** Constructors ***/
-	public Message(String date, String content) {
+	public Message(String date, String content, Boolean sent) {
 		this.date = date;
 		this.content = content;
 	}
@@ -24,6 +24,12 @@ public class Message {
 	}
 	public void setContent(String newContent){
 		this.content = newContent;
+	}
+	public Boolean getSent() {
+		return sent;
+	}
+	public void setSent(Boolean sent) {
+		this.sent = sent;
 	}
 }
 
