@@ -1,7 +1,13 @@
+import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/* Used to tell the user model how to refresh the connected user list
+ * CONNECT to add a new user
+ * DISCONNECT to remove a user
+ * UPDATE to update the user's pseudo 
+ */
 enum Action{
 	CONNECT,
 	DISCONNECT,
@@ -9,10 +15,6 @@ enum Action{
 };
 
 public class Controller {
-	protected User myself;
-	protected ArrayList<User> connectedUsers;
-	protected ArrayList<Conversation> startedConversations;
-	protected ArrayList<Conversation> history;
 	protected PseudoView pv;
 	protected HomeView hv;
 	protected ConversationView cv;
@@ -22,86 +24,101 @@ public class Controller {
 
 	public Controller() {
 		nw = new Network(this);
-		myself = new User();
 		pv = new PseudoView();
 		hv = new HomeView();
 		cv = new ConversationView();
+		//The user model must be told of the already active users on the local network
 		um = new UserModel(nw.findConnectedUsers());
 		cm = new ConversationModel();
-		connectedUsers = um.getConnectedUsers();
-		startedConversations = new ArrayList<Conversation>();
-		history = cm.getHistory();
 	}
 
 	/***************************************************/
-	/*********** GESTION DES CONVERSATIONS *************/
+	/*********** CONVERSATIONS MANAGEMENT **************/
 	/***************************************************/
 
-	//Envoie un message
+	//Sends a message
 	public void sendMsg(String pseudo, String content) {
 		User u = um.getUser(pseudo);
-		addMsg(u, content);
+		Conversation c = cm.getCurrentConv();
+		c = addMsg(c, content, true);
 		nw.sendMessage(u,content);
-		currentConv = cm.getCurrentConv();
-		cv.refreshView(currentConv);
+		//The conversation view is refreshed to display the newly sent message
+		cv.refreshView(c);
 	}
 
-	//Affiche un message dans la conversation courante
-	public void receiveMsg(Conversation conv, String content) {
-		addMsg(conv, content, false);
+	//Handles a message reception and displays it if it is linked to the current conversation
+	public void receiveMsg(InetAddress ip, String content) {
+		User u = um.getUserByIP(ip);
+		Conversation c = cm.getConvByUser(u);
+		c = addMsg(c, content, false);
+		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
+		if (c == cm.getCurrentConv())
+			cv.refreshView();
 	}
 	
-	//Stocke un message en base de données locale
+	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
 	private void addMsg(Conversation conv, String content, boolean sent) {
 		mm.addMsg(conv, msg, sent);
 	}
-	//Créé une nouvelle conversation
-	public void startConversation(User u) {
-		Conversation c = cm.startConv(u);
-		//On affiche la vue
-		displayConversationView(c);
+	
+	//Creates a new conversation and displays it if it was initiated by the user
+	public void startConversation(String pseudo, boolean startedByMe) {
+		User u = um.getUser(pseudo);
+		cm.startConv(u);
+		//If the user chose to start this conversation, then it must be displayed
+		if (startedByMe) {
+			displayConversationView();
+		}
 	}
-	//Ouvre une conversation
-	public void openConversation(User u) {
+	
+	//Opens an already started conversation
+	public void displayConversation(String pseudo) {
+		User u = um.getUser(pseudo);
 		Conversation c = cm.getConvUser(u);
-		cv.displayView(c);	
+		cm.setCurrentConv(c);
+		displayConversationView();	
 	}
 
-	//Permet de flush la table conversation de la BD locale
+	//Flushes the history of past conversations in local DB
 	public void deleteHistory() {
 		cm.deleteHistory();
 		hv.refreshView();
 	}
 
 	/***************************************************/
-	/************** GESTION DU PSEUDO ******************/
+	/************** PSEUDO MANAGEMENT ******************/
 	/***************************************************/
 
-	//Choisir un nouveau pseudo (Appelée depuis la pseudoView)
+	//Used to choose a new pseudo from the pseudo view
 	public boolean setPseudo(String pseudo) {
+		//Is the chosen pseudo available ?
 		if (um.availablePseudo(pseudo)) {
-			myself = um.getMyself();
+			//If it is, then we proceed to the home view
 			hv.displayView();
 		}
 		else {
+			//Otherwise we just notice the user that he must choose another pseudo
 			pv.printMsgError();
 		}
 	}
 
 	/***************************************************/
-	/************** AFFICHAGE DES VUES *****************/
+	/*************** VIEWS DISPLAYING ******************/
 	/***************************************************/
 
-	//Appelée depuis la HomeView
+	//Called from the home view
 	public void displayPseudoView() {
 		pv.displayView();
 	}
-	//Appelée depuis la pseudoView
+	//Called from the pseudo view
 	public void displayHomeView() {
-		hv.displayView();
+		ArrayList<User> connectedUsers = um.getConnectedUsers();
+		String myPseudo = um.getPseudo();
+		hv.displayView(myPseudo, connectedUsers);
 	}
-	//Appelée depuis la homeView
+	//Called from the home view
 	public void displayConversationView() {
-		cv.displayView(currentConv);
+		String myPseudo = um.getPseudo();
+		cv.displayView(myPseudo, cm.getCurrentConv());
 	}
 }
