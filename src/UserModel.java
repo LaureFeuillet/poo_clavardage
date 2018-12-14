@@ -43,10 +43,22 @@ public class UserModel {
 	}
  
 	// Returns the user corresponding to a pseudo
-	public User getUser(String pseudo) {
+	public User getUserByPseudo(String pseudo) {
 		User goodUser = null;
 		for(User user : this.connectedUsers) {
 			if(user.getPseudo() == pseudo) {
+				goodUser = user;
+				break;
+			}
+		}
+		return goodUser;
+	}
+	
+	// Returns the user corresponding to a pseudo
+	public User getUserByIP(InetAddress adr) {
+		User goodUser = null;
+		for(User user : this.connectedUsers) {
+			if(user.getAddress() == adr) {
 				goodUser = user;
 				break;
 			}
