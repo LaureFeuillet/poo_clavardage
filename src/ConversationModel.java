@@ -42,8 +42,7 @@ public class ConversationModel {
 	
 	// Creates a new conversation, makes it THE current one, and adds it to the list of current convs.
 	public void startConv(User userConcerned) {
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		Conversation conv = new Conversation(dateFormat.format(LocalDateTime.now()), userConcerned);
+		Conversation conv = new Conversation(userConcerned);
 		addConvToCurrent(conv);
 		this.currentConv = conv;
 	}

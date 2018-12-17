@@ -1,19 +1,27 @@
+import java.util.List;
 import java.io.BufferedReader;
+import java.net.NetworkInterface;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+
+
 
 public class Network 
 {
+	private final int PORT_WATCHDOG = 2000;
+	
 	private Controller controller = null;
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
@@ -22,6 +30,7 @@ public class Network
 	{
 		this.controller = c;
 		new ListenerThread(this);
+		new WatchdogThread(this);
 	}
 	
 	public void addConv(User dest)
@@ -32,7 +41,50 @@ public class Network
 	// At the launch of the application, we need to know all the connected users on the network
 	public ArrayList<User> findConnectedUsers()
 	{
-		return null;
+		int i = 0;
+		DatagramPacket receivedPacket = null, sentPacket;
+		DatagramSocket s = null;
+		ArrayList<User> connectedUsers = new ArrayList<User>();
+		Enumeration<NetworkInterface> en = null;
+		long startTime;
+		
+		try {
+			s = new DatagramSocket(0);
+			s.setBroadcast(true);
+		} catch (SocketException e) {
+		}
+		// Finding broadcast addresses, to be taken for granted !
+		try {
+			en = NetworkInterface.getNetworkInterfaces();
+		} catch (SocketException e1) {
+		}
+	    while (en.hasMoreElements()) {
+	      NetworkInterface ni = en.nextElement();
+
+	      List<InterfaceAddress> list = ni.getInterfaceAddresses();
+	      Iterator<InterfaceAddress> it = list.iterator();
+
+	      while (it.hasNext()) {
+	        InterfaceAddress ia = it.next();
+	        sentPacket = new DatagramPacket(null,0,ia.getBroadcast(), PORT_WATCHDOG);
+	        try {
+				s.send(sentPacket);
+			} catch (IOException e) {
+			}
+	      }
+	    }
+	    // End of broadcast addresses
+		
+	    startTime = System.currentTimeMillis();
+	    while(System.currentTimeMillis() - startTime < 500) {
+	    	try {s.receive(receivedPacket);} catch (IOException e) {}
+	    	User u = new User(Integer.toString(i),receivedPacket.getAddress(), receivedPacket.getPort());
+	    	connectedUsers.add(u);
+			sentPacket = new DatagramPacket(null,0,u.getAddress(), u.getNumPort());
+			try {s.send(sentPacket);} catch (IOException e1) {}
+			i++;
+		}
+		return connectedUsers;
 	}
 	
 	public void sendMsg(User dest, String content)
@@ -186,28 +238,41 @@ public class Network
 	
 	private class WatchdogThread extends Thread
 	{
-		private int nport = 1234;
 		DatagramSocket sock;
 		DatagramPacket receivedPacket, sentPacket;
+		Network n = null;
 		
-		public WatchdogThread() {
+		public WatchdogThread(Network n) {
+			this.n = n;
 			start();
 		}
 		
 		public void run() {
+			try {
+				sock = new DatagramSocket(PORT_WATCHDOG);
+			} catch (SocketException e) {}
 			while(true) {
 				try {
-					sock = new DatagramSocket(nport);
-				} catch (SocketException e) {
-					e.printStackTrace();
-				}
-				try {
 					sock.receive(receivedPacket);
+					User u;
+					String data = receivedPacket.getData().toString();
+					switch(data) {
+					case "CONNECT":
+						u = new User("",receivedPacket.getAddress(), receivedPacket.getPort());
+						n.getController().refreshUser(u, Action.CONNECT);
+						break;
+					case "DISCONNECT":
+						u = new User("",receivedPacket.getAddress(), receivedPacket.getPort());
+						n.getController().refreshUser(u, Action.DISCONNECT);
+						break;
+					default:
+						u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
+						n.getController().refreshUser(u, Action.UPDATE);
+						break;
+					}
 					sentPacket = new DatagramPacket(null,0,receivedPacket.getAddress(), receivedPacket.getPort());
 					sock.send(sentPacket);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (IOException e) {}
 			}
 		}
 	}

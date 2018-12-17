@@ -18,18 +18,19 @@ public class Controller {
 	protected PseudoView pv;
 	protected HomeView hv;
 	protected ConversationView cv;
-	protected UserModel um;
-	protected ConversationModel cm;
+	public UserModel um;
+	public ConversationModel cm;
 	protected Network nw;
 
 	public Controller() {
 		nw = new Network(this);
-		pv = new PseudoView();
-		hv = new HomeView();
-		cv = new ConversationView();
+		pv = new PseudoView(this);
+		hv = new HomeView(this);
+		cv = new ConversationView(this);
 		//The user model must be told of the already active users on the local network
 		um = new UserModel(nw.findConnectedUsers());
 		cm = new ConversationModel();
+		displayPseudoView();
 	}
 
 	/***************************************************/
@@ -43,7 +44,7 @@ public class Controller {
 		c = addMsg(c, content, true);
 		nw.sendMsg(u,content);
 		//The conversation view is refreshed to display the newly sent message
-		cv.refreshView(c);
+		//cv.refreshView(c);
 	}
 
 	//Handles a message reception and displays it if it is linked to the current conversation
@@ -53,7 +54,7 @@ public class Controller {
 		c = addMsg(c, content, false);
 		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
 		if (c == cm.getCurrentConv())
-			cv.refreshView();
+			//cv.refreshView();
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
@@ -82,7 +83,16 @@ public class Controller {
 	//Flushes the history of past conversations in local DB
 	public void deleteHistory() {
 		cm.deleteHistory();
-		hv.refreshView();
+		//hv.refreshView();
+	}
+	
+	/***************************************************/
+	/************** NETWORK MANAGEMENT *****************/
+	/***************************************************/
+	
+	//Adds, udpates or removes a user from the connectedUsers list
+	public void refreshUser(User u, Action a) {
+		um.refreshUser(u, a);
 	}
 
 	/***************************************************/
@@ -90,11 +100,12 @@ public class Controller {
 	/***************************************************/
 
 	//Used to choose a new pseudo from the pseudo view
-	public boolean setPseudo(String pseudo) {
+	public void setPseudo(String pseudo) {
 		//Is the chosen pseudo available ?
 		if (um.availablePseudo(pseudo)) {
 			//If it is, then we proceed to the home view
 			hv.displayView();
+			pv.hide();
 		}
 		else {
 			//Otherwise we just notice the user that he must choose another pseudo
@@ -108,7 +119,8 @@ public class Controller {
 
 	//Called from the home view
 	public void displayPseudoView() {
-		pv.displayView();
+		ps.setVisible(true);
+		hv.hide();
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {

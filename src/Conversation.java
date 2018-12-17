@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Conversation {
@@ -9,8 +11,9 @@ public class Conversation {
 	protected ArrayList<Message> messages; // A conversation has a list of messages.
 
 	/*** Constructors ***/
-	public Conversation(String startingDate, User destinationUser) {
-		this.startingDate = startingDate;
+	public Conversation(User destinationUser) {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		this.startingDate = dateFormat.format(LocalDateTime.now());
 		this.destinationUser = destinationUser;
 	}
 
