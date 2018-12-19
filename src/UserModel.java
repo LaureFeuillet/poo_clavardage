@@ -73,6 +73,7 @@ public class UserModel {
         			this.connectedUsers.add(userToUpdate);
                  break;
         case DISCONNECT: 
+        			userToUpdate = getUserByIP(userToUpdate.getAddress());
         			deleteUser(userToUpdate);
                  break;
         case UPDATE: 

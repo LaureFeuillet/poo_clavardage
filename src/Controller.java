@@ -92,6 +92,7 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
+		u = um.getUserByIP(u.getAddress());
 		um.refreshUser(u, a);
 	}
 
@@ -103,6 +104,7 @@ public class Controller {
 	public void setPseudo(String pseudo) {
 		//Is the chosen pseudo available ?
 		if (um.availablePseudo(pseudo)) {
+			nw.notifyPseudo(pseudo);
 			//If it is, then we proceed to the home view
 			hv.displayView();
 			pv.hide();
