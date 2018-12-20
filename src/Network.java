@@ -26,7 +26,7 @@ public class Network
 	private InetAddress local, broadcast;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
 	private final int PORT_WATCHDOG = 19000;
-	private String pseudo = null;
+	private String pseudo = "yoloswag";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
@@ -339,41 +339,43 @@ public class Network
 				try {
 					//Waits for any broadcast packet
 					sock.receive(receivedPacket);
-					//Gets the content of the packet
-					String data = receivedPacket.getData().toString();
-					switch(data) {
-					//This happens when a remote user connects and sends a request to find the already connected users
-					case "CONNECT":
-						System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
-						//We start by answering his request and telling him that we are here
-						sentPacket = new DatagramPacket(pseudo.getBytes(),pseudo.length(),receivedPacket.getAddress(), receivedPacket.getPort());
-						sock.send(sentPacket);
-						//A this moment, the remote user does not yet have a pseudo so its set to null
-						u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
-						//The controller is noticed that a new user has actually connected
-						n.getController().refreshUser(u, Action.CONNECT);
-						break;
-					//This happens when a remote user closes the application, before actually exiting, he notifies 
-					//all the other users that he is leaving
-					case "DISCONNECT":
-						System.out.print("[WATCHDOG] Received disconnect from" + receivedPacket.getAddress() + "...\n");
-						//The pseudo is set to null because we have no way to know it at this point,
-						//anyway, it is not required to remove the user from our contacts
-						u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
-						//The controller is notified that a user is leaving
-						n.getController().refreshUser(u, Action.DISCONNECT);
-						break;
-					//This happens when a remote user updates his pseudo, note that this usually happens right after
-					//receiving a CONNECT packet from the same user so that we can actually identify him by something more
-					//user friendly than his IP
-					default:
-						System.out.print("[WATCHDOG] Received pseudo " + data + " from " + receivedPacket.getAddress() + "...\n");
-						//The pseudo of the user is contained in the data of the packet
-						u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
-						//The controller is notified that the user behind an IP address that we already know has
-						//changed his pseudo
-						n.getController().refreshUser(u, Action.UPDATE);
-						break;
+					if (receivedPacket.getAddress() != local) {
+						//Gets the content of the packet
+						String data = receivedPacket.getData().toString();
+						switch(data) {
+						//This happens when a remote user connects and sends a request to find the already connected users
+						case "CONNECT":
+							System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
+							//We start by answering his request and telling him that we are here
+							sentPacket = new DatagramPacket(pseudo.getBytes(),pseudo.length(),receivedPacket.getAddress(), receivedPacket.getPort());
+							sock.send(sentPacket);
+							//A this moment, the remote user does not yet have a pseudo so its set to null
+							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
+							//The controller is noticed that a new user has actually connected
+							n.getController().refreshUser(u, Action.CONNECT);
+							break;
+						//This happens when a remote user closes the application, before actually exiting, he notifies 
+						//all the other users that he is leaving
+						case "DISCONNECT":
+							System.out.print("[WATCHDOG] Received disconnect from" + receivedPacket.getAddress() + "...\n");
+							//The pseudo is set to null because we have no way to know it at this point,
+							//anyway, it is not required to remove the user from our contacts
+							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
+							//The controller is notified that a user is leaving
+							n.getController().refreshUser(u, Action.DISCONNECT);
+							break;
+						//This happens when a remote user updates his pseudo, note that this usually happens right after
+						//receiving a CONNECT packet from the same user so that we can actually identify him by something more
+						//user friendly than his IP
+						default:
+							System.out.print("[WATCHDOG] Received pseudo " + data + " from " + receivedPacket.getAddress() + "...\n");
+							//The pseudo of the user is contained in the data of the packet
+							u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
+							//The controller is notified that the user behind an IP address that we already know has
+							//changed his pseudo
+							n.getController().refreshUser(u, Action.UPDATE);
+							break;
+						}
 					}
 				} catch (IOException e) {}
 			}
