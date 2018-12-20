@@ -107,6 +107,7 @@ public class Network
 	//Launches a client thread that initiates a conversation with a remote user
 	public void addConv(User dest)
 	{
+    	System.out.print("[CLIENT] Conversation initiated with " + dest.getAddress().toString() + "...\n");
 		//We save the reference to this thread in clients
 		clients.put(dest.getAddress(), new ClientThread(controller, dest, dest.getAddress().toString()));
 	}
@@ -114,7 +115,7 @@ public class Network
 	// At the launch of the application, we need to know all the connected users on the network
 	public ArrayList<User> findConnectedUsers()
 	{
-		System.out.print("[REQUEST] Starting request...\n");
+		//System.out.print("[REQUEST] Starting request...\n");
 		//The duration in milliseconds while we are waiting for responses
 		final int EXIT_TIME = 500;
 		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
@@ -126,7 +127,7 @@ public class Network
 			//Creates a broadcast UDP socket
 			s = new DatagramSocket(0);
 			if (s != null)
-				System.out.print("[REQUEST] Socket created...\n");
+				//System.out.print("[REQUEST] Socket created...\n");
 			s.setBroadcast(true);
 			s.setSoTimeout(10);
 		} catch (SocketException e) {}
@@ -139,7 +140,7 @@ public class Network
 		}
         //Starts the timer
 	    startTime = System.currentTimeMillis();
-	    System.out.print("[REQUEST] Starting timer...\n");
+	    //System.out.print("[REQUEST] Starting timer...\n");
 	    //While there is still time, we are waiting for answers from remote users
 	    while(System.currentTimeMillis() - startTime < EXIT_TIME) {
 	    	try {
@@ -222,7 +223,6 @@ public class Network
 			try {
 				ss = new ServerSocket(0);
 				if(ss != null) {
-					System.out.println("Listener créé");
 					localPort = ss.getLocalPort();
 				}
 			} catch (IOException e) {
@@ -239,6 +239,7 @@ public class Network
 			while(true){
 		        try {
 		        	sock = ss.accept();
+		        	System.out.print("[LISTENER] Conversation request from " + sock.getRemoteSocketAddress().toString() + "...\n");
 		        	//The created ServerThread is added to the list of the current conversations started by remote users
 		        	net.getServers().put(sock.getInetAddress(), new ServerThread(net.getController(), sock));
 		        } catch (IOException e) {
@@ -357,7 +358,7 @@ public class Network
 		public WatchdogThread(Network n) {
 			this.n = n;
 			sock = null;
-			System.out.print("[WATCHDOG] Starting watchdog...\n");
+			//System.out.print("[WATCHDOG] Starting watchdog...\n");
 			start();
 		}
 		
@@ -367,7 +368,7 @@ public class Network
 				//Starts the watchdog on port PORT_WATCHDOG
 				sock = new DatagramSocket(PORT_WATCHDOG);
 				if (sock != null)
-					System.out.print("[WATCHDOG] Socket created...\n");
+					//System.out.print("[WATCHDOG] Socket created...\n");
 				
 			} catch (SocketException e) {}
 			while(true) {
