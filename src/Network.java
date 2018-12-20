@@ -31,6 +31,7 @@ public class Network
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
 	private final int PORT_WATCHDOG = 30500;
+	private final int PACKET_SIZE = 1024;
 	private String pseudo = "Minoustrel";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
@@ -39,6 +40,8 @@ public class Network
 
 	public Network(Controller c) 
 	{
+		clients = new HashMap<InetAddress,ClientThread>();
+		servers = new HashMap<InetAddress,ServerThread>();
 		local = broadcast = null;
 		this.controller = c;
 		//Launches a "waiting for discussion initiated by remote users" thread
@@ -114,7 +117,7 @@ public class Network
 		System.out.print("[REQUEST] Starting request...\n");
 		//The duration in milliseconds while we are waiting for responses
 		final int EXIT_TIME = 500;
-		DatagramPacket receivedPacket = new DatagramPacket(new byte[100], 100);
+		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
 		DatagramPacket sentPacket = null;
 		DatagramSocket s = null;
 		ArrayList<User> connectedUsers = new ArrayList<User>();
@@ -266,10 +269,10 @@ public class Network
 				sock = new Socket(dest.getAddress(), dest.getNumPort());
 				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
+				this.start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.start();
 		}
 		
 		public void run()
@@ -312,10 +315,10 @@ public class Network
 			try {
 				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
+				this.start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.start();
 		}
 		
 		public void run(){
@@ -347,7 +350,7 @@ public class Network
 	private class WatchdogThread extends Thread
 	{
 		DatagramSocket sock;
-		DatagramPacket receivedPacket = new DatagramPacket(new byte[100], 100);
+		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
 		DatagramPacket sentPacket = null;
 		Network n = null;
 		
