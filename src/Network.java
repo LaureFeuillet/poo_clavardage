@@ -34,7 +34,6 @@ public class Network
 
 	public Network(Controller c) 
 	{
-		new WatchdogThread(this);
 		local = broadcast = null;
 		this.controller = c;
 		//Launches a "waiting for discussion initiated by remote users" thread
@@ -43,6 +42,7 @@ public class Network
 		
 		//Used to get our local address and the broadcast address
 		init();
+		new WatchdogThread(this);
 	}
 	
 	//WARNING : VERY COMPLICATED ONE !!!
@@ -74,6 +74,8 @@ public class Network
 	        }
 	      }
 	    }
+	    System.out.print("[INIT] Local address is : " + local.toString() + "\n");
+	    System.out.print("[INIT] Broadcast address is : " + broadcast.toString() + "\n");
 	}
 	
 	//Notifies the remote users that the local one has changed or set his pseudo
@@ -341,7 +343,7 @@ public class Network
 					sock.receive(receivedPacket);
 					if (receivedPacket.getAddress() != local) {
 						//Gets the content of the packet
-						String data = receivedPacket.getData().toString();
+						String data = new String(receivedPacket.getData(),0,receivedPacket.getLength());
 						switch(data) {
 						//This happens when a remote user connects and sends a request to find the already connected users
 						case "CONNECT":
