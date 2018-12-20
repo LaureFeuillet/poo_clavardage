@@ -30,8 +30,8 @@ public class Network
 	private InetAddress local, broadcast;
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	private final int PORT_WATCHDOG = 19000;
-	private String pseudo = "yoloswag";
+	private final int PORT_WATCHDOG = 30500;
+	private String pseudo = "Minoustrel";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
