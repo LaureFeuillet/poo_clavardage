@@ -24,13 +24,17 @@ public class Controller {
 
 	public Controller() {
 		nw = new Network(this);
-		pv = new PseudoView(this);
-		hv = new HomeView(this);
-		cv = new ConversationView(this);
+		//pv = new PseudoView(this);
+		//hv = new HomeView(this);
+		//cv = new ConversationView(this);
 		//The user model must be told of the already active users on the local network
-		um = new UserModel(nw.findConnectedUsers());
-		cm = new ConversationModel();
-		displayPseudoView();
+		//um = new UserModel(nw.findConnectedUsers());
+		//cm = new ConversationModel();
+		//displayPseudoView();
+	}
+	
+	public ArrayList<User> test(){
+		return nw.findConnectedUsers();
 	}
 
 	/***************************************************/
@@ -53,8 +57,9 @@ public class Controller {
 		Conversation c = cm.getConvByUser(u);
 		c = addMsg(c, content, false);
 		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
-		if (c == cm.getCurrentConv())
+		if (c == cm.getCurrentConv()) {
 			//cv.refreshView();
+		}
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
@@ -92,8 +97,10 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
+		/*
 		u = um.getUserByIP(u.getAddress());
 		um.refreshUser(u, a);
+		*/
 	}
 
 	/***************************************************/
@@ -106,7 +113,8 @@ public class Controller {
 		if (um.availablePseudo(pseudo)) {
 			nw.notifyPseudo(pseudo);
 			//If it is, then we proceed to the home view
-			hv.displayView();
+			ArrayList<User> users = um.getConnectedUsers();
+			hv.displayView(pseudo, users);
 			pv.hide();
 		}
 		else {
@@ -121,7 +129,7 @@ public class Controller {
 
 	//Called from the home view
 	public void displayPseudoView() {
-		ps.setVisible(true);
+		pv.setVisible(true);
 		hv.hide();
 	}
 	//Called from the pseudo view
@@ -133,6 +141,6 @@ public class Controller {
 	//Called from the home view
 	public void displayConversationView() {
 		String myPseudo = um.getMyself();
-		cv.displayView(myPseudo, cm.getCurrentConv());
+		//cv.displayView(myPseudo, cm.getCurrentConv());
 	}
 }
