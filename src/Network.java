@@ -25,8 +25,8 @@ public class Network
 	//These will be our IP address and the broadcast address corresponding to it
 	private InetAddress local, broadcast;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	private final int PORT_WATCHDOG = 19000;
-	private String pseudo = "yoloswag";
+	private final int PORT_WATCHDOG = 30500;
+	private String pseudo = "Minoustrel";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
@@ -139,7 +139,8 @@ public class Network
 	    		s.receive(receivedPacket);
 	    		System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + "...\n");
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
-		    	User u = new User(receivedPacket.getData().toString(),receivedPacket.getAddress(), receivedPacket.getPort());
+	    		String pseudoReceived = new String(receivedPacket.getData(), 0, receivedPacket.getLength());
+		    	User u = new User(pseudoReceived,receivedPacket.getAddress(), receivedPacket.getPort());
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
