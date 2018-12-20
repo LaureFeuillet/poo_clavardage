@@ -1,8 +1,12 @@
 import java.util.List;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.NetworkInterface;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -24,6 +28,7 @@ public class Network
 {
 	//These will be our IP address and the broadcast address corresponding to it
 	private InetAddress local, broadcast;
+	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
 	private final int PORT_WATCHDOG = 19000;
 	private String pseudo = "yoloswag";
@@ -39,7 +44,6 @@ public class Network
 		//Launches a "waiting for discussion initiated by remote users" thread
 		new ListenerThread(this);
 		//Launches a thread that will handle every broadcast messages sent by remote users
-		
 		//Used to get our local address and the broadcast address
 		init();
 		new WatchdogThread(this);
@@ -139,12 +143,36 @@ public class Network
 	    		s.receive(receivedPacket);
 	    		System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + "...\n");
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
-		    	User u = new User(receivedPacket.getData().toString(),receivedPacket.getAddress(), receivedPacket.getPort());
+		    	User u = ReceiveMessageObject(receivedPacket.getData());
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
 	    System.out.print("[REQUEST] Ending request...\n");
 		return connectedUsers;
+	}
+	
+	public static User ReceiveMessageObject(byte[] buf) {
+		//Récupération de l'objet MessageSync
+        ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+        ObjectInputStream ois = null;
+        User u = null;
+		try {
+			ois = new ObjectInputStream(bais);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        try {
+            Object readObject = ois.readObject();
+            if (readObject instanceof User) {
+            	u = (User) readObject;
+            } else {
+                System.out.println("L'objet n'est pas un MessageSync");
+            }
+        } catch (Exception e) {
+            System.out.println("Aucun objet dans ce datagrame\n");
+        }
+        return u;
 	}
 	
 	//Sends a message in an already opened conversation
@@ -190,8 +218,10 @@ public class Network
 		{
 			try {
 				ss = new ServerSocket(0);
-				if(ss != null)
+				if(ss != null) {
 					System.out.println("Listener créé");
+					localPort = ss.getLocalPort();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -341,7 +371,7 @@ public class Network
 				try {
 					//Waits for any broadcast packet
 					sock.receive(receivedPacket);
-					if (receivedPacket.getAddress() != local) {
+					if (receivedPacket.getAddress().toString().compareTo(local.toString()) != 0) {
 						//Gets the content of the packet
 						String data = new String(receivedPacket.getData(),0,receivedPacket.getLength());
 						switch(data) {
@@ -349,7 +379,8 @@ public class Network
 						case "CONNECT":
 							System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
 							//We start by answering his request and telling him that we are here
-							sentPacket = new DatagramPacket(pseudo.getBytes(),pseudo.length(),receivedPacket.getAddress(), receivedPacket.getPort());
+							byte[] dataToSend = CreateMessageObject(pseudo);
+							sentPacket = new DatagramPacket(dataToSend,dataToSend.length,receivedPacket.getAddress(), receivedPacket.getPort());
 							sock.send(sentPacket);
 							//A this moment, the remote user does not yet have a pseudo so its set to null
 							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
@@ -381,6 +412,28 @@ public class Network
 					}
 				} catch (IOException e) {}
 			}
+		}
+		
+		public byte[] CreateMessageObject(String pseudo) {
+			//Prepare Data
+	        User u = new User(pseudo,local,localPort);
+	        //String message = "COU";
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        ObjectOutputStream oos = null;
+			try {
+				oos = new ObjectOutputStream(baos);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	        try {
+				oos.writeObject(u);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	        
+	        return baos.toByteArray();
 		}
 	}
 }
