@@ -53,6 +53,8 @@ public class Controller {
 
 	//Handles a message reception and displays it if it is linked to the current conversation
 	public void receiveMsg(InetAddress ip, String content) {
+		System.out.println(content);
+		/*
 		User u = um.getUserByIP(ip);
 		Conversation c = cm.getConvByUser(u);
 		c = addMsg(c, content, false);
@@ -60,6 +62,7 @@ public class Controller {
 		if (c == cm.getCurrentConv()) {
 			//cv.refreshView();
 		}
+		*/
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
