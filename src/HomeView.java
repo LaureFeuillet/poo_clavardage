@@ -1,12 +1,18 @@
+
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
-import javax.swing.JList;
+import java.awt.Font;
 
 public class HomeView extends JFrame {
 	
@@ -14,68 +20,124 @@ public class HomeView extends JFrame {
 	/*** Attributes ***/
 	protected Controller c;
 	private SpringLayout currentLayout;
+	private BoxLayout listLayout;
 	private JPanel pan;
+	private JPanel listPan;
+	private JScrollPane listScroll;
 	private JLabel homeLabel;
-	private JLabel welcomeSentence;
+	private JLabel welcomeLabel;
+	
+	private ArrayList<User >listUser;
+	private String myself;
+	
+	private JLabel testLabel;
 
 	
 	/*** Constructors ***/
 	public HomeView(Controller c) {
 		this.c = c;
-		
+		listUser = new ArrayList<User>();
 		// Components of my frame
 		pan = new JPanel();
 		homeLabel = new JLabel();
-		welcomeSentence = new JLabel();
+		welcomeLabel = new JLabel();
 		currentLayout = new SpringLayout();
 		
-		// Default things
-        this.setSize(300, 300);
+		listPan = new JPanel();
+		listScroll = new JScrollPane(listPan);
+		listLayout = new BoxLayout(listPan, BoxLayout.Y_AXIS);
+		
+		//testLabel = new JLabel();
+		
+		//currentLayout.putConstraint(SpringLayout.SOUTH, testLabel, -118, SpringLayout.SOUTH, pan);
+		//currentLayout.putConstraint(SpringLayout.EAST, testLabel, -138, SpringLayout.EAST, pan);
+		
+        this.setSize(550, 550);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Methods that does everything
-		setUpFrame();
+		//setUpFrame();
 	}
 
 	/*** Setup method ***/
 	private void setUpFrame() {
-		// Set the pan and the layout
-		this.setContentPane(pan);
-		pan.setLayout(currentLayout);
 		
-		// Title label : Home
+		this.setContentPane(pan);
+		// Set the pan with its layout
+		pan.setLayout(currentLayout);
+		listPan.setLayout(listLayout);
+		
+		/* Colors */
+		pan.setBackground(new Color(255, 212, 128));
+		listPan.setBackground(new Color(204, 255, 255));
+		listScroll.setBackground(new Color(0, 0, 0));
+		
+		/* Scroll the list of users */
+		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 137, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, listScroll, 97, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, 0, SpringLayout.SOUTH, testLabel);
+		currentLayout.putConstraint(SpringLayout.EAST, listScroll, 228, SpringLayout.WEST, pan);
+		listScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pan.add(listScroll);
+
+		
+		/* Title label : Home */
 		homeLabel.setText("H O M E");
+		homeLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
 		currentLayout.putConstraint(SpringLayout.NORTH, homeLabel, 33, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, homeLabel, 39, SpringLayout.WEST, pan);
-		
-		// List of users
-		DefaultListModel<String> dlf = new DefaultListModel<String>();
-		dlf.addElement("Laure");
-		dlf.addElement("Thomas");
-		dlf.addElement("Maël");
-		JList<String> list = new JList<String>(dlf);
-		// list.addListSelectionListener(listener); ??????? Possible ?
-		currentLayout.putConstraint(SpringLayout.NORTH, list, 219, SpringLayout.SOUTH, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, list, 164, SpringLayout.WEST, getContentPane());
-		currentLayout.putConstraint(SpringLayout.SOUTH, list, -148, SpringLayout.SOUTH, getContentPane());
-		currentLayout.putConstraint(SpringLayout.EAST, list, 686, SpringLayout.WEST, pan);
-		getContentPane().add(list);
-
 		pan.add(homeLabel);
-		pan.add(list);
-		//pan.setBackground(new Color(200, 200, 200));
+
+
+		/* Welcome label */
+		welcomeLabel.setText("Welcome "+myself+". Who do you want to talk to ?");
+		welcomeLabel.setFont(new Font("Iowan Old Style", Font.BOLD | Font.ITALIC, 13));
+		currentLayout.putConstraint(SpringLayout.NORTH, welcomeLabel, 19, SpringLayout.SOUTH, homeLabel);
+		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 72, SpringLayout.WEST, pan);
+		pan.add(welcomeLabel);
+
+				
+		testLabel.setText("Talking to ...");
+		pan.add(testLabel);
+		
+		int x = 10;
+		for(User user : listUser) {
+			JButton newButton = new JButton();
+			newButton.setText(user.getPseudo());
+			//listLayout.putConstraint(SpringLayout.NORTH, newButton, x, SpringLayout.NORTH, listPan);
+			//listLayout.putConstraint(SpringLayout.WEST, newButton, 10, SpringLayout.WEST, listPan);
+			newButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// Things to be done when the button is clicked.
+					String i = e.getActionCommand();
+					//testLabel.setText("Talking to "+ i +".");
+					c.startConversation(i, true);
+				}});
+			listPan.add(newButton);
+			x = x + 50;
+		}
 		
 	}
 	
 	/*** Other methods ***/
-	public void displayView(String myself, ArrayList<User> coUsers) {
-		// Sets the welcome phrase.
-		welcomeSentence.setText("Welcome "+myself+". Who do you want to talk to ?");
-		
+	public void displayView(String m, ArrayList<User> coUsers) {
+		listUser = coUsers;
+		myself = m;
+		setUpFrame();
 	}
+	
+	public void refreshUsers(ArrayList<User> coUsers) {
+		listUser = coUsers;
+		setUpFrame();
+	}
+	/*	
+	// Main to test without the controller .
 	public static void main(String[] args) {
 		Controller c = null;
 		HomeView hv = new HomeView(c);
 		hv.setVisible(true);
+
+		hv.displayView("Laure",null);
 	}
+	 */
 }
