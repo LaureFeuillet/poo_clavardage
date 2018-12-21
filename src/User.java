@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.net.InetAddress;
 
-public class User {
+public class User implements Serializable{
 
 	/*** Attributes ***/
 	protected String pseudo; // Unique name for a session of a user 
