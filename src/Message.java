@@ -10,6 +10,7 @@ public class Message {
 	public Message(String date, String content, Boolean sent) {
 		this.date = date;
 		this.content = content;
+		this.sent = sent;
 	}
 
 	/*** Getters & setters ***/
@@ -26,7 +27,7 @@ public class Message {
 		this.content = newContent;
 	}
 	public Boolean getSent() {
-		return sent;
+		return this.sent;
 	}
 	public void setSent(Boolean sent) {
 		this.sent = sent;

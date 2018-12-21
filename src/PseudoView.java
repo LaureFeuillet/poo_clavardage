@@ -15,7 +15,6 @@ public class PseudoView extends javax.swing.JFrame {
 	private static final long serialVersionUID = 1L;
 	/* Attributes */
     protected Controller c;
-    protected String pseudo;
 	protected SpringLayout currentLayout;
 	protected JPanel pan;
 	private JTextField pseudoField;
@@ -35,7 +34,7 @@ public class PseudoView extends javax.swing.JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Method that does everything */
-		setUpFrame();
+		//setUpFrame();
     }
     
     private void setUpFrame () {
@@ -71,6 +70,7 @@ public class PseudoView extends javax.swing.JFrame {
 		currentLayout.putConstraint(SpringLayout.EAST, checkButton, -160, SpringLayout.EAST, pan);
 		checkButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String pseudo = pseudoField.getText();
 				c.setPseudo(pseudo);
 			}
 		});
@@ -81,6 +81,11 @@ public class PseudoView extends javax.swing.JFrame {
 		errorLabel.setFont(new Font("Lucida Grande", Font.BOLD, 15));
 		currentLayout.putConstraint(SpringLayout.WEST, errorLabel, 169, SpringLayout.WEST, pan);
 		pan.add(errorLabel);
+    }
+    
+    public void displayView() {
+    		setUpFrame();
+		this.setVisible(true);
     }
     
     public void printMsgError(){

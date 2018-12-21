@@ -29,6 +29,7 @@ public class HomeView extends JFrame {
 	
 	private ArrayList<User >listUser;
 	private String myself;
+	private ArrayList<Conversation> history;
 	
 	private JLabel testLabel;
 
@@ -100,36 +101,31 @@ public class HomeView extends JFrame {
 		testLabel.setText("Talking to ...");
 		pan.add(testLabel);
 		
-		int x = 10;
 		for(User user : listUser) {
 			JButton newButton = new JButton();
 			newButton.setText(user.getPseudo());
-			//listLayout.putConstraint(SpringLayout.NORTH, newButton, x, SpringLayout.NORTH, listPan);
-			//listLayout.putConstraint(SpringLayout.WEST, newButton, 10, SpringLayout.WEST, listPan);
 			newButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					// Things to be done when the button is clicked.
 					String i = e.getActionCommand();
 					//testLabel.setText("Talking to "+ i +".");
 					c.startConversation(i, true);
+					c.hv.hide();
 				}});
 			listPan.add(newButton);
-			x = x + 50;
 		}
 		
 	}
 	
 	/*** Other methods ***/
-	public void displayView(String m, ArrayList<User> coUsers) {
+	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
+		history = hist;
 		listUser = coUsers;
 		myself = m;
 		setUpFrame();
+		this.setVisible(true);
 	}
-	
-	public void refreshUsers(ArrayList<User> coUsers) {
-		listUser = coUsers;
-		setUpFrame();
-	}
+
 	/*	
 	// Main to test without the controller .
 	public static void main(String[] args) {
@@ -139,5 +135,5 @@ public class HomeView extends JFrame {
 
 		hv.displayView("Laure",null);
 	}
-	 */
+	*/
 }

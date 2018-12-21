@@ -15,6 +15,7 @@ public class Conversation {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		this.startingDate = dateFormat.format(LocalDateTime.now());
 		this.destinationUser = destinationUser;
+		this.messages = new ArrayList<Message>();
 	}
 
 	/*** Getters & setters ***/
