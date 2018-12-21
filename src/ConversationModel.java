@@ -12,7 +12,8 @@ public class ConversationModel {
 
 	/*** Constructors ***/
 	public ConversationModel() {
-		// Need to get the list from the database ???
+		currentConversations = new ArrayList<Conversation>();
+		history = new ArrayList<Conversation>();
 	}
 
 	/*** Methods ***/

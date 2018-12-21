@@ -95,12 +95,15 @@ public class Controller {
 	public void refreshUser(User u, Action a) {
 		if (a == Action.UPDATE) {
 			User us = um.getUserByIP(u.getAddress());
+			us.setPseudo(u.getPseudo());
+			/*
 			Conversation c = cm.getConvByUser(us);
 			if (c == cm.getCurrentConv()) {
-				cv.updatePseudo(u.getPseudo());
+				//cv.updatePseudo(u.getPseudo());
 			}
+			*/
 		}
-		u = um.getUserByIP(u.getAddress());
+		//u = um.getUserByIP(u.getAddress());
 		um.refreshUser(u, a);
 	}
 

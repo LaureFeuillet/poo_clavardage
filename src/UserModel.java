@@ -8,9 +8,13 @@ public class UserModel {
 	protected ArrayList<User> connectedUsers;
 	
 	/*** Constructors ***/
-	public UserModel( ArrayList<User> connectedUsers) {
-		// Here we need to get the list of all users active on the server.
-		//this.connectedUsers = getAllConected(); // bref un truc comme ça
+	public UserModel( ArrayList<User> Cu) {
+		this.connectedUsers = new ArrayList<User>();
+		//this.connectedUsers = connectedUsers;
+		for(User u : Cu) {
+			System.out.println("yolo" + u.getAddress());
+			this.connectedUsers.add(u);
+		}
 	}
 
 	/*** Methods ***/
@@ -58,7 +62,7 @@ public class UserModel {
 	public User getUserByIP(InetAddress adr) {
 		User goodUser = null;
 		for(User user : this.connectedUsers) {
-			if(user.getAddress() == adr) {
+			if(user.getAddress().toString().compareTo(adr.toString()) == 0) {
 				goodUser = user;
 				break;
 			}
@@ -97,6 +101,9 @@ public class UserModel {
 		this.myself = myself;
 	}
 	public ArrayList<User> getConnectedUsers() {
+		for (User u : connectedUsers) {
+			System.out.println(u.getAddress().toString());
+		}
 		return this.connectedUsers;
 	}
 	public void setConnectedUsers(ArrayList<User> connectedUsers) {
