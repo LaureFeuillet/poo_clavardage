@@ -55,6 +55,7 @@ public class UserModel {
 				break;
 			}
 		}
+		System.out.println(goodUser.getPseudo());
 		return goodUser;
 	}
 	

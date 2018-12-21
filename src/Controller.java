@@ -76,9 +76,8 @@ public class Controller {
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			cm.startConv(u);
-			cm.setCurrentConv(c);
 			hv.hide();
-			cv.displayView(um.getMyself(),c);
+			cv.displayView(um.getMyself(),cm.getCurrentConv());
 		}	
 	}
 
