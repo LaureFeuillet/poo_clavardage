@@ -11,26 +11,22 @@ import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
-
-public class Network 
-{
+public class Network {
 	//These will be our IP address and the broadcast address corresponding to it
 	private InetAddress local, broadcast;
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
 	private final int PORT_WATCHDOG = 30500;
+	//Size of the packets sent by the application
 	private final int PACKET_SIZE = 1024;
 	private String pseudo = "Minoustrel";
 	private Controller controller = null;
@@ -38,8 +34,7 @@ public class Network
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
 
-	public Network(Controller c) 
-	{
+	public Network(Controller c) {
 		clients = new HashMap<InetAddress,ClientThread>();
 		servers = new HashMap<InetAddress,ServerThread>();
 		local = broadcast = null;
@@ -60,13 +55,11 @@ public class Network
 		try {
 			sock = new DatagramSocket(0);
 			sock.setBroadcast(true);
-		} catch (SocketException e) {
-		}
+		} catch (SocketException e) {}
 		// Finding broadcast addresses, to be taken for granted !
 		try {
 			en = NetworkInterface.getNetworkInterfaces();
-		} catch (SocketException e1) {
-		}
+		} catch (SocketException e1) {}
 	    while (en.hasMoreElements()) {
 	      NetworkInterface ni = en.nextElement();
 	
@@ -85,36 +78,12 @@ public class Network
 	    System.out.print("[INIT] Broadcast address is : " + broadcast.toString() + "\n");
 	}
 	
-	//Notifies the remote users that the local one has changed or set his pseudo
-	public void notifyPseudo(String pseudo) {
-		this.pseudo = pseudo;
-		DatagramPacket sentPacket = null;
-		DatagramSocket s = null;
-		try {
-			//Creates a broadcast UDP socket
-			s = new DatagramSocket(0);
-			s.setBroadcast(true);
-		} catch (SocketException e) {
-		}
-		//Sends the packet containing our pseudo the remote users
-        sentPacket = new DatagramPacket(pseudo.getBytes(), pseudo.length(), broadcast, PORT_WATCHDOG);
-        try {
-			s.send(sentPacket);
-		} catch (IOException e) {
-		}
-	}
-	
-	//Launches a client thread that initiates a conversation with a remote user
-	public void addConv(User dest)
-	{
-    	System.out.print("[CLIENT] Conversation initiated with " + dest.getAddress().toString() + "...\n");
-		//We save the reference to this thread in clients
-		clients.put(dest.getAddress(), new ClientThread(controller, dest, dest.getAddress().toString()));
-	}
+	/*****************************************************/
+	/*********       APPLICATION METHODS       ***********/
+	/*****************************************************/
 	
 	// At the launch of the application, we need to know all the connected users on the network
-	public ArrayList<User> findConnectedUsers()
-	{
+	public ArrayList<User> findConnectedUsers(){
 		//System.out.print("[REQUEST] Starting request...\n");
 		//The duration in milliseconds while we are waiting for responses
 		final int EXIT_TIME = 500;
@@ -136,8 +105,7 @@ public class Network
         try {
 			s.send(sentPacket);
 			System.out.print("[REQUEST] Request sent to " + broadcast.toString() + "...\n");
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
         //Starts the timer
 	    startTime = System.currentTimeMillis();
 	    //System.out.print("[REQUEST] Starting timer...\n");
@@ -147,7 +115,7 @@ public class Network
 	    		s.receive(receivedPacket);
 	    		System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + "...\n");
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
-		    	User u = ReceiveMessageObject(receivedPacket.getData());
+		    	User u = ReceiveMessageUser(receivedPacket.getData());
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
@@ -155,33 +123,16 @@ public class Network
 		return connectedUsers;
 	}
 	
-	public static User ReceiveMessageObject(byte[] buf) {
-		//Récupération de l'objet MessageSync
-        ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-        ObjectInputStream ois = null;
-        User u = null;
-		try {
-			ois = new ObjectInputStream(bais);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        try {
-            Object readObject = ois.readObject();
-            if (readObject instanceof User) {
-            	u = (User) readObject;
-            } else {
-                System.out.println("L'objet n'est pas un MessageSync");
-            }
-        } catch (Exception e) {
-            System.out.println("Aucun objet dans ce datagrame\n");
-        }
-        return u;
+	//Launches a client thread that initiates a conversation with a remote user
+	public void addConv(User dest)
+	{
+    	System.out.print("[CLIENT] Conversation initiated with " + dest.getAddress().toString() + "...\n");
+		//We save the reference to this thread in clients
+		clients.put(dest.getAddress(), new ClientThread(controller, dest, dest.getAddress().toString()));
 	}
 	
 	//Sends a message in an already opened conversation
-	public void sendMsg(User dest, String content)
-	{
+	public void sendMsg(User dest, String content){
 		//We need to know whether the conversation was started by us or by the user we are talking to
 		//First we check if the conversation was started by us :
 		ClientThread ct = clients.get(dest.getAddress());
@@ -194,20 +145,109 @@ public class Network
 			servers.get(dest.getAddress()).send(content);
 		}
 	}
+	
+	//Notifies the remote users that the local one has changed or set his pseudo
+	public void notifyPseudo(String pseudo) {
+		this.pseudo = pseudo;
+		DatagramPacket sentPacket = null;
+		DatagramSocket s = null;
+		try {
+			//Creates a broadcast UDP socket
+			s = new DatagramSocket(0);
+			s.setBroadcast(true);
+		} catch (SocketException e) {}
+		//Sends the packet containing our pseudo the remote users
+        sentPacket = new DatagramPacket(pseudo.getBytes(), pseudo.length(), broadcast, PORT_WATCHDOG);
+        try {
+			s.send(sentPacket);
+		} catch (IOException e) {}
+	}
 		
-	public Controller getController() 
-	{
+	public Controller getController() {
 		return controller;
 	}
 
-	public void setController(Controller controller) 
-	{
+	public void setController(Controller controller) {
 		this.controller = controller;
 	}
 	
-	public HashMap<InetAddress, ServerThread> getServers() 
-	{
+	public HashMap<InetAddress, ServerThread> getServers() {
 		return servers;
+	}
+	
+	
+	/*****************************************************/
+	/***************       THREADS       *****************/
+	/*****************************************************/
+	
+	//A thread that catches all broadcast messages, runs on PORT_WATCHDOG port
+	private class WatchdogThread extends Thread{
+		DatagramSocket sock;
+		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
+		DatagramPacket sentPacket = null;
+		Network n = null;
+		
+		public WatchdogThread(Network n) {
+			this.n = n;
+			sock = null;
+			//System.out.print("[WATCHDOG] Starting watchdog...\n");
+			start();
+		}
+		
+		public void run() {
+			User u;
+			try {
+				//Starts the watchdog on port PORT_WATCHDOG
+				sock = new DatagramSocket(PORT_WATCHDOG);
+				//System.out.print("[WATCHDOG] Socket created...\n");
+				
+			} catch (SocketException e) {}
+			while(true) {
+				try {
+					//Waits for any broadcast packet
+					sock.receive(receivedPacket);
+					if (receivedPacket.getAddress().toString().compareTo(local.toString()) != 0) {
+						//Gets the content of the packet
+						String data = new String(receivedPacket.getData(),0,receivedPacket.getLength());
+						switch(data) {
+						//This happens when a remote user connects and sends a request to find the already connected users
+						case "CONNECT":
+							System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
+							//We start by answering his request and telling him that we are here
+							byte[] dataToSend = CreateMessageUser(pseudo);
+							sentPacket = new DatagramPacket(dataToSend,dataToSend.length,receivedPacket.getAddress(), receivedPacket.getPort());
+							sock.send(sentPacket);
+							//A this moment, the remote user does not yet have a pseudo so its set to null
+							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
+							//The controller is noticed that a new user has actually connected
+							n.getController().refreshUser(u, Action.CONNECT);
+							break;
+						//This happens when a remote user closes the application, before actually exiting, he notifies 
+						//all the other users that he is leaving
+						case "DISCONNECT":
+							System.out.print("[WATCHDOG] Received disconnect from" + receivedPacket.getAddress() + "...\n");
+							//The pseudo is set to null because we have no way to know it at this point,
+							//anyway, it is not required to remove the user from our contacts
+							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
+							//The controller is notified that a user is leaving
+							n.getController().refreshUser(u, Action.DISCONNECT);
+							break;
+						//This happens when a remote user updates his pseudo, note that this usually happens right after
+						//receiving a CONNECT packet from the same user so that we can actually identify him by something more
+						//user friendly than his IP
+						default:
+							System.out.print("[WATCHDOG] Received pseudo " + data + " from " + receivedPacket.getAddress() + "...\n");
+							//The pseudo of the user is contained in the data of the packet
+							u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
+							//The controller is notified that the user behind an IP address that we already know has
+							//changed his pseudo
+							n.getController().refreshUser(u, Action.UPDATE);
+							break;
+						}
+					}
+				} catch (IOException e) {}
+			}
+		}
 	}
 	
 	//A thread that is listening to remote users' requests for starting a conversation with us
@@ -239,7 +279,7 @@ public class Network
 			while(true){
 		        try {
 		        	sock = ss.accept();
-		        	System.out.print("[LISTENER] Conversation request from " + sock.getRemoteSocketAddress().toString() + "...\n");
+		        	System.out.print("[LISTENER] Conversation request from " + sock.getInetAddress().toString() + "...\n");
 		        	//The created ServerThread is added to the list of the current conversations started by remote users
 		        	net.getServers().put(sock.getInetAddress(), new ServerThread(net.getController(), sock));
 		        } catch (IOException e) {
@@ -248,10 +288,55 @@ public class Network
 		    }
 		}
 	}
+	
+	//A thread that handles a communication initiated by a remote user
+	private class ServerThread extends Thread{
+		Controller c = null;
+		Socket sock = null;
+		BufferedReader in = null;
+		PrintWriter out = null;
+		
+		//Takes an already connected socket as parameter
+		public ServerThread(Controller c, Socket sock){
+			this.c = c;
+			this.sock = sock;
+			try {
+				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+				out = new PrintWriter(sock.getOutputStream(),true);
+				c.startConversation(sock.getInetAddress());
+				this.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		public void run(){
+			String input = null;
+			// Simply waits for any message coming from the remote user then transmit them to the controller
+			while(true)
+			{
+				try {
+					input = in.readLine();
+					if(input != null)
+					{
+						//Message is transfered to the controller
+						c.receiveMsg(sock.getInetAddress(), input);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}	
+		}
+			
+		//Called by Network, sends the given message to the remote user
+		public void send(String content)
+		{
+			out.println(content);
+		}
+	}
 
 	//A thread that handles a communication initiated by us
-	private class ClientThread extends Thread
-	{
+	private class ClientThread extends Thread{
 		private Controller c = null;
 		private User dest = null;
 		private Socket sock = null;
@@ -260,8 +345,7 @@ public class Network
 
 		//Starts a communication with the given user, the name of the thread will be the IP of the remote user
 		//So that sendMessage can then transfer the message to the thread by knowing the IP of the remote user
-		public ClientThread(Controller c, User dest, String name)
-		{
+		public ClientThread(Controller c, User dest, String name){
 			super(name);
 			this.c = c;
 			this.dest = dest;
@@ -302,143 +386,51 @@ public class Network
 		}
 	}	
 	
-	//A thread that handles a communication initiated by a remote user
-	private class ServerThread extends Thread{
-		Controller c = null;
-		Socket sock = null;
-		BufferedReader in = null;
-		PrintWriter out = null;
-		
-		//Takes an already connected socket as parameter
-		public ServerThread(Controller c, Socket sock){
-			this.c = c;
-			this.sock = sock;
-			try {
-				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-				out = new PrintWriter(sock.getOutputStream(),true);
-				this.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		public void run(){
-			String input = null;
-			// Simply waits for any message coming from the remote user then transmit them to the controller
-			while(true)
-			{
-				try {
-					input = in.readLine();
-					if(input != null)
-					{
-						//Message is transfered to the controller
-						c.receiveMsg(sock.getInetAddress(), input);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}	
-		}
-		
-		//Called by Network, sends the given message to the remote user
-		public void send(String content)
-		{
-			out.println(content);
-		}
-	}
+	/*****************************************************/
+	/***************        TOOLS        *****************/
+	/*****************************************************/
 	
-	//A thread that catch all broadcast messages, runs on PORT_WATCHDOG port
-	private class WatchdogThread extends Thread
-	{
-		DatagramSocket sock;
-		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
-		DatagramPacket sentPacket = null;
-		Network n = null;
-		
-		public WatchdogThread(Network n) {
-			this.n = n;
-			sock = null;
-			//System.out.print("[WATCHDOG] Starting watchdog...\n");
-			start();
+	//Used to send a User object in a packet
+	public byte[] CreateMessageUser(String pseudo) {
+		//Prepare Data
+        User u = new User(pseudo,local,localPort);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = null;
+		try {
+			oos = new ObjectOutputStream(baos);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-		
-		public void run() {
-			User u;
-			try {
-				//Starts the watchdog on port PORT_WATCHDOG
-				sock = new DatagramSocket(PORT_WATCHDOG);
-				if (sock != null)
-					//System.out.print("[WATCHDOG] Socket created...\n");
-				
-			} catch (SocketException e) {}
-			while(true) {
-				try {
-					//Waits for any broadcast packet
-					sock.receive(receivedPacket);
-					if (receivedPacket.getAddress().toString().compareTo(local.toString()) != 0) {
-						//Gets the content of the packet
-						String data = new String(receivedPacket.getData(),0,receivedPacket.getLength());
-						switch(data) {
-						//This happens when a remote user connects and sends a request to find the already connected users
-						case "CONNECT":
-							System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
-							//We start by answering his request and telling him that we are here
-							byte[] dataToSend = CreateMessageObject(pseudo);
-							sentPacket = new DatagramPacket(dataToSend,dataToSend.length,receivedPacket.getAddress(), receivedPacket.getPort());
-							sock.send(sentPacket);
-							//A this moment, the remote user does not yet have a pseudo so its set to null
-							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
-							//The controller is noticed that a new user has actually connected
-							n.getController().refreshUser(u, Action.CONNECT);
-							break;
-						//This happens when a remote user closes the application, before actually exiting, he notifies 
-						//all the other users that he is leaving
-						case "DISCONNECT":
-							System.out.print("[WATCHDOG] Received disconnect from" + receivedPacket.getAddress() + "...\n");
-							//The pseudo is set to null because we have no way to know it at this point,
-							//anyway, it is not required to remove the user from our contacts
-							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
-							//The controller is notified that a user is leaving
-							n.getController().refreshUser(u, Action.DISCONNECT);
-							break;
-						//This happens when a remote user updates his pseudo, note that this usually happens right after
-						//receiving a CONNECT packet from the same user so that we can actually identify him by something more
-						//user friendly than his IP
-						default:
-							System.out.print("[WATCHDOG] Received pseudo " + data + " from " + receivedPacket.getAddress() + "...\n");
-							//The pseudo of the user is contained in the data of the packet
-							u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
-							//The controller is notified that the user behind an IP address that we already know has
-							//changed his pseudo
-							n.getController().refreshUser(u, Action.UPDATE);
-							break;
-						}
-					}
-				} catch (IOException e) {}
-			}
+        try {
+			oos.writeObject(u);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-		
-		public byte[] CreateMessageObject(String pseudo) {
-			//Prepare Data
-	        User u = new User(pseudo,local,localPort);
-	        //String message = "COU";
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        ObjectOutputStream oos = null;
-			try {
-				oos = new ObjectOutputStream(baos);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        try {
-				oos.writeObject(u);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        
-	        return baos.toByteArray();
+        return baos.toByteArray();
+	}
+
+	//Used to get a User object from a packet
+	public static User ReceiveMessageUser(byte[] buf) {
+		//Getting the object MessageSync
+        ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+        ObjectInputStream ois = null;
+        User u = null;
+		try {
+			ois = new ObjectInputStream(bais);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+        try {
+            Object readObject = ois.readObject();
+            if (readObject instanceof User) {
+            	u = (User) readObject;
+            } else {
+                System.out.println("The object is not a MessageSync");
+            }
+        } catch (Exception e) {
+            System.out.println("There are no object in this packet");
+        }
+        return u;
 	}
 }
 

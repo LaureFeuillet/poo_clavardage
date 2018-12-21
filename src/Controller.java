@@ -24,19 +24,15 @@ public class Controller {
 
 	public Controller() {
 		nw = new Network(this);
-		//pv = new PseudoView(this);
-		//hv = new HomeView(this);
-		//cv = new ConversationView(this);
+		pv = new PseudoView(this);
+		hv = new HomeView(this);
+		cv = new ConversationView(this);
 		//The user model must be told of the already active users on the local network
-		//um = new UserModel(nw.findConnectedUsers());
-		//cm = new ConversationModel();
-		//displayPseudoView();
+		um = new UserModel(nw.findConnectedUsers());
+		cm = new ConversationModel();
+		displayPseudoView();
 	}
 	
-	public ArrayList<User> test(){
-		return nw.findConnectedUsers();
-	}
-
 	/***************************************************/
 	/*********** CONVERSATIONS MANAGEMENT **************/
 	/***************************************************/
@@ -48,21 +44,18 @@ public class Controller {
 		c = addMsg(c, content, true);
 		nw.sendMsg(u,content);
 		//The conversation view is refreshed to display the newly sent message
-		//cv.refreshView(c);
+		//cv.displayView(um.getMyself(), c);
 	}
 
 	//Handles a message reception and displays it if it is linked to the current conversation
 	public void receiveMsg(InetAddress ip, String content) {
-		System.out.println(content);
-		/*
 		User u = um.getUserByIP(ip);
 		Conversation c = cm.getConvByUser(u);
 		c = addMsg(c, content, false);
 		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
 		if (c == cm.getCurrentConv()) {
-			//cv.refreshView();
+			cv.addMsg(content);
 		}
-		*/
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
@@ -70,28 +63,28 @@ public class Controller {
 		return cm.addMsg(conv, content, sent);
 	}
 	
-	//Creates a new conversation and displays it if it was initiated by the user
-	public void startConversation(String pseudo, boolean startedByMe) {
-		User u = um.getUserByPseudo(pseudo);
+	//Creates a new conversation (always initiated by a remote user) 
+	//for conversations started by our own, see displayConversation
+	public void startConversation(InetAddress adr) {
+		User u = um.getUserByIP(adr);
 		cm.startConv(u);
-		//If the user chose to start this conversation, then it must be displayed
-		if (startedByMe) {
-			displayConversationView();
-		}
 	}
 	
-	//Opens an already started conversation
+	//Displays an already started conversation, or start it and display it if it was not
 	public void displayConversation(String pseudo) {
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
-		cm.setCurrentConv(c);
-		displayConversationView();	
+		if (c == null) {
+			cm.startConv(u);
+			cm.setCurrentConv(c);
+			hv.hide();
+			cv.displayView(um.getMyself(),c);
+		}	
 	}
 
 	//Flushes the history of past conversations in local DB
 	public void deleteHistory() {
 		cm.deleteHistory();
-		//hv.refreshView();
 	}
 	
 	/***************************************************/
@@ -100,10 +93,15 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
-		/*
+		if (a == Action.UPDATE) {
+			User us = um.getUserByIP(u.getAddress());
+			Conversation c = cm.getConvByUser(us);
+			if (c == cm.getCurrentConv()) {
+				cv.updatePseudo(u.getPseudo());
+			}
+		}
 		u = um.getUserByIP(u.getAddress());
 		um.refreshUser(u, a);
-		*/
 	}
 
 	/***************************************************/
@@ -117,8 +115,8 @@ public class Controller {
 			nw.notifyPseudo(pseudo);
 			//If it is, then we proceed to the home view
 			ArrayList<User> users = um.getConnectedUsers();
-			hv.displayView(pseudo, users);
 			pv.hide();
+			hv.displayView(um.getMyself(),um.getConnectedUsers(),cm.getHistory());
 		}
 		else {
 			//Otherwise we just notice the user that he must choose another pseudo
@@ -132,18 +130,14 @@ public class Controller {
 
 	//Called from the home view
 	public void displayPseudoView() {
-		pv.setVisible(true);
-		hv.hide();
+		pv.displayView();
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
-		ArrayList<User> connectedUsers = um.getConnectedUsers();
-		String myPseudo = um.getMyself();
-		hv.displayView(myPseudo, connectedUsers);
+		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
 	}
 	//Called from the home view
 	public void displayConversationView() {
-		String myPseudo = um.getMyself();
-		//cv.displayView(myPseudo, cm.getCurrentConv());
+		cv.displayView(um.getMyself(), cm.getCurrentConv());
 	}
 }
