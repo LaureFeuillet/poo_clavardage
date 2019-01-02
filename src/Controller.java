@@ -76,9 +76,8 @@ public class Controller {
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			cm.startConv(u);
-			cm.setCurrentConv(c);
 			hv.hide();
-			cv.displayView(um.getMyself(),c);
+			cv.displayView(um.getMyself(),cm.getCurrentConv());
 		}	
 	}
 
@@ -95,12 +94,15 @@ public class Controller {
 	public void refreshUser(User u, Action a) {
 		if (a == Action.UPDATE) {
 			User us = um.getUserByIP(u.getAddress());
+			us.setPseudo(u.getPseudo());
+			/*
 			Conversation c = cm.getConvByUser(us);
 			if (c == cm.getCurrentConv()) {
-				cv.updatePseudo(u.getPseudo());
+				//cv.updatePseudo(u.getPseudo());
 			}
+			*/
 		}
-		u = um.getUserByIP(u.getAddress());
+		//u = um.getUserByIP(u.getAddress());
 		um.refreshUser(u, a);
 	}
 

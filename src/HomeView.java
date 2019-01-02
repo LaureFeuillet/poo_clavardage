@@ -48,10 +48,10 @@ public class HomeView extends JFrame {
 		listScroll = new JScrollPane(listPan);
 		listLayout = new BoxLayout(listPan, BoxLayout.Y_AXIS);
 		
-		//testLabel = new JLabel();
+		testLabel = new JLabel();
 		
-		//currentLayout.putConstraint(SpringLayout.SOUTH, testLabel, -118, SpringLayout.SOUTH, pan);
-		//currentLayout.putConstraint(SpringLayout.EAST, testLabel, -138, SpringLayout.EAST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, testLabel, -118, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, testLabel, -138, SpringLayout.EAST, pan);
 		
         this.setSize(550, 550);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,7 +97,7 @@ public class HomeView extends JFrame {
 		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 72, SpringLayout.WEST, pan);
 		pan.add(welcomeLabel);
 
-				
+			
 		testLabel.setText("Talking to ...");
 		pan.add(testLabel);
 		
@@ -109,7 +109,7 @@ public class HomeView extends JFrame {
 					// Things to be done when the button is clicked.
 					String i = e.getActionCommand();
 					//testLabel.setText("Talking to "+ i +".");
-					c.startConversation(i, true);
+					c.displayConversation(i);
 					c.hv.hide();
 				}});
 			listPan.add(newButton);

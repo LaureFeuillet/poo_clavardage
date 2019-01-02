@@ -25,7 +25,7 @@ public class Network {
 	private InetAddress local, broadcast;
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	private final int PORT_WATCHDOG = 30500;
+	private final int PORT_WATCHDOG = 30521;
 	//Size of the packets sent by the application
 	private final int PACKET_SIZE = 1024;
 	private String pseudo = "Minoustrel";
@@ -241,6 +241,9 @@ public class Network {
 							u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
 							//The controller is notified that the user behind an IP address that we already know has
 							//changed his pseudo
+							System.out.println(u.getPseudo());
+							System.out.println(u.getAddress().toString());
+							System.out.println(u.getNumPort());
 							n.getController().refreshUser(u, Action.UPDATE);
 							break;
 						}

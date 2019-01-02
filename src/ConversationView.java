@@ -110,7 +110,7 @@ public class ConversationView extends JFrame {
 				// Things to be done when the send button is clicked.
 				String content = new String(textField.getText());
 				textField.setText("");
-				c.sendMsg(myself, content);
+				c.sendMsg(other, content);
 				
 				JLabel testMsg = new JLabel();
 				testMsg.setForeground(new Color(0, 0, 0));
@@ -156,6 +156,7 @@ public class ConversationView extends JFrame {
 		other = conv.getDestinationUser().getPseudo();
 		msgList = conv.getMessages();
 		setUpFrame();
+		this.setVisible(true);
 	}
 
 	/*

@@ -22,6 +22,8 @@ public class ConversationModel {
 		      e.printStackTrace();
 		    }   
 		
+		currentConversations = new ArrayList<Conversation>();
+		history = new ArrayList<Conversation>();
 	}
 
 	/*** Methods ***/
