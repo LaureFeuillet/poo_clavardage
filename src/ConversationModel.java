@@ -1,3 +1,5 @@
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,6 +15,13 @@ public class ConversationModel {
 	/*** Constructors ***/
 	public ConversationModel() {
 		// Need to get the list from the database ???
+		try {
+		      Class.forName("com.mysql.jdbc.Driver");
+		      System.out.println("Driver O.K.");      
+		    } catch (Exception e) {
+		      e.printStackTrace();
+		    }   
+		
 	}
 
 	/*** Methods ***/
