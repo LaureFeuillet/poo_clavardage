@@ -1,8 +1,13 @@
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.TimeZone;
 
 public class ConversationModel {
 
@@ -11,16 +16,45 @@ public class ConversationModel {
 	protected ArrayList<Conversation> currentConversations;
 	// List of the conversation that are remembered
 	protected Conversation currentConv;
+	
+	// To connect to the database
+	protected Connection con = null;
+	protected String url = "jdbc:mysql://localhost:3306/clavardage?serverTimezone=" + TimeZone.getDefault().getID();
+	protected String user = "root";
+	protected String pwd = "lkilipoutte";
 
 	/*** Constructors ***/
 	public ConversationModel() {
-		// Need to get the list from the database ???
+		// Establish a connection to the database
+		// to get all previous conversations for history
+		Statement stmt = null;
+		ResultSet rs = null;
 		try {
-		      Class.forName("com.mysql.jdbc.Driver");
-		      System.out.println("Driver O.K.");      
+		      Class.forName("com.mysql.cj.jdbc.Driver");
+		      System.out.println("Driver OK");
+		      
+		      con = DriverManager.getConnection(url, user, pwd);
+		      System.out.println("Connection established !");
+		      
+		      stmt = con.createStatement();
+		      rs = stmt.executeQuery("SELECT * FROM ");
+		      
+		      while (rs.next()){
+		    	  System.out.print(rs.getString(1)+ ":");
+		    	  System.out.println(rs.getDouble("salary"));
+		    }
+		      
 		    } catch (Exception e) {
 		      e.printStackTrace();
-		    }   
+		    } finally {
+		    	if (con != null) {
+		    		try {
+						con.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		    	}
+		    }
 		
 		currentConversations = new ArrayList<Conversation>();
 		history = new ArrayList<Conversation>();
@@ -106,5 +140,9 @@ public class ConversationModel {
 	public void setCurrentConv(Conversation currentConv) {
 		this.currentConv = currentConv;
 	}
-		
+	
+	public static void main(String[] args)
+	{
+		ConversationModel cm = new ConversationModel();
+	}
 }
