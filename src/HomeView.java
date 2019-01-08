@@ -29,7 +29,7 @@ public class HomeView extends JFrame {
 	
 	private ArrayList<User >listUser;
 	private String myself;
-	private ArrayList<Conversation> history;
+	//private ArrayList<Conversation> history;
 	
 	private JLabel testLabel;
 
@@ -117,6 +117,27 @@ public class HomeView extends JFrame {
 		
 	}
 	
+	public void removeUser(String pseudo) {
+		for(User u : listUser) {
+			if(u.getPseudo() == pseudo) {
+				listUser.remove(u);
+				for(User user : listUser) {
+					JButton newButton = new JButton();
+					newButton.setText(user.getPseudo());
+					newButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							// Things to be done when the button is clicked.
+							String i = e.getActionCommand();
+							//testLabel.setText("Talking to "+ i +".");
+							c.displayConversation(i);
+							c.hv.hide();
+						}});
+					listPan.add(newButton);
+				}
+			}
+		}
+	}
+	
 	/* A new user is connected */
 	public void addUser(User user)
 	{
@@ -147,7 +168,7 @@ public class HomeView extends JFrame {
 	
 	/*** Other methods ***/
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
-		history = hist;
+		//history = hist;
 		listUser = coUsers;
 		myself = m;
 		setUpFrame();
