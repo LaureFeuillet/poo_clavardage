@@ -113,6 +113,8 @@ public class HomeView extends JFrame {
 					c.hv.hide();
 				}});
 			listPan.add(newButton);
+			listPan.revalidate();
+			listPan.repaint();	
 		}
 		
 	}
@@ -133,6 +135,8 @@ public class HomeView extends JFrame {
 							c.hv.hide();
 						}});
 					listPan.add(newButton);
+					listPan.revalidate();
+					listPan.repaint();	
 				}
 			}
 		}
@@ -146,6 +150,8 @@ public class HomeView extends JFrame {
 			if((u.getAddress() == user.getAddress()) && (u.getNumPort() == user.getNumPort())) {
 				exists = true;
 				u.setPseudo(user.getPseudo());
+				listPan.revalidate();
+				listPan.repaint();	
 				break;
 			}
 		}
@@ -162,6 +168,8 @@ public class HomeView extends JFrame {
 					c.hv.hide();
 				}});
 			listPan.add(newButton);
+			listPan.revalidate();
+			listPan.repaint();	
 		}
 
 	}
