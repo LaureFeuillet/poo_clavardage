@@ -25,7 +25,7 @@ public class Network {
 	private InetAddress local, broadcast;
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	private final int PORT_WATCHDOG = 10000;
+	private final int PORT_WATCHDOG = 17845;
 	//Size of the packets sent by the application
 	private final int PACKET_SIZE = 1024;
 	private String pseudo = "Minoustrel";
@@ -156,8 +156,9 @@ public class Network {
 			s = new DatagramSocket(0);
 			s.setBroadcast(true);
 		} catch (SocketException e) {}
+		byte[] dataToSend = createMessageUser(pseudo);
 		//Sends the packet containing our pseudo the remote users
-        sentPacket = new DatagramPacket(pseudo.getBytes(), pseudo.length(), broadcast, PORT_WATCHDOG);
+        sentPacket = new DatagramPacket(dataToSend, dataToSend.length, broadcast, PORT_WATCHDOG);
         try {
 			s.send(sentPacket);
 		} catch (IOException e) {}
@@ -214,7 +215,7 @@ public class Network {
 						case "CONNECT":
 							System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
 							//We start by answering his request and telling him that we are here
-							byte[] dataToSend = CreateMessageUser(pseudo);
+							byte[] dataToSend = createMessageUser(pseudo);
 							sentPacket = new DatagramPacket(dataToSend,dataToSend.length,receivedPacket.getAddress(), receivedPacket.getPort());
 							sock.send(sentPacket);
 							//A this moment, the remote user does not yet have a pseudo so its set to null
@@ -238,12 +239,9 @@ public class Network {
 						default:
 							System.out.print("[WATCHDOG] Received pseudo " + data + " from " + receivedPacket.getAddress() + "...\n");
 							//The pseudo of the user is contained in the data of the packet
-							u = new User(data, receivedPacket.getAddress(), receivedPacket.getPort());
+						    u = ReceiveMessageUser(receivedPacket.getData());
 							//The controller is notified that the user behind an IP address that we already know has
 							//changed his pseudo
-							System.out.println(u.getPseudo());
-							System.out.println(u.getAddress().toString());
-							System.out.println(u.getNumPort());
 							n.getController().refreshUser(u, Action.UPDATE);
 							break;
 						}
@@ -355,6 +353,7 @@ public class Network {
 			this.dest = dest;
 			try {
 				//Connection attempt
+				System.out.println("Port = " + dest.getNumPort());
 				sock = new Socket(dest.getAddress(), dest.getNumPort());
 				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
@@ -396,7 +395,7 @@ public class Network {
 	/*****************************************************/
 	
 	//Used to send a User object in a packet
-	public byte[] CreateMessageUser(String pseudo) {
+	public byte[] createMessageUser(String pseudo) {
 		//Prepare Data
         User u = new User(pseudo,local,localPort);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

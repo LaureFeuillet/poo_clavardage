@@ -29,7 +29,7 @@ public class HomeView extends JFrame {
 	
 	private ArrayList<User >listUser;
 	private String myself;
-	private ArrayList<Conversation> history;
+	//private ArrayList<Conversation> history;
 	
 	private JLabel testLabel;
 
@@ -100,8 +100,64 @@ public class HomeView extends JFrame {
 			
 		testLabel.setText("Talking to ...");
 		pan.add(testLabel);
+		if(listUser != null) {
+			for(User user : listUser) {
+				JButton newButton = new JButton();
+				newButton.setText(user.getPseudo());
+				newButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Things to be done when the button is clicked.
+						String i = e.getActionCommand();
+						//testLabel.setText("Talking to "+ i +".");
+						c.displayConversation(i);
+						c.hv.setVisible(false);
+					}});
+				listPan.add(newButton);
+				listPan.revalidate();
+				listPan.repaint();	
+			}
+		}
 		
-		for(User user : listUser) {
+	}
+	
+	public void removeUser(String pseudo) {
+		for(User u : listUser) {
+			if(u.getPseudo() == pseudo) {
+				listUser.remove(u);
+				for(User user : listUser) {
+					JButton newButton = new JButton();
+					newButton.setText(user.getPseudo());
+					newButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							// Things to be done when the button is clicked.
+							String i = e.getActionCommand();
+							//testLabel.setText("Talking to "+ i +".");
+							c.displayConversation(i);
+							c.hv.setVisible(false);
+						}});
+					listPan.add(newButton);
+					listPan.revalidate();
+					listPan.repaint();	
+				}
+			}
+		}
+	}
+	
+	/* A new user is connected */
+	public void addUser(User user)
+	{
+		boolean exists = false;
+		for(User u : listUser) {
+			if((u.getAddress() == user.getAddress()) && (u.getNumPort() == user.getNumPort())) {
+				exists = true;
+				u.setPseudo(user.getPseudo());
+				listPan.revalidate();
+				listPan.repaint();	
+				break;
+			}
+		}
+		if(!exists) {
+			listUser.add(user);
 			JButton newButton = new JButton();
 			newButton.setText(user.getPseudo());
 			newButton.addActionListener(new ActionListener() {
@@ -110,23 +166,25 @@ public class HomeView extends JFrame {
 					String i = e.getActionCommand();
 					//testLabel.setText("Talking to "+ i +".");
 					c.displayConversation(i);
-					c.hv.hide();
+					c.hv.setVisible(false);
 				}});
 			listPan.add(newButton);
+			listPan.revalidate();
+			listPan.repaint();	
 		}
-		
+
 	}
 	
 	/*** Other methods ***/
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
-		history = hist;
+		//history = hist;
 		listUser = coUsers;
 		myself = m;
 		setUpFrame();
 		this.setVisible(true);
 	}
 
-	/*	
+	/*
 	// Main to test without the controller .
 	public static void main(String[] args) {
 		Controller c = null;
