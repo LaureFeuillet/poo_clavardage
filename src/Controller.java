@@ -110,6 +110,7 @@ public class Controller {
 		case UPDATE:
 			User us = um.getUserByIP(u.getAddress());
 			us.setPseudo(u.getPseudo());
+			us.setNumPort(u.getNumPort());
 			if (currentView == CurrentView.HOME) {
 				hv.addUser(u);
 			}
