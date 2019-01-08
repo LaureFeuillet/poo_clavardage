@@ -70,12 +70,13 @@ public class Controller {
 		cm.startConv(u);
 	}
 	
-	//Displays an already started conversation, or start it and display it if it was not
+	//Displays an already started conversation, or starts it and displays it if it was not
 	public void displayConversation(String pseudo) {
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			cm.startConv(u);
+			nw.addConv(u);
 			hv.hide();
 			cv.displayView(um.getMyself(),cm.getCurrentConv());
 		}	
@@ -114,6 +115,7 @@ public class Controller {
 	public void setPseudo(String pseudo) {
 		//Is the chosen pseudo available ?
 		if (um.availablePseudo(pseudo)) {
+			//Notifies all connected users of the newly chosen pseudo
 			nw.notifyPseudo(pseudo);
 			//If it is, then we proceed to the home view
 			ArrayList<User> users = um.getConnectedUsers();

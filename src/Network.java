@@ -25,7 +25,7 @@ public class Network {
 	private InetAddress local, broadcast;
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	private final int PORT_WATCHDOG = 30521;
+	private final int PORT_WATCHDOG = 10000;
 	//Size of the packets sent by the application
 	private final int PACKET_SIZE = 1024;
 	private String pseudo = "Minoustrel";
@@ -324,6 +324,7 @@ public class Network {
 					{
 						//Message is transfered to the controller
 						c.receiveMsg(sock.getInetAddress(), input);
+						System.out.println(input);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -375,6 +376,7 @@ public class Network {
 					{
 						//Message is transfered to the controller
 						c.receiveMsg(dest.getAddress(), input);
+						System.out.println(input);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
