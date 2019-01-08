@@ -158,7 +158,7 @@ public class Network {
 		} catch (SocketException e) {}
 		byte[] dataToSend = createMessageUser(pseudo);
 		//Sends the packet containing our pseudo the remote users
-        sentPacket = new DatagramPacket(dataToSend, pseudo.length(), broadcast, PORT_WATCHDOG);
+        sentPacket = new DatagramPacket(dataToSend, dataToSend.length, broadcast, PORT_WATCHDOG);
         try {
 			s.send(sentPacket);
 		} catch (IOException e) {}
