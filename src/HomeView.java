@@ -118,19 +118,31 @@ public class HomeView extends JFrame {
 	}
 	
 	/* A new user is connected */
-	public void addUser(String pseudo)
+	public void addUser(User user)
 	{
-		JButton newButton = new JButton();
-		newButton.setText(pseudo);
-		newButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Things to be done when the button is clicked.
-				String i = e.getActionCommand();
-				//testLabel.setText("Talking to "+ i +".");
-				c.displayConversation(i);
-				c.hv.hide();
-			}});
-		listPan.add(newButton);
+		boolean exists = false;
+		for(User u : listUser) {
+			if((u.getAddress() == user.getAddress()) && (u.getNumPort() == user.getNumPort())) {
+				exists = true;
+				u.setPseudo(user.getPseudo());
+				break;
+			}
+		}
+		if(!exists) {
+			listUser.add(user);
+			JButton newButton = new JButton();
+			newButton.setText(user.getPseudo());
+			newButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// Things to be done when the button is clicked.
+					String i = e.getActionCommand();
+					//testLabel.setText("Talking to "+ i +".");
+					c.displayConversation(i);
+					c.hv.hide();
+				}});
+			listPan.add(newButton);
+		}
+
 	}
 	
 	/*** Other methods ***/
