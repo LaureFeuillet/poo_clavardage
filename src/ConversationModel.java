@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,6 +30,7 @@ public class ConversationModel {
 		// to get all previous conversations for history
 		Statement stmt = null;
 		ResultSet rs = null;
+		String query = null;
 		try {
 		      Class.forName("com.mysql.cj.jdbc.Driver");
 		      System.out.println("Driver OK");
@@ -37,12 +39,66 @@ public class ConversationModel {
 		      System.out.println("Connection established !");
 		      
 		      stmt = con.createStatement();
-		      rs = stmt.executeQuery("SELECT * FROM ");
 		      
+		      // Create in DB table Conversation 
+		      query = "CREATE TABLE IF NOT EXISTS Conversation ("
+		      		+ " id_conv SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,"
+		      		+ " pseudo VARCHAR(50) NOT NULL,"
+		      		+ " starting_date VARCHAR(50) NOT NULL,"
+		      		+ " PRIMARY KEY (id_conv))"
+		      		+ " ENGINE=INNODB;";
+		      stmt.executeUpdate(query);
+		      
+		      // Create in DB table Message
+		      query ="CREATE TABLE IF NOT EXISTS Message("
+		    		+ " id_msg SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+		      		+ " conv SMALLINT UNSIGNED NOT NULL,"
+		      		+ " date VARCHAR(50) NOT NULL,"
+		      		+ " content TEXT NOT NULL,"
+		      		// sent is suppose to be a boolean, but it doesn't exist in mySQL
+		      		// 0: false, 1: true
+		      		+ " sent TINYINT(1) NOT NULL,"
+		      		+ " CONSTRAINT msg_conv"
+		      		+ " FOREIGN KEY (conv)"
+		      		+ " REFERENCES Conversation(id_conv))"
+		      		+ " ENGINE=INNODB;";
+		      stmt.executeUpdate(query);
+
+		      // Get previous conversations and corresponding messages from DB
+		      history = new ArrayList<Conversation>();
+		      // First, we get all previous conversations
+		      query = "SELECT pseudo, starting_date"
+		    		+ " FROM conversation";
+		      rs = stmt.executeQuery(query);
+		      
+		      String pseudo = null;
+		      String startingDate = null;
+		      PreparedStatement pstmt = null;
+		      ResultSet rsMsg = null;
+		      ArrayList<Message> messages = null;
 		      while (rs.next()){
-		    	  System.out.print(rs.getString(1)+ ":");
-		    	  System.out.println(rs.getDouble("salary"));
+		    	  pseudo = rs.getString("pseudo");
+		    	  startingDate = rs.getString("starting_date");
+		    	  query = "SELECT date, content, sent"
+		    	  		+ " FROM Message"
+		    	  		+ " INNER JOIN Conversation"
+		    	  		+ " ON Message.conv = Conversation.id_conv"
+		    	  		+ " WHERE Conversation.pseudo = ?"
+		    	  		+ " AND Conversation.starting_date = ?;";
+
+		    	  pstmt = con.prepareStatement(query);
+		    	  pstmt.setString(1, pseudo);
+		    	  pstmt.setString(2, startingDate);
+		    	  rsMsg = pstmt.executeQuery();
+		    	  
+		    	  messages = new ArrayList<Message>();
+		    	  while(rsMsg.next()) {
+		    		  messages.add(new Message(rsMsg.getString("date"), rsMsg.getString("content"), rsMsg.getBoolean("sent")));
+		    	  }
+		    	  history.add(new Conversation(new User(pseudo, null, 0), startingDate, messages));
 		    }
+		    pstmt.close();
+	    	rsMsg.close();
 		      
 		    } catch (Exception e) {
 		      e.printStackTrace();
@@ -50,6 +106,9 @@ public class ConversationModel {
 		    	if (con != null) {
 		    		try {
 						con.close();
+						stmt.close();
+						rs.close();
+						
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}

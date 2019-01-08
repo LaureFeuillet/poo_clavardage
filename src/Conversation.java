@@ -17,6 +17,12 @@ public class Conversation {
 		this.destinationUser = destinationUser;
 		this.messages = new ArrayList<Message>();
 	}
+	
+	public Conversation(User destinationUser, String startingDate, ArrayList<Message> messages) {
+		this.startingDate = startingDate;
+		this.destinationUser = destinationUser;
+		this.messages = messages;
+	} 
 
 	/*** Getters & setters ***/
 	public String getStartingDate(){
