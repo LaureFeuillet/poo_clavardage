@@ -86,13 +86,13 @@ public class ConversationView extends JFrame {
 		pan.add(textField);
 		
 		lblLui = new JLabel("Talking to : " + other);
-		currentLayout.putConstraint(SpringLayout.NORTH, lblLui, 24, SpringLayout.NORTH, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, lblLui, 36, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, lblLui, 92, SpringLayout.WEST, pan);
 		pan.add(lblLui);
 		
 		titleLabel = new JLabel("Chat room");
+		currentLayout.putConstraint(SpringLayout.NORTH, titleLabel, 20, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, lblLui, 4, SpringLayout.NORTH, titleLabel);
 		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 18, SpringLayout.SOUTH, titleLabel);
-		currentLayout.putConstraint(SpringLayout.NORTH, titleLabel, -4, SpringLayout.NORTH, lblLui);
 		currentLayout.putConstraint(SpringLayout.EAST, titleLabel, -58, SpringLayout.EAST, pan);
 		titleLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
 		pan.add(titleLabel);
@@ -116,18 +116,24 @@ public class ConversationView extends JFrame {
 				}
 				else {
 					textField.setText("");
-					//c.sendMsg(other, content);
+					c.sendMsg(other, content);
 					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("HH:mm");
 					String date = dateFormat.format(LocalDateTime.now());
-					JLabel testMsg = new JLabel();
-					testMsg.setForeground(new Color(0, 0, 0));
-					testMsg.setText(date + " - " + myself + " : " + content);
-					listPan.add(testMsg);
+					JLabel myMsg = new JLabel();
+					myMsg.setForeground(new Color(0, 0, 0));
+					myMsg.setText(date + " - " + myself + " : " + content);
+					listPan.add(myMsg);
 					listPan.revalidate();
 					listPan.repaint();	
 				}
 			}});
 		pan.add(sendButton);
+		
+		JButton backButton = new JButton("<--");
+		currentLayout.putConstraint(SpringLayout.WEST, backButton, 10, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, backButton, 0, SpringLayout.SOUTH, lblLui);
+		currentLayout.putConstraint(SpringLayout.EAST, backButton, 67, SpringLayout.WEST, pan);
+		pan.add(backButton);
 		}
 	
 	private void f() {
@@ -150,13 +156,28 @@ public class ConversationView extends JFrame {
 			}
 		
 	}
+	public void updatePseudo(String newPseudo) {
+		other = newPseudo;
+		lblLui.setText(other);
+		JLabel updateMsg = new JLabel();
+		updateMsg.setForeground(new Color(204, 0, 102));
+		//updateMsg.setFont(Font.ITALIC);
+		updateMsg.setText("Your intermediary changed his pseudo to :" + other + ".");
+		listPan.add(updateMsg);
+		listPan.revalidate();
+		listPan.repaint();	
+	}
 	
 	public void addMsg (String content)
 	{
 		JLabel newMsg = new JLabel();
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("HH:mm");
+		String date = dateFormat.format(LocalDateTime.now());
 		newMsg.setForeground(new Color(0, 153, 153));
-		newMsg.setText("YYYYY - "+ other + " : " + content);
+		newMsg.setText(date + " - "+ other + " : " + content);
 		listPan.add(newMsg);
+		listPan.revalidate();
+		listPan.repaint();
 	}
 	
 	/*** Methods ***/
@@ -188,5 +209,4 @@ public class ConversationView extends JFrame {
 		cv.displayView("Laure", conv);
 		cv.setVisible(true);
 	}
-	
 }
