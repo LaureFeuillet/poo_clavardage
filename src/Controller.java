@@ -143,7 +143,7 @@ public class Controller {
 			//If it is, then we proceed to the home view
 			ArrayList<User> users = um.getConnectedUsers();
 			pv.hide();
-			hv.displayView(um.getMyself(),um.getConnectedUsers(),cm.getHistory());
+			displayHomeView();
 		}
 		else {
 			//Otherwise we just notice the user that he must choose another pseudo
