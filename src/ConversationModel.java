@@ -21,16 +21,20 @@ public class ConversationModel {
 	// To connect to the database
 	protected Connection con = null;
 	protected String url = "jdbc:mysql://localhost:3306/clavardage?serverTimezone=" + TimeZone.getDefault().getID();
-	protected String user = "root";
-	protected String pwd = "lkilipoutte";
+	protected String user = "clavardage";
+	protected String pwd = "clavardage";
 
 	/*** Constructors ***/
 	public ConversationModel() {
+		currentConversations = new ArrayList<Conversation>();
+		currentConv = null;
 		// Establish a connection to the database
 		// to get all previous conversations for history
 		Statement stmt = null;
 		ResultSet rs = null;
 		String query = null;
+		PreparedStatement pstmt = null;
+	    ResultSet rsMsg = null;
 		try {
 		      Class.forName("com.mysql.cj.jdbc.Driver");
 		      System.out.println("Driver OK");
@@ -73,8 +77,7 @@ public class ConversationModel {
 		      
 		      String pseudo = null;
 		      String startingDate = null;
-		      PreparedStatement pstmt = null;
-		      ResultSet rsMsg = null;
+		      
 		      ArrayList<Message> messages = null;
 		      while (rs.next()){
 		    	  pseudo = rs.getString("pseudo");
@@ -96,31 +99,28 @@ public class ConversationModel {
 		    		  messages.add(new Message(rsMsg.getString("date"), rsMsg.getString("content"), rsMsg.getBoolean("sent")));
 		    	  }
 		    	  history.add(new Conversation(new User(pseudo, null, 0), startingDate, messages));
-		    }
-		    pstmt.close();
-	    	rsMsg.close();
-		      
+		      }
 		    } catch (Exception e) {
 		      e.printStackTrace();
 		    } finally {
 		    	if (con != null) {
 		    		try {
-						con.close();
+		    			con.close();
 						stmt.close();
 						rs.close();
-						
+						if(pstmt != null) {
+							pstmt.close();
+					    	rsMsg.close();
+						}
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
 		    	}
 		    }
-		
-		currentConversations = new ArrayList<Conversation>();
-		history = new ArrayList<Conversation>();
-	}
+		}
 
 	/*** Methods ***/
-	// Asks the database about a conversion between myself and "pseudo" at a given date
+	// Asks the database about a conversation between myself and "pseudo" at a given date
 	public Conversation getConvFromHistory(String pseudo, String date){
 		Conversation goodConv = null;
 		for(Conversation conv : this.history){
@@ -151,17 +151,62 @@ public class ConversationModel {
 		this.currentConv = conv;
 	}
 
-	// Deletes a specific conversation from the history of conversations
+	// Deletes all conversations in DB
 	public void deleteHistory(){
-		this.history = null;
+		history.clear();
+
+		Statement stmt = null;
+		try {
+			con = DriverManager.getConnection(url, user, pwd);
+			System.out.println("Connection established to delete history.");
+			stmt = con.createStatement();
+			String query = "DELETE FROM Conversation";
+			stmt.executeUpdate(query);
+			query = "DELETE FROM Message";
+			stmt.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+	    	if (con != null) {
+	    		try {
+	    			con.close();
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+	    	}
+	    }
 	}
 
-	// Adds a specific conversation to the history of conversations
+	// Adds a specific conversation in DB
 	public void addConvToHistory(Conversation conv){
-		this.history.add(conv);
+		history.add(conv);
+		
+		PreparedStatement pstmt = null;
+		try {
+			con = DriverManager.getConnection(url, user, pwd);
+			System.out.println("Connection established to add a conv to history.");
+			String query = "INSERT INTO Conversation"
+					+ " VALUES (NULL, ?, ?);";
+			pstmt = con.prepareStatement(query);
+	    	pstmt.setString(1, conv.getDestinationUser().getPseudo());
+	    	pstmt.setString(2, conv.getStartingDate());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+	    	if (con != null) {
+	    		try {
+	    			con.close();
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+	    	}
+	    }
 	}
 	
-	// Adds a conv to the list of current
+	// Adds a conv to the list of current conversations
 	public void addConvToCurrent(Conversation conv){
 		this.currentConversations.add(conv);
 	}
@@ -202,6 +247,37 @@ public class ConversationModel {
 	
 	public static void main(String[] args)
 	{
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		ConversationModel cm = new ConversationModel();
-	}
+		User dest = new User("toto", null, 0);
+		ArrayList<Message> messages = new ArrayList<Message>();
+		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Coucou", true));
+		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Salut", false));
+		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Comment ça va ?", true));
+		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Bien merci", false));
+		Conversation conv = new Conversation(dest, dateFormat.format(LocalDateTime.now()), messages);
+		cm.addConvToHistory(conv);
+		ArrayList<Conversation> historique = cm.getHistory();
+		
+		for(Conversation c : historique)
+		{
+			System.out.println("*** " + c.getDestinationUser() + "***");
+			for(Message m : c.getMessages())
+			{
+				System.out.println(m.getDate() + " : "+m.getContent());
+			}
+		}
+		
+		cm.deleteHistory();
+		historique = cm.getHistory();
+		
+		for(Conversation c : historique)
+		{
+			System.out.println("*** " + c.getDestinationUser() + "***");
+			for(Message m : c.getMessages())
+			{
+				System.out.println(m.getDate() + " : "+m.getContent());
+			}
+		}
+	} 
 }
