@@ -8,6 +8,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 //import java.net.InetAddress;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
@@ -74,7 +76,7 @@ public class ConversationView extends JFrame {
 		pan.add(listScroll);
 		
 		/* Text field for a new message */
-		textField = new JTextField();
+		textField = new JTextField("");
 		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -6, SpringLayout.NORTH, textField);
 		currentLayout.putConstraint(SpringLayout.WEST, textField, 0, SpringLayout.WEST, listScroll);
 		currentLayout.putConstraint(SpringLayout.NORTH, textField, -82, SpringLayout.SOUTH, pan);
@@ -109,13 +111,21 @@ public class ConversationView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the send button is clicked.
 				String content = new String(textField.getText());
-				textField.setText("");
-				c.sendMsg(other, content);
-				
-				JLabel testMsg = new JLabel();
-				testMsg.setForeground(new Color(0, 0, 0));
-				testMsg.setText("YYYYY - "+ myself + " : " + content);
-				listPan.add(testMsg);
+				if(content.equals("")) {
+					// Nothing to do.
+				}
+				else {
+					textField.setText("");
+					//c.sendMsg(other, content);
+					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("HH:mm");
+					String date = dateFormat.format(LocalDateTime.now());
+					JLabel testMsg = new JLabel();
+					testMsg.setForeground(new Color(0, 0, 0));
+					testMsg.setText(date + " - " + myself + " : " + content);
+					listPan.add(testMsg);
+					listPan.revalidate();
+					listPan.repaint();	
+				}
 			}});
 		pan.add(sendButton);
 		}
@@ -159,7 +169,7 @@ public class ConversationView extends JFrame {
 		this.setVisible(true);
 	}
 
-	/*
+	
 	public static void main(String[] args) {
 		Controller c = null;
 		ConversationView cv = new ConversationView(c);
@@ -178,5 +188,5 @@ public class ConversationView extends JFrame {
 		cv.displayView("Laure", conv);
 		cv.setVisible(true);
 	}
-	*/
+	
 }
