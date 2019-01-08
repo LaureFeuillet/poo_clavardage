@@ -129,10 +129,16 @@ public class ConversationView extends JFrame {
 			}});
 		pan.add(sendButton);
 		
-		JButton backButton = new JButton("<--");
+		JButton backButton = new JButton("<<<");
 		currentLayout.putConstraint(SpringLayout.WEST, backButton, 10, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, backButton, 0, SpringLayout.SOUTH, lblLui);
-		currentLayout.putConstraint(SpringLayout.EAST, backButton, 67, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, backButton, -25, SpringLayout.WEST, lblLui);
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Things to be done when the button is clicked.
+				c.displayHomeView();
+				c.cv.setVisible(false);
+			}});
 		pan.add(backButton);
 		}
 	
