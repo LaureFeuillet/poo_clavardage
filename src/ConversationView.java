@@ -116,7 +116,7 @@ public class ConversationView extends JFrame {
 				}
 				else {
 					textField.setText("");
-					//c.sendMsg(other, content);
+					c.sendMsg(other, content);
 					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("HH:mm");
 					String date = dateFormat.format(LocalDateTime.now());
 					JLabel testMsg = new JLabel();
@@ -154,9 +154,13 @@ public class ConversationView extends JFrame {
 	public void addMsg (String content)
 	{
 		JLabel newMsg = new JLabel();
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("HH:mm");
+		String date = dateFormat.format(LocalDateTime.now());
 		newMsg.setForeground(new Color(0, 153, 153));
-		newMsg.setText("YYYYY - "+ other + " : " + content);
+		newMsg.setText(date + " - "+ other + " : " + content);
 		listPan.add(newMsg);
+		listPan.revalidate();
+		listPan.repaint();
 	}
 	
 	/*** Methods ***/

@@ -117,6 +117,22 @@ public class HomeView extends JFrame {
 		
 	}
 	
+	/* A new user is connected */
+	public void addUser(String pseudo)
+	{
+		JButton newButton = new JButton();
+		newButton.setText(pseudo);
+		newButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Things to be done when the button is clicked.
+				String i = e.getActionCommand();
+				//testLabel.setText("Talking to "+ i +".");
+				c.displayConversation(i);
+				c.hv.hide();
+			}});
+		listPan.add(newButton);
+	}
+	
 	/*** Other methods ***/
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
 		history = hist;
