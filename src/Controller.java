@@ -1,7 +1,7 @@
 import java.net.InetAddress;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+//import java.time.LocalDateTime;
+//import java.time.format.DateTimeFormatter;
+//import java.util.ArrayList;
 
 /* Used to tell the user model how to refresh the connected user list
  * CONNECT to add a new user
@@ -86,7 +86,7 @@ public class Controller {
 		if (c == null) {
 			cm.startConv(u);
 			nw.addConv(u);
-			hv.hide();
+			hv.setVisible(false);
 			displayConversationView();
 		}	
 	}
@@ -141,8 +141,7 @@ public class Controller {
 			//Notifies all connected users of the newly chosen pseudo
 			nw.notifyPseudo(pseudo);
 			//If it is, then we proceed to the home view
-			ArrayList<User> users = um.getConnectedUsers();
-			pv.hide();
+			pv.setVisible(false);
 			displayHomeView();
 		}
 		else {

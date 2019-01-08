@@ -100,21 +100,22 @@ public class HomeView extends JFrame {
 			
 		testLabel.setText("Talking to ...");
 		pan.add(testLabel);
-		
-		for(User user : listUser) {
-			JButton newButton = new JButton();
-			newButton.setText(user.getPseudo());
-			newButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					// Things to be done when the button is clicked.
-					String i = e.getActionCommand();
-					//testLabel.setText("Talking to "+ i +".");
-					c.displayConversation(i);
-					c.hv.hide();
-				}});
-			listPan.add(newButton);
-			listPan.revalidate();
-			listPan.repaint();	
+		if(listUser != null) {
+			for(User user : listUser) {
+				JButton newButton = new JButton();
+				newButton.setText(user.getPseudo());
+				newButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Things to be done when the button is clicked.
+						String i = e.getActionCommand();
+						//testLabel.setText("Talking to "+ i +".");
+						c.displayConversation(i);
+						c.hv.setVisible(false);
+					}});
+				listPan.add(newButton);
+				listPan.revalidate();
+				listPan.repaint();	
+			}
 		}
 		
 	}
@@ -132,7 +133,7 @@ public class HomeView extends JFrame {
 							String i = e.getActionCommand();
 							//testLabel.setText("Talking to "+ i +".");
 							c.displayConversation(i);
-							c.hv.hide();
+							c.hv.setVisible(false);
 						}});
 					listPan.add(newButton);
 					listPan.revalidate();
@@ -165,7 +166,7 @@ public class HomeView extends JFrame {
 					String i = e.getActionCommand();
 					//testLabel.setText("Talking to "+ i +".");
 					c.displayConversation(i);
-					c.hv.hide();
+					c.hv.setVisible(false);
 				}});
 			listPan.add(newButton);
 			listPan.revalidate();
