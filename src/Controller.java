@@ -14,6 +14,12 @@ enum Action{
 	UPDATE
 };
 
+enum CurrentView{
+	PSEUDO,
+	HOME,
+	CONVERSATION
+};
+
 public class Controller {
 	protected PseudoView pv;
 	protected HomeView hv;
@@ -21,8 +27,10 @@ public class Controller {
 	public UserModel um;
 	public ConversationModel cm;
 	protected Network nw;
+	protected CurrentView currentView;
 
 	public Controller() {
+		currentView = CurrentView.PSEUDO;
 		nw = new Network(this);
 		pv = new PseudoView(this);
 		hv = new HomeView(this);
@@ -72,13 +80,14 @@ public class Controller {
 	
 	//Displays an already started conversation, or starts it and displays it if it was not
 	public void displayConversation(String pseudo) {
+		currentView = CurrentView.CONVERSATION;
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			cm.startConv(u);
 			nw.addConv(u);
 			hv.hide();
-			cv.displayView(um.getMyself(),cm.getCurrentConv());
+			displayConversationView();
 		}	
 	}
 
@@ -93,17 +102,31 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
-		if (a == Action.UPDATE) {
+		switch(a) {
+		case CONNECT:
+			if (currentView == CurrentView.HOME)
+				hv.addUser(u);
+			break;
+		case UPDATE:
 			User us = um.getUserByIP(u.getAddress());
 			us.setPseudo(u.getPseudo());
-			/*
-			Conversation c = cm.getConvByUser(us);
-			if (c == cm.getCurrentConv()) {
-				//cv.updatePseudo(u.getPseudo());
+			if (currentView == CurrentView.HOME) {
+				hv.addUser(u);
 			}
-			*/
+			else {
+				if (currentView == CurrentView.CONVERSATION) {
+					Conversation c = cm.getConvByUser(us);
+					if (c == cm.getCurrentConv()) {
+						cv.updatePseudo(u.getPseudo());
+					}
+				}
+			}
+			break;
+		case DISCONNECT:
+			if (currentView == CurrentView.HOME)
+				hv.removeUser(u.getPseudo());
+			break;
 		}
-		//u = um.getUserByIP(u.getAddress());
 		um.refreshUser(u, a);
 	}
 
@@ -134,14 +157,17 @@ public class Controller {
 
 	//Called from the home view
 	public void displayPseudoView() {
+		currentView = CurrentView.PSEUDO;
 		pv.displayView();
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
+		currentView = CurrentView.HOME;
 		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
 	}
 	//Called from the home view
 	public void displayConversationView() {
+		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
 	}
 }
