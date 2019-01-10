@@ -168,6 +168,7 @@ public class Controller {
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
+		hv = new HomeView(this);
 		currentView = CurrentView.HOME;
 		ArrayList<Conversation> history = cm.getHistory();
 		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
