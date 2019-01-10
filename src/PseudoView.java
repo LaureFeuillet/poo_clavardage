@@ -30,7 +30,7 @@ public class PseudoView extends javax.swing.JFrame {
 		errorLabel = new JLabel("");
 		
 		/* Size and of the frame */
-        this.setSize(550, 550);
+        this.setSize(800, 900);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Method that does everything */
