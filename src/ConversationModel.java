@@ -45,7 +45,7 @@ public class ConversationModel {
 		      stmt = con.createStatement();
 		      
 		      // Create in DB table Conversation 
-		      query = "CREATE TABLE IF NOT EXISTS Conversation ("
+		      query = "CREATE TABLE IF NOT EXISTS conversation ("
 		      		+ " id_conv SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,"
 		      		+ " pseudo VARCHAR(50) NOT NULL,"
 		      		+ " starting_date VARCHAR(50) NOT NULL,"
@@ -54,7 +54,7 @@ public class ConversationModel {
 		      stmt.executeUpdate(query);
 		      
 		      // Create in DB table Message
-		      query ="CREATE TABLE IF NOT EXISTS Message("
+		      query ="CREATE TABLE IF NOT EXISTS message("
 		    		+ " id_msg SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,"
 		      		+ " conv SMALLINT UNSIGNED NOT NULL,"
 		      		+ " date VARCHAR(50) NOT NULL,"
@@ -64,7 +64,7 @@ public class ConversationModel {
 		      		+ " sent TINYINT(1) NOT NULL,"
 		      		+ " CONSTRAINT msg_conv"
 		      		+ " FOREIGN KEY (conv)"
-		      		+ " REFERENCES Conversation(id_conv))"
+		      		+ " REFERENCES conversation(id_conv))"
 		      		+ " ENGINE=INNODB;";
 		      stmt.executeUpdate(query);
 
@@ -83,11 +83,11 @@ public class ConversationModel {
 		    	  pseudo = rs.getString("pseudo");
 		    	  startingDate = rs.getString("starting_date");
 		    	  query = "SELECT date, content, sent"
-		    	  		+ " FROM Message"
-		    	  		+ " INNER JOIN Conversation"
-		    	  		+ " ON Message.conv = Conversation.id_conv"
-		    	  		+ " WHERE Conversation.pseudo = ?"
-		    	  		+ " AND Conversation.starting_date = ?;";
+		    	  		+ " FROM message"
+		    	  		+ " INNER JOIN conversation"
+		    	  		+ " ON message.conv = conversation.id_conv"
+		    	  		+ " WHERE conversation.pseudo = ?"
+		    	  		+ " AND conversation.starting_date = ?;";
 
 		    	  pstmt = con.prepareStatement(query);
 		    	  pstmt.setString(1, pseudo);
@@ -107,7 +107,8 @@ public class ConversationModel {
 		    		try {
 		    			con.close();
 						stmt.close();
-						rs.close();
+						if (rs != null)
+							rs.close();
 						if(pstmt != null) {
 							pstmt.close();
 					    	rsMsg.close();
@@ -160,9 +161,9 @@ public class ConversationModel {
 			con = DriverManager.getConnection(url, user, pwd);
 			System.out.println("Connection established to delete history.");
 			stmt = con.createStatement();
-			String query = "DELETE FROM Conversation";
+			String query = "DELETE FROM conversation";
 			stmt.executeUpdate(query);
-			query = "DELETE FROM Message";
+			query = "DELETE FROM message";
 			stmt.executeUpdate(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -186,7 +187,7 @@ public class ConversationModel {
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
 			System.out.println("Connection established to add a conv to history.");
-			String query = "INSERT INTO Conversation"
+			String query = "INSERT INTO conversation"
 					+ " VALUES (NULL, ?, ?);";
 			pstmt = con.prepareStatement(query);
 	    	pstmt.setString(1, conv.getDestinationUser().getPseudo());
