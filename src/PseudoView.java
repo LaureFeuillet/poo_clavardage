@@ -85,6 +85,8 @@ public class PseudoView extends javax.swing.JFrame {
     
     public void displayView() {
     		setUpFrame();
+    		pan.revalidate();
+    		pan.repaint();
 		this.setVisible(true);
     }
     
@@ -93,7 +95,7 @@ public class PseudoView extends javax.swing.JFrame {
         pseudoField.setText("Please try another one ...");
     }
     
-    
+/*
 	// Main to test without the controller .
 	public static void main(String[] args) {
 		Controller c = null;
@@ -101,5 +103,5 @@ public class PseudoView extends javax.swing.JFrame {
 		pv.displayView();
 		pv.setVisible(true);
 	}
-    
+*/ 
 }

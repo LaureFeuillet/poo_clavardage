@@ -32,6 +32,7 @@ public class HomeView extends JFrame {
 	//private ArrayList<Conversation> history;
 	
 	private JLabel testLabel;
+	private JButton btnPseudo;
 
 	
 	/*** Constructors ***/
@@ -100,6 +101,20 @@ public class HomeView extends JFrame {
 			
 		testLabel.setText("");
 		pan.add(testLabel);
+		
+		btnPseudo = new JButton("Change pseudo");
+		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 34, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, btnPseudo, -25, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 175, SpringLayout.WEST, pan);
+		btnPseudo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Things to be done when the button is clicked.
+				c.displayPseudoView();
+				c.hv.setVisible(false);
+			}});
+		pan.add(btnPseudo);
+		
+		
 		if(listUser != null) {
 			for(User user : listUser) {
 				JButton newButton = new JButton();
@@ -118,6 +133,8 @@ public class HomeView extends JFrame {
 			}
 		}
 		
+		pan.revalidate();
+		pan.repaint();
 	}
 	
 	public void removeUser(String pseudo) {
@@ -178,7 +195,9 @@ public class HomeView extends JFrame {
 	/*** Other methods ***/
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
 		//history = hist;
-		listUser = coUsers;
+		if(listUser == null) {
+			listUser = coUsers;
+		}
 		myself = m;
 		setUpFrame();
 		pan.revalidate();
