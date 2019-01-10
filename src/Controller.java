@@ -84,15 +84,18 @@ public class Controller {
 	
 	//Displays an already started conversation, or starts it and displays it if it was not
 	public void displayConversation(String pseudo) {
-		currentView = CurrentView.CONVERSATION;
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			cm.startConv(u);
 			nw.addConv(u);
-			hv.setVisible(false);
-			displayConversationView();
 		}	
+		cm.setCurrentConv(c);
+		System.out.println("Les messages :");
+		for(Message msg : c.getMessages()) {
+			System.out.println(msg.getContent());
+		}
+		displayConversationView();
 	}
 
 	//Flushes the history of past conversations in local DB
@@ -108,10 +111,9 @@ public class Controller {
 	public void refreshUser(User u, Action a) {
 		switch(a) {
 		case CONNECT:
-			/*
 			if (currentView == CurrentView.HOME)
 				hv.addUser(u);
-			*/
+			
 			break;
 		case UPDATE:
 			User us = um.getUserByIP(u.getAddress());
