@@ -30,7 +30,7 @@ public class PseudoView extends javax.swing.JFrame {
 		errorLabel = new JLabel("");
 		
 		/* Size and of the frame */
-        this.setSize(550, 550);
+        this.setSize(800, 900);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Method that does everything */
@@ -85,6 +85,8 @@ public class PseudoView extends javax.swing.JFrame {
     
     public void displayView() {
     		setUpFrame();
+    		pan.revalidate();
+    		pan.repaint();
 		this.setVisible(true);
     }
     
@@ -93,7 +95,7 @@ public class PseudoView extends javax.swing.JFrame {
         pseudoField.setText("Please try another one ...");
     }
     
-    
+/*
 	// Main to test without the controller .
 	public static void main(String[] args) {
 		Controller c = null;
@@ -101,5 +103,5 @@ public class PseudoView extends javax.swing.JFrame {
 		pv.displayView();
 		pv.setVisible(true);
 	}
-    
+*/ 
 }
