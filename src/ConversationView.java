@@ -196,7 +196,7 @@ public class ConversationView extends JFrame {
 		this.setVisible(true);
 	}
 
-	
+	/*
 	public static void main(String[] args) {
 		Controller c = null;
 		ConversationView cv = new ConversationView(c);
@@ -215,4 +215,5 @@ public class ConversationView extends JFrame {
 		cv.displayView("Laure", conv);
 		cv.setVisible(true);
 	}
+	*/
 }

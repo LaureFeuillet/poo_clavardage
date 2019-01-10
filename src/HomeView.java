@@ -181,9 +181,9 @@ public class HomeView extends JFrame {
 		listUser = coUsers;
 		myself = m;
 		setUpFrame();
-		this.setVisible(true);
 		pan.revalidate();
 		pan.repaint();
+		this.setVisible(true);
 	}
 
 /*
