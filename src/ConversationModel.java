@@ -244,7 +244,8 @@ public class ConversationModel {
 	public void setCurrentConv(Conversation currentConv) {
 		this.currentConv = currentConv;
 	}
-	
+
+	/*
 	public static void main(String[] args)
 	{
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -253,7 +254,7 @@ public class ConversationModel {
 		ArrayList<Message> messages = new ArrayList<Message>();
 		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Coucou", true));
 		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Salut", false));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Comment ça va ?", true));
+		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Comment ï¿½a va ?", true));
 		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "Bien merci", false));
 		Conversation conv = new Conversation(dest, dateFormat.format(LocalDateTime.now()), messages);
 		cm.addConvToHistory(conv);
@@ -280,4 +281,5 @@ public class ConversationModel {
 			}
 		}
 	} 
+	*/
 }
