@@ -109,6 +109,8 @@ public class HomeView extends JFrame {
 		btnPseudo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.
+				PseudoView pv = new PseudoView(c);
+				c.pv = pv;
 				c.displayPseudoView();
 				c.hv.setVisible(false);
 			}});

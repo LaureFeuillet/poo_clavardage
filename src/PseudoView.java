@@ -60,7 +60,7 @@ public class PseudoView extends javax.swing.JFrame {
 		currentLayout.putConstraint(SpringLayout.NORTH, errorLabel, 127, SpringLayout.SOUTH, pseudoField);
 		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -55, SpringLayout.NORTH, pseudoField);
 		pseudoField.setFont(new Font("Lucida Grande", Font.ITALIC, 11));
-		pseudoField.setText("Insert new pseudo here ...");
+		pseudoField.setText("");
 		pan.add(pseudoField);
 		pseudoField.setColumns(10);
 		
