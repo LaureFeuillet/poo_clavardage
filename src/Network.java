@@ -218,8 +218,9 @@ public class Network {
 							byte[] dataToSend = createMessageUser(pseudo);
 							sentPacket = new DatagramPacket(dataToSend,dataToSend.length,receivedPacket.getAddress(), receivedPacket.getPort());
 							sock.send(sentPacket);
-							//A this moment, the remote user does not yet have a pseudo so its set to null
-							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
+							//A this moment, the remote user does not yet have a pseudo so its set to null, the port is set to
+							//0 and will be updated when the remote user chooses his pseudo
+							u = new User(null,receivedPacket.getAddress(), 0);
 							//The controller is noticed that a new user has actually connected
 							n.getController().refreshUser(u, Action.CONNECT);
 							break;

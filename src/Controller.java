@@ -8,12 +8,15 @@ import java.net.InetAddress;
  * DISCONNECT to remove a user
  * UPDATE to update the user's pseudo 
  */
+
+//Used to determine what to do with a user that changed is status
 enum Action{
 	CONNECT,
 	DISCONNECT,
 	UPDATE
 };
 
+//Used to determine whether the view we are currently displaying has to be refreshed or not
 enum CurrentView{
 	PSEUDO,
 	HOME,
@@ -104,8 +107,10 @@ public class Controller {
 	public void refreshUser(User u, Action a) {
 		switch(a) {
 		case CONNECT:
+			/*
 			if (currentView == CurrentView.HOME)
 				hv.addUser(u);
+			*/
 			break;
 		case UPDATE:
 			User us = um.getUserByIP(u.getAddress());
