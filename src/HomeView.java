@@ -184,7 +184,7 @@ public class HomeView extends JFrame {
 		this.setVisible(true);
 	}
 
-	/*
+/*
 	// Main to test without the controller .
 	public static void main(String[] args) {
 		Controller c = null;
@@ -193,5 +193,5 @@ public class HomeView extends JFrame {
 
 		hv.displayView("Laure",null);
 	}
-	*/
+*/
 }
