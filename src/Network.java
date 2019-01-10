@@ -28,7 +28,7 @@ public class Network {
 	private final int PORT_WATCHDOG = 17845;
 	//Size of the packets sent by the application
 	private final int PACKET_SIZE = 1024;
-	private String pseudo = "Minoustrel";
+	private String pseudo = "undefined";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
