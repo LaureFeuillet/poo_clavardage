@@ -108,8 +108,10 @@ public class Controller {
 	public void refreshUser(User u, Action a) {
 		switch(a) {
 		case CONNECT:
+			/*
 			if (currentView == CurrentView.HOME)
 				hv.addUser(u);
+			*/
 			break;
 		case UPDATE:
 			User us = um.getUserByIP(u.getAddress());
