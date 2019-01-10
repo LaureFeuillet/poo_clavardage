@@ -98,7 +98,7 @@ public class HomeView extends JFrame {
 		pan.add(welcomeLabel);
 
 			
-		testLabel.setText("Talking to ...");
+		testLabel.setText("");
 		pan.add(testLabel);
 		if(listUser != null) {
 			for(User user : listUser) {
@@ -182,6 +182,8 @@ public class HomeView extends JFrame {
 		myself = m;
 		setUpFrame();
 		this.setVisible(true);
+		pan.revalidate();
+		pan.repaint();
 	}
 
 /*

@@ -2,6 +2,7 @@ import java.net.InetAddress;
 //import java.time.LocalDateTime;
 //import java.time.format.DateTimeFormatter;
 //import java.util.ArrayList;
+import java.util.ArrayList;
 
 /* Used to tell the user model how to refresh the connected user list
  * CONNECT to add a new user
@@ -168,7 +169,9 @@ public class Controller {
 	//Called from the pseudo view
 	public void displayHomeView() {
 		currentView = CurrentView.HOME;
+		ArrayList<Conversation> history = cm.getHistory();
 		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
+		System.out.println("Hist : "+history);
 	}
 	//Called from the home view
 	public void displayConversationView() {
