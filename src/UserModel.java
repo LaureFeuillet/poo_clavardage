@@ -12,7 +12,6 @@ public class UserModel {
 		this.connectedUsers = new ArrayList<User>();
 		//this.connectedUsers = connectedUsers;
 		for(User u : Cu) {
-			System.out.println("yolo" + u.getAddress());
 			this.connectedUsers.add(u);
 		}
 	}

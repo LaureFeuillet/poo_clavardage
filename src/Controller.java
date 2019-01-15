@@ -87,9 +87,9 @@ public class Controller {
 		System.out.println("displayConv");
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
-		cm.startConv(u);
 		if (c == null) {
 			nw.addConv(u);
+			cm.startConv(u);
 		}	
 		cm.setCurrentConv(c);
 		System.out.println("Les messages :");
