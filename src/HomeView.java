@@ -140,6 +140,7 @@ public class HomeView extends JFrame {
 	}
 	
 	public void removeUser(String pseudo) {
+		System.out.println("RemoveUser");
 		for(User u : listUser) {
 			if(u.getPseudo() == pseudo) {
 				listUser.remove(u);
@@ -170,26 +171,32 @@ public class HomeView extends JFrame {
 			if((u.getAddress() == user.getAddress()) && (u.getNumPort() == user.getNumPort())) {
 				exists = true;
 				u.setPseudo(user.getPseudo());
+				System.out.println("addUser : update d'un utilisateur");
 				listPan.revalidate();
 				listPan.repaint();	
 				break;
 			}
 		}
 		if(!exists) {
-			listUser.add(user);
-			JButton newButton = new JButton();
-			newButton.setText(user.getPseudo());
-			newButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					// Things to be done when the button is clicked.
-					String i = e.getActionCommand();
-					//testLabel.setText("Talking to "+ i +".");
-					c.displayConversation(i);
-					c.hv.setVisible(false);
-				}});
-			listPan.add(newButton);
-			listPan.revalidate();
-			listPan.repaint();	
+			if(user.getPseudo() != null)
+			{
+				listUser.add(user);
+				JButton newButton = new JButton();
+				System.out.println("addUser : création du bouton pour newUser");
+				newButton.setText(user.getPseudo());
+				newButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Things to be done when the button is clicked.
+						String i = e.getActionCommand();
+						//testLabel.setText("Talking to "+ i +".");
+						c.displayConversation(i);
+						c.hv.setVisible(false);
+						System.out.println("fin du bouton");
+					}});
+				listPan.add(newButton);
+				listPan.revalidate();
+				listPan.repaint();	
+			}
 		}
 
 	}

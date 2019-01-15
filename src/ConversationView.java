@@ -193,6 +193,8 @@ public class ConversationView extends JFrame {
 		other = conv.getDestinationUser().getPseudo();
 		msgList = conv.getMessages();
 		setUpFrame();
+		pan.revalidate();
+		pan.repaint();
 		this.setVisible(true);
 	}
 
