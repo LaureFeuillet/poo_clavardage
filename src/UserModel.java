@@ -93,6 +93,12 @@ public class UserModel {
 		}
 	}
 	
+	public void debugUsers() {
+		for (User u : connectedUsers) {
+			System.out.println(u.getPseudo() + " " + u.getAddress() + "@" + u.getNumPort());
+		}
+	}
+	
 	/*** Getters & setters ***/
 	public String getMyself() {
 		return myself;
