@@ -84,7 +84,7 @@ public class HomeView extends JFrame {
 
 		
 		/* Title label : Home */
-		homeLabel.setText("H O M E");
+		homeLabel.setText("H O M E fvjkrgezfuirghzfuez");
 		homeLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
 		currentLayout.putConstraint(SpringLayout.NORTH, homeLabel, 33, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, homeLabel, 39, SpringLayout.WEST, pan);
@@ -120,6 +120,7 @@ public class HomeView extends JFrame {
 		if(listUser != null) {
 			for(User user : listUser) {
 				JButton newButton = new JButton();
+				System.out.println("création d'un user déjà sur le réseau...");
 				newButton.setText(user.getPseudo());
 				newButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
