@@ -205,9 +205,7 @@ public class HomeView extends JFrame {
 	/*** Other methods ***/
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
 		//history = hist;
-		if(listUser == null) {
-			listUser = coUsers;
-		}
+		listUser = coUsers;
 		myself = m;
 		setUpFrame();
 		pan.revalidate();
