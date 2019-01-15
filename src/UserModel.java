@@ -34,7 +34,7 @@ public class UserModel {
 		boolean available = true;
 		for(User user : this.connectedUsers)
 		{
-			if(user.getPseudo().compareTo(pseudoToCheck) == 0)
+			if(user.getPseudo().equals(pseudoToCheck))
 			{
 				available = false;
 			}

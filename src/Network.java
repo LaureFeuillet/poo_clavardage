@@ -116,6 +116,7 @@ public class Network {
 	    		System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + "...\n");
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
 		    	User u = ReceiveMessageUser(receivedPacket.getData());
+		    	u.getPseudo();
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
@@ -238,7 +239,7 @@ public class Network {
 						//receiving a CONNECT packet from the same user so that we can actually identify him by something more
 						//user friendly than his IP
 						default:
-							//The pseudo of the user is contained in the data of the packet
+							//The user is contained in the data of the packet
 						    u = ReceiveMessageUser(receivedPacket.getData());
 						    System.out.print("[WATCHDOG] Received pseudo " + u.getPseudo() + " from " + receivedPacket.getAddress() + "...\n");
 							//The controller is notified that the user behind an IP address that we already know has
