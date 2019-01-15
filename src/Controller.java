@@ -89,13 +89,11 @@ public class Controller {
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			nw.addConv(u);
+			System.out.println("La conv n'existe pas encore avec " + u.getPseudo()+".");
 			cm.startConv(u);
+			c = cm.getConvByUser(u);
 		}	
 		cm.setCurrentConv(c);
-		System.out.println("Les messages :");
-		for(Message msg : c.getMessages()) {
-			System.out.println(msg.getContent());
-		}
 		displayConversationView();
 	}
 
@@ -170,7 +168,8 @@ public class Controller {
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
-		hv = new HomeView(this);
+		um.debugUsers();
+		this.hv = new HomeView(this);
 		currentView = CurrentView.HOME;
 		ArrayList<Conversation> history = cm.getHistory();
 		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
@@ -178,6 +177,7 @@ public class Controller {
 	}
 	//Called from the home view
 	public void displayConversationView() {
+		um.debugUsers();
 		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
 	}

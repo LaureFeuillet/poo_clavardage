@@ -71,7 +71,10 @@ public class PseudoView extends javax.swing.JFrame {
 		checkButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pseudo = pseudoField.getText();
-				c.setPseudo(pseudo);
+				if(!pseudo.equals(""))
+				{
+					c.setPseudo(pseudo);
+				}
 			}
 		});
 		pan.add(checkButton);

@@ -84,7 +84,7 @@ public class HomeView extends JFrame {
 
 		
 		/* Title label : Home */
-		homeLabel.setText("H O M E fvjkrgezfuirghzfuez");
+		homeLabel.setText("H O M E");
 		homeLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
 		currentLayout.putConstraint(SpringLayout.NORTH, homeLabel, 33, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, homeLabel, 39, SpringLayout.WEST, pan);
@@ -111,8 +111,8 @@ public class HomeView extends JFrame {
 				// Things to be done when the button is clicked.
 				PseudoView pv = new PseudoView(c);
 				c.pv = pv;
-				c.displayPseudoView();
 				c.hv.setVisible(false);
+				c.displayPseudoView();
 			}});
 		pan.add(btnPseudo);
 		
