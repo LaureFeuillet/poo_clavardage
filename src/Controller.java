@@ -178,6 +178,7 @@ public class Controller {
 	//Called from the home view
 	public void displayConversationView() {
 		um.debugUsers();
+		this.cv = new ConversationView(this);
 		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
 	}
