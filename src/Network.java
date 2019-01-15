@@ -238,9 +238,9 @@ public class Network {
 						//receiving a CONNECT packet from the same user so that we can actually identify him by something more
 						//user friendly than his IP
 						default:
-							System.out.print("[WATCHDOG] Received pseudo " + data + " from " + receivedPacket.getAddress() + "...\n");
 							//The pseudo of the user is contained in the data of the packet
 						    u = ReceiveMessageUser(receivedPacket.getData());
+						    System.out.print("[WATCHDOG] Received pseudo " + u.getPseudo() + " from " + receivedPacket.getAddress() + "...\n");
 							//The controller is notified that the user behind an IP address that we already know has
 							//changed his pseudo
 							n.getController().refreshUser(u, Action.UPDATE);
@@ -323,7 +323,7 @@ public class Network {
 					{
 						//Message is transfered to the controller
 						c.receiveMsg(sock.getInetAddress(), input);
-						System.out.println(input);
+						System.out.println("[SERVER_THREAD] Received message : \"" + input + "\" from " + sock.getInetAddress() + ".");
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -354,7 +354,7 @@ public class Network {
 			this.dest = dest;
 			try {
 				//Connection attempt
-				System.out.println("Port = " + dest.getNumPort());
+				//System.out.println("Port = " + dest.getNumPort());
 				sock = new Socket(dest.getAddress(), dest.getNumPort());
 				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
@@ -376,7 +376,8 @@ public class Network {
 					{
 						//Message is transfered to the controller
 						c.receiveMsg(dest.getAddress(), input);
-						System.out.println(input);
+						System.out.println("[CLIENT_THREAD] Received message : \"" + input + "\" from " + dest.getAddress() + ".");
+
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
