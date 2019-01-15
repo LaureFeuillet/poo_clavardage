@@ -113,10 +113,9 @@ public class Network {
 	    while(System.currentTimeMillis() - startTime < EXIT_TIME) {
 	    	try {
 	    		s.receive(receivedPacket);
-	    		System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + "...\n");
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
 		    	User u = ReceiveMessageUser(receivedPacket.getData());
-		    	u.getPseudo();
+		    	System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + ", pseudo is " + u.getPseudo() +"...\n");
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
