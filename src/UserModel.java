@@ -18,12 +18,6 @@ public class UserModel {
 
 	/*** Methods ***/
 
-	// Method that creates a specific user and adds it to the list of the connected users
-	public void addUser(String pseudo, InetAddress address, int numPort) {
-		User user = new User(pseudo, address, numPort);
-		this.connectedUsers.add(user);
-	}
-
 	// Method that removes a specific user from the list of the connected users
 	public void deleteUser(User userToDelete) {
 		this.connectedUsers.remove(userToDelete);
