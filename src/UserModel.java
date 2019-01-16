@@ -12,17 +12,12 @@ public class UserModel {
 		this.connectedUsers = new ArrayList<User>();
 		//this.connectedUsers = connectedUsers;
 		for(User u : Cu) {
+			System.out.println("[DEBUG] Added " + u.getPseudo() + " to the list of connected users.");
 			this.connectedUsers.add(u);
 		}
 	}
 
 	/*** Methods ***/
-
-	// Method that creates a specific user and adds it to the list of the connected users
-	public void addUser(String pseudo, InetAddress address, int numPort) {
-		User user = new User(pseudo, address, numPort);
-		this.connectedUsers.add(user);
-	}
 
 	// Method that removes a specific user from the list of the connected users
 	public void deleteUser(User userToDelete) {
@@ -57,7 +52,6 @@ public class UserModel {
 				break;
 			}
 		}
-		System.out.println(goodUser.getPseudo());
 		return goodUser;
 	}
 	
@@ -77,6 +71,7 @@ public class UserModel {
 	public void refreshUser(User userToUpdate, Action action) {
 		switch (action) {
         case CONNECT: 
+        			System.out.println("[DEBUG] Added " + userToUpdate.getPseudo() + " to the list of connected users.");
         			this.connectedUsers.add(userToUpdate);
                  break;
         case DISCONNECT: 
@@ -112,9 +107,6 @@ public class UserModel {
 		this.myself = myself;
 	}
 	public ArrayList<User> getConnectedUsers() {
-		for (User u : connectedUsers) {
-			System.out.println(u.getAddress().toString());
-		}
 		return this.connectedUsers;
 	}
 	public void setConnectedUsers(ArrayList<User> connectedUsers) {

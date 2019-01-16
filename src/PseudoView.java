@@ -30,7 +30,7 @@ public class PseudoView extends javax.swing.JFrame {
 		errorLabel = new JLabel("");
 		
 		/* Size and of the frame */
-        this.setSize(800, 900);
+        this.setSize(400, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Method that does everything */
@@ -43,29 +43,33 @@ public class PseudoView extends javax.swing.JFrame {
 		pan.setLayout(currentLayout);
 		
 		/* Background colors */
-		pan.setBackground(new Color(255, 212, 128));
+		pan.setBackground(new Color(222, 137, 211));
 		
 		/* The title label : CHOOSE ... */
-		JLabel pseudoLabel = new JLabel("CHOOSE YOUR PSEUDO");
+		JLabel pseudoLabel = new JLabel("CHOOSE YOUR PSEUDO :");
 		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 49, SpringLayout.WEST, pan);
-		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
+		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 25));
 		pan.add(pseudoLabel);
 		
 		/* The text field to enter new pseudo */
 		pseudoField = new JTextField();
-		currentLayout.putConstraint(SpringLayout.NORTH, pseudoField, 143, SpringLayout.NORTH, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, pseudoField, 118, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoField, -361, SpringLayout.SOUTH, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, pseudoField, -204, SpringLayout.EAST, pan);
-		currentLayout.putConstraint(SpringLayout.NORTH, errorLabel, 127, SpringLayout.SOUTH, pseudoField);
+		currentLayout.putConstraint(SpringLayout.NORTH, pseudoField, 100, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, pseudoField, 10, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoField, -100, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, pseudoField, -10, SpringLayout.EAST, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, errorLabel, 10, SpringLayout.SOUTH, pseudoField);
+		currentLayout.putConstraint(SpringLayout.WEST, errorLabel, 50, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, errorLabel, 200, SpringLayout.EAST, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -55, SpringLayout.NORTH, pseudoField);
-		pseudoField.setFont(new Font("Lucida Grande", Font.ITALIC, 11));
+		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 12, SpringLayout.WEST, pseudoField);
+		currentLayout.putConstraint(SpringLayout.EAST, pseudoLabel, -12, SpringLayout.EAST, pseudoField);
+		pseudoField.setFont(new Font("Lucida Grande", Font.ITALIC, 35));
 		pseudoField.setText("");
 		pan.add(pseudoField);
 		pseudoField.setColumns(10);
 		
 		/* The check button */
-		JButton checkButton = new JButton("Check !");
+		JButton checkButton = new JButton("CONNECT");
 		currentLayout.putConstraint(SpringLayout.NORTH, checkButton, 45, SpringLayout.SOUTH, pseudoField);
 		currentLayout.putConstraint(SpringLayout.EAST, checkButton, -160, SpringLayout.EAST, pan);
 		checkButton.addActionListener(new ActionListener() {
@@ -94,8 +98,8 @@ public class PseudoView extends javax.swing.JFrame {
     }
     
     public void printMsgError(){
-        errorLabel.setText("Error, this pseudo is already used !");
-        pseudoField.setText("Please try another one ...");
+        errorLabel.setText("This pseudo is not available.");
+        //pseudoField.setText("Please try another one ...");
     }
     
 /*

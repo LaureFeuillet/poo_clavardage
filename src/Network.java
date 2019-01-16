@@ -200,12 +200,14 @@ public class Network {
 		
 		public void run() {
 			User u;
-			try {
-				//Starts the watchdog on port PORT_WATCHDOG
-				sock = new DatagramSocket(PORT_WATCHDOG);
-				//System.out.print("[WATCHDOG] Socket created...\n");
-				
-			} catch (SocketException e) {}
+			while(sock == null) {
+				try {
+					//Starts the watchdog on port PORT_WATCHDOG
+					sock = new DatagramSocket(PORT_WATCHDOG);
+					//System.out.print("[WATCHDOG] Socket created...\n");
+					
+				} catch (SocketException e) {}
+			}
 			while(true) {
 				try {
 					//Waits for any broadcast packet
