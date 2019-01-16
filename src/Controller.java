@@ -171,7 +171,7 @@ public class Controller {
 		currentView = CurrentView.HOME;
 		ArrayList<Conversation> history = cm.getHistory();
 		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
-		System.out.println("Hist : "+history);
+		//System.out.println("Hist : "+history);
 	}
 	//Called from the home view
 	public void displayConversationView() {

@@ -395,10 +395,12 @@ public class Network {
 		}
 	}
 	
+	//Used to send a message to the connected users when exiting the application
 	private class ExitThread extends Thread{
 		
 		public ExitThread() {
 			super("EXIT THREAD");
+			//This is used to specify that this thread should be executed on exiting the app
 			Runtime.getRuntime().addShutdownHook(this);
 		}
 		
@@ -406,6 +408,7 @@ public class Network {
 			sendExitMessage();
 		}
 		
+		//Performs a broadcast message
 		private void sendExitMessage() {
 			DatagramPacket sentPacket = null;
 			DatagramSocket s = null;

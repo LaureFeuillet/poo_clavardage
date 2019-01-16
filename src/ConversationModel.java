@@ -37,10 +37,10 @@ public class ConversationModel {
 	    ResultSet rsMsg = null;
 		try {
 		      Class.forName("com.mysql.cj.jdbc.Driver");
-		      System.out.println("Driver OK");
+		      System.out.println("[DB] Driver OK");
 		      
 		      con = DriverManager.getConnection(url, user, pwd);
-		      System.out.println("[DB]Connection established !");
+		      System.out.println("[DB] Connection established !");
 		      
 		      stmt = con.createStatement();
 		      
@@ -161,7 +161,7 @@ public class ConversationModel {
 		
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("[DB]Connection established to delete history.");
+			System.out.println("[DB] Connection established to delete history.");
 			stmt = con.createStatement();
 			String query = "DELETE FROM message";
 			stmt.executeUpdate(query);
@@ -191,7 +191,7 @@ public class ConversationModel {
 		PreparedStatement pstmt = null;
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("[DB]Connection established to add a conv to history.");
+			System.out.println("[DB] Connection established to add a conv to history.");
 			String query = "INSERT INTO conversation"
 					+ " VALUES (NULL, ?, ?);";
 			pstmt = con.prepareStatement(query);
@@ -223,7 +223,7 @@ public class ConversationModel {
 		try {
 			// First we need to get the id of the conversation in DB
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("[DB]Connection established to add a msg to history.");
+			System.out.println("[DB] Connection established to add a msg to history.");
 			System.out.println("pseudo : " + conv.getDestinationUser().getPseudo());
 			System.out.println("starting_date : " + conv.getStartingDate());
 			query="SELECT id_conv FROM conversation"
@@ -248,7 +248,7 @@ public class ConversationModel {
 		    	pstmt.setBoolean(4, msg.getSent());
 				pstmt.executeUpdate();
 			} else {
-				System.out.println("[DB : Erreur]");
+				System.out.println("[DB] Error");
 			}
 			
 		} catch (SQLException e1) {
@@ -305,7 +305,7 @@ public class ConversationModel {
 	
 	public void printHistory () {
 		ArrayList<Conversation> historique = this.getHistory();
-		System.out.println("[DB]Historique : ");
+		System.out.println("[DB] History : ");
 		for(Conversation c : historique)
 		{
 			System.out.println("*** " + c.getDestinationUser() + "***");
@@ -314,6 +314,20 @@ public class ConversationModel {
 				System.out.println(m.getDate() + " : "+m.getContent());
 			}
 		}
+	}
+	
+	public void debugConversation (Conversation c) {
+		System.out.println("[DEBUG] Conversation with : " + c.getDestinationUser().getPseudo());
+		for(Message m : c.getMessages())
+		{
+			if (m.getSent()) {
+				System.out.println("You : \"" + m.getContent() + "\"");
+			}
+			else{
+				System.out.println(c.getDestinationUser().getPseudo() + " : \"" + m.getContent() + "\"");
+			}
+		}
+		System.out.println("[DEBUG] End of conversation");
 	}
 
 	/*
