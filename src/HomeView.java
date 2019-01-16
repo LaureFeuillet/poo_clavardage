@@ -70,7 +70,7 @@ public class HomeView extends JFrame {
         this.setSize(550, 550);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		setUpFrame();
+		//setUpFrame();
 	}
 
 	/*** Setup method ***/
