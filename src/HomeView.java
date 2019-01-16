@@ -121,7 +121,6 @@ public class HomeView extends JFrame {
 			for(User user : listUser) {
 				if (!user.getPseudo().equals("undefined")) {
 					JButton newButton = new JButton();
-					System.out.println("création d'un user déjà sur le réseau...");
 					newButton.setText(user.getPseudo());
 					newButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {

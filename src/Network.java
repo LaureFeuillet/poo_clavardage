@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.lang.Runtime;
 
 public class Network {
 	//These will be our IP address and the broadcast address corresponding to it
@@ -33,6 +34,7 @@ public class Network {
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
+	private ExitThread et = null;
 
 	public Network(Controller c) {
 		clients = new HashMap<InetAddress,ClientThread>();
@@ -45,6 +47,7 @@ public class Network {
 		//Used to get our local address and the broadcast address
 		init();
 		new WatchdogThread(this);
+		new ExitThread();
 	}
 	
 	//WARNING : VERY COMPLICATED ONE !!!
@@ -390,7 +393,35 @@ public class Network {
 		{
 			out.println(content);
 		}
-	}	
+	}
+	
+	private class ExitThread extends Thread{
+		
+		public ExitThread() {
+			super("EXIT THREAD");
+			Runtime.getRuntime().addShutdownHook(this);
+		}
+		
+		public void run() {
+			sendExitMessage();
+		}
+		
+		private void sendExitMessage() {
+			DatagramPacket sentPacket = null;
+			DatagramSocket s = null;
+			try {
+				//Creates a broadcast UDP socket
+				s = new DatagramSocket(0);
+				s.setBroadcast(true);
+			} catch (SocketException e) {}
+			//Sends the packet containing our pseudo the remote users
+	        sentPacket = new DatagramPacket("DISCONNECT".getBytes(), "DISCONNECT".length(), broadcast, PORT_WATCHDOG);
+	        try {
+	        	System.out.println("[EXIT THREAD] Sending DISCONNECT message");
+				s.send(sentPacket);
+			} catch (IOException e) {}
+		}
+	}
 	
 	/*****************************************************/
 	/***************        TOOLS        *****************/

@@ -97,9 +97,11 @@ public class UserModel {
 	}
 	
 	public void debugUsers() {
+		System.out.println("[DEBUG] current list of connected users :");
 		for (User u : connectedUsers) {
 			System.out.println(u.getPseudo() + " " + u.getAddress() + "@" + u.getNumPort());
 		}
+		System.out.println("[END OF DEBUG]");
 	}
 	
 	/*** Getters & setters ***/
