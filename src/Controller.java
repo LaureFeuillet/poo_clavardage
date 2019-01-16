@@ -72,7 +72,7 @@ public class Controller {
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
 	private void addMsg(Conversation conv, String content, boolean sent) {
-		//return cm.addMsg(conv, content, sent);
+		cm.addMsg(conv, content, sent);
 	}
 	
 	//Creates a new conversation (always initiated by a remote user) 

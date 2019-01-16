@@ -279,25 +279,26 @@ public class ConversationModel {
 	}
 	
 
-	public Conversation addMsg (Conversation convToUpdate, String content, boolean sent){
+	public void addMsg (Conversation convToUpdate, String content, boolean sent){
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		Conversation newConv = null;
 		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
-		addMsgToDB(convToUpdate, newMsg);
+		//addMsgToDB(convToUpdate, newMsg);
 		for(Conversation conv : this.currentConversations) {
 			if(conv == convToUpdate) {
 				conv.messages.add(newMsg);
-				newConv = conv;
+				//newConv = conv;
 				break;
 			}
 		}
+		/*
 		for(Conversation conv : this.history) {
 			if(conv == convToUpdate) {
 				conv.messages.add(newMsg);
 				break;
 			}
 		}
-		return newConv;
+		*/
 	}
 
 	/*** Getters & setters ***/
