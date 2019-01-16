@@ -121,10 +121,10 @@ public class ConversationModel {
 
 	/*** Methods ***/
 	// Asks the database about a conversation between myself and "pseudo" at a given date
-	public Conversation getConvFromHistory(String pseudo, String date){
+	public Conversation getConvFromHistory(String pseudo){
 		Conversation goodConv = null;
 		for(Conversation conv : this.history){
-			if((conv.getStartingDate() == date && (conv.getDestinationUser().getPseudo() == pseudo))){
+			if(conv.getDestinationUser().getPseudo() == pseudo){
 				goodConv = conv;
 				break;
 			}

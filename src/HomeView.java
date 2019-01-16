@@ -34,7 +34,7 @@ public class HomeView extends JFrame {
 	private JLabel welcomeLabel;
 	
 	private ArrayList<User >listUser;
-//	private String myself;
+	private String myself;
 	private ArrayList<Conversation> history;
 	
 	private JButton btnPseudo;
@@ -109,7 +109,7 @@ public class HomeView extends JFrame {
 
 
 		/* Welcome label */
-		welcomeLabel.setText("Hi null. Currently connected users :");
+		welcomeLabel.setText("Hi "+myself+". Currently connected users :");
 		welcomeLabel.setFont(new Font("Iowan Old Style", Font.PLAIN, 13));
 		pan.add(welcomeLabel);
 		
@@ -141,6 +141,9 @@ public class HomeView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.
 				cont.deleteHistory();
+				
+				histPan.revalidate();
+				histPan.repaint();
 			}});
 		pan.add(btnDeleteHistory);
 		
@@ -254,6 +257,9 @@ public class HomeView extends JFrame {
 		JScrollPane msgScroll = new JScrollPane(msgPan);
 		SpringLayout convLayout = new SpringLayout();
 		BoxLayout msgLayout = new BoxLayout(msgPan, BoxLayout.Y_AXIS);
+		JLabel pseudoLabel = new JLabel();
+		JButton backButton = new JButton("Back to home");
+
 
         convFrame.setSize(550, 550);
         convFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -265,14 +271,54 @@ public class HomeView extends JFrame {
 		msgScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		msgScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		JLabel pseudoLabel = new JLabel();
+		convLayout.putConstraint(SpringLayout.NORTH, msgScroll, 18, SpringLayout.SOUTH, pseudoLabel);
+		convLayout.putConstraint(SpringLayout.EAST, msgScroll, 263, SpringLayout.WEST, convPan);
+		convLayout.putConstraint(SpringLayout.WEST, msgScroll, 0, SpringLayout.WEST, pseudoLabel);
+		convLayout.putConstraint(SpringLayout.NORTH, backButton, 20, SpringLayout.NORTH, msgScroll);
+
+		convLayout.putConstraint(SpringLayout.NORTH, msgScroll, 18, SpringLayout.SOUTH, pseudoLabel);
+		convLayout.putConstraint(SpringLayout.EAST, msgScroll, 263, SpringLayout.WEST, convPan);
+		convLayout.putConstraint(SpringLayout.WEST, msgScroll, 0, SpringLayout.WEST, pseudoLabel);
+		convPan.add(msgScroll);
+		
 		pseudoLabel.setText("Previous conv with : "+ pseudo+".");
 		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
-		currentLayout.putConstraint(SpringLayout.NORTH, pseudoLabel, 33, SpringLayout.NORTH, convPan);
-		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 19, SpringLayout.WEST, convPan);
-		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -434, SpringLayout.SOUTH, convPan);
+		convLayout.putConstraint(SpringLayout.NORTH, pseudoLabel, 33, SpringLayout.NORTH, convPan);
+		convLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 19, SpringLayout.WEST, convPan);
+		convLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -434, SpringLayout.SOUTH, convPan);
 		convPan.add(pseudoLabel);
 		
+		convLayout.putConstraint(SpringLayout.SOUTH, msgScroll, -30, SpringLayout.NORTH, backButton);
+		convLayout.putConstraint(SpringLayout.WEST, backButton, 71, SpringLayout.WEST, convPan);
+		convLayout.putConstraint(SpringLayout.EAST, backButton, 190, SpringLayout.WEST, convPan);
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Things to be done when the button is clicked.
+				//HomeView hv = new HomeView(cont);
+				//cont.hv = hv;
+				convFrame.setVisible(false);
+				cont.hv.setVisible(true);
+			}});
+		convPan.add(backButton);
+		
+		//User user = cont.um.getUserByPseudo(pseudo);
+		ArrayList<Message> listMsg = cont.cm.getConvFromHistory(pseudo).getMessages();
+		if(listMsg != null) {
+			for(Message msg : listMsg) {
+				JLabel newMsg = new JLabel();
+				if(msg.getSent() == true) {
+					newMsg.setForeground(new Color(0, 0, 0));
+					newMsg.setText(msg.getDate() + " - " + myself + " : " + msg.getContent());
+				}
+				else{
+					newMsg.setForeground(new Color(0, 153, 153));
+					newMsg.setText(msg.getDate() + " - " + pseudo + " : " + msg.getContent());
+				}
+				msgPan.add(newMsg);
+			}
+			msgPan.revalidate();
+			msgPan.repaint();
+		}
 
 		convPan.revalidate();
 		convPan.repaint();	
@@ -284,7 +330,7 @@ public class HomeView extends JFrame {
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
 		history = hist;
 		listUser = coUsers;
-//		myself = m;
+		myself = m;
 		setUpFrame();
 		pan.revalidate();
 		pan.repaint();
