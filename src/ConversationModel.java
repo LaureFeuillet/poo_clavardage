@@ -26,6 +26,7 @@ public class ConversationModel {
 	public ConversationModel() {
 		currentConversations = new ArrayList<Conversation>();
 		currentConv = null;
+		/*
 		// Establish a connection to the database
 		// to get all previous conversations for history
 		Connection con = null;
@@ -117,18 +118,21 @@ public class ConversationModel {
 					}
 		    	}
 		    }
+		    */
 		}
 
 	/*** Methods ***/
 	// Asks the database about a conversation between myself and "pseudo" at a given date
 	public Conversation getConvFromHistory(String pseudo, String date){
 		Conversation goodConv = null;
+		/*
 		for(Conversation conv : this.history){
 			if((conv.getStartingDate() == date && (conv.getDestinationUser().getPseudo() == pseudo))){
 				goodConv = conv;
 				break;
 			}
 		}
+		*/
 		return goodConv;
 	}
 	
@@ -185,6 +189,7 @@ public class ConversationModel {
 
 	// Adds a specific conversation in DB
 	public void addConvToDB(Conversation conv){
+		/*
 		history.add(conv);
 		
 		Connection con = null;
@@ -210,11 +215,12 @@ public class ConversationModel {
 				}
 	    	}
 	    }
+	    */
 	}
 	
 	//Add a specific message in DB
 	public void addMsgToDB(Conversation conv, Message msg) {
-		
+		/*
 		String query = null;
 		Connection con = null;
 		Statement stmt = null;
@@ -238,7 +244,7 @@ public class ConversationModel {
 			System.out.println("3");
 			if (rs != null) {
 				rs.next();
-				System.out.println("[DB]On a trouvé la bonne conv.");
+				System.out.println("[DB]On a trouvï¿½ la bonne conv.");
 				// Then we can add the msg in DB
 				query = "INSERT INTO message"
 						+ " VALUES (NULL, ?, ?, ?, ?);";
@@ -269,6 +275,7 @@ public class ConversationModel {
 				}
 	    	}
 		}
+		*/
 	}
 	
 

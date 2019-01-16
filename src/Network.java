@@ -115,7 +115,7 @@ public class Network {
 	    		s.receive(receivedPacket);
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
 		    	User u = ReceiveMessageUser(receivedPacket.getData());
-		    	System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + ", pseudo is " + u.getPseudo() +"...\n");
+		    	System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + ", pseudo is \"" + u.getPseudo() +"\"...\n");
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
@@ -240,7 +240,7 @@ public class Network {
 						default:
 							//The user is contained in the data of the packet
 						    u = ReceiveMessageUser(receivedPacket.getData());
-						    System.out.print("[WATCHDOG] Received pseudo " + u.getPseudo() + " from " + receivedPacket.getAddress() + "...\n");
+						    System.out.print("[WATCHDOG] Received pseudo \"" + u.getPseudo() + "\" from " + receivedPacket.getAddress() + "...\n");
 							//The controller is notified that the user behind an IP address that we already know has
 							//changed his pseudo
 							n.getController().refreshUser(u, Action.UPDATE);
