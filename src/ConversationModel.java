@@ -229,14 +229,10 @@ public class ConversationModel {
 			query="SELECT id_conv FROM conversation"
 				+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
 				+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
-			System.out.println("1");
 			stmt = con.createStatement();
 			// rs store the id_conv 
-			System.out.println("2");
 			rs = stmt.executeQuery(query);
-			System.out.println("3");
-			if (rs != null) {
-				rs.next();
+			if (rs.next()) {
 				System.out.println("[DB]On a trouvé la bonne conv.");
 				// Then we can add the msg in DB
 				query = "INSERT INTO message"
