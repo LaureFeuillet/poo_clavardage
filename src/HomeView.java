@@ -18,46 +18,59 @@ public class HomeView extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	/*** Attributes ***/
-	protected Controller c;
+	protected Controller cont;
+	
 	private SpringLayout currentLayout;
 	private BoxLayout listLayout;
+	private BoxLayout histLayout;
+	
 	private JPanel pan;
 	private JPanel listPan;
+	private JPanel histPan;
 	private JScrollPane listScroll;
+	private JScrollPane histScroll;
+	
 	private JLabel homeLabel;
 	private JLabel welcomeLabel;
 	
 	private ArrayList<User >listUser;
-	private String myself;
-	//private ArrayList<Conversation> history;
+//	private String myself;
+	private ArrayList<Conversation> history;
 	
-	private JLabel testLabel;
 	private JButton btnPseudo;
 
 	
 	/*** Constructors ***/
 	public HomeView(Controller c) {
-		this.c = c;
+		this.cont = c;
 		listUser = new ArrayList<User>();
 		// Components of my frame
 		pan = new JPanel();
 		homeLabel = new JLabel();
 		welcomeLabel = new JLabel();
 		currentLayout = new SpringLayout();
+		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 19, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, welcomeLabel, -434, SpringLayout.SOUTH, pan);
 		
 		listPan = new JPanel();
 		listScroll = new JScrollPane(listPan);
+		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 18, SpringLayout.SOUTH, welcomeLabel);
+		currentLayout.putConstraint(SpringLayout.EAST, listScroll, 263, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, listScroll, 0, SpringLayout.WEST, welcomeLabel);
 		listLayout = new BoxLayout(listPan, BoxLayout.Y_AXIS);
 		
-		testLabel = new JLabel();
-		
-		currentLayout.putConstraint(SpringLayout.SOUTH, testLabel, -118, SpringLayout.SOUTH, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, testLabel, -138, SpringLayout.EAST, pan);
+		histPan = new JPanel();
+		histScroll = new JScrollPane(histPan);
+		currentLayout.putConstraint(SpringLayout.NORTH, histScroll, 112, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, histScroll, 22, SpringLayout.EAST, listScroll);
+		currentLayout.putConstraint(SpringLayout.SOUTH, histScroll, -84, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, histScroll, -21, SpringLayout.EAST, pan);
+		histLayout = new BoxLayout(histPan, BoxLayout.Y_AXIS);
 		
         this.setSize(550, 550);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		//setUpFrame();
+		setUpFrame();
 	}
 
 	/*** Setup method ***/
@@ -67,20 +80,24 @@ public class HomeView extends JFrame {
 		// Set the pan with its layout
 		pan.setLayout(currentLayout);
 		listPan.setLayout(listLayout);
+		histPan.setLayout(histLayout);
 		
 		/* Colors */
 		pan.setBackground(new Color(255, 212, 128));
-		listPan.setBackground(new Color(204, 255, 255));
-		listScroll.setBackground(new Color(0, 0, 0));
 		
-		/* Scroll the list of users */
-		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 137, SpringLayout.NORTH, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, listScroll, 97, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, 0, SpringLayout.SOUTH, testLabel);
-		currentLayout.putConstraint(SpringLayout.EAST, listScroll, 228, SpringLayout.WEST, pan);
+		listPan.setBackground(new Color(204, 255, 255));
+		histPan.setBackground(new Color(204, 255, 255));
+		listScroll.setBackground(new Color(0, 0, 0));
+		histScroll.setBackground(new Color(0, 0, 0));
+
+		// Scrolling policies
 		listScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		histScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		histScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
 		pan.add(listScroll);
+		pan.add(histScroll);
 
 		
 		/* Title label : Home */
@@ -92,44 +109,44 @@ public class HomeView extends JFrame {
 
 
 		/* Welcome label */
-		welcomeLabel.setText("Welcome "+myself+". Who do you want to talk to ?");
-		welcomeLabel.setFont(new Font("Iowan Old Style", Font.BOLD | Font.ITALIC, 13));
-		currentLayout.putConstraint(SpringLayout.NORTH, welcomeLabel, 19, SpringLayout.SOUTH, homeLabel);
-		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 72, SpringLayout.WEST, pan);
+		welcomeLabel.setText("Hi null. Currently connected users :");
+		welcomeLabel.setFont(new Font("Iowan Old Style", Font.PLAIN, 13));
 		pan.add(welcomeLabel);
-
-			
-		testLabel.setText("");
-		pan.add(testLabel);
 		
 		btnPseudo = new JButton("Change pseudo");
+		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -30, SpringLayout.NORTH, btnPseudo);
 		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 34, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, btnPseudo, -25, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 175, SpringLayout.WEST, pan);
 		btnPseudo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.
-				PseudoView pv = new PseudoView(c);
-				c.pv = pv;
-				c.hv.setVisible(false);
-				c.displayPseudoView();
+				PseudoView pv = new PseudoView(cont);
+				cont.pv = pv;
+				cont.hv.setVisible(false);
+				cont.displayPseudoView();
 			}});
 		pan.add(btnPseudo);
 		
+		JLabel lblHistoryPrevious = new JLabel("History of previous conversations :");
+		currentLayout.putConstraint(SpringLayout.NORTH, lblHistoryPrevious, 0, SpringLayout.NORTH, welcomeLabel);
+		currentLayout.putConstraint(SpringLayout.WEST, lblHistoryPrevious, 0, SpringLayout.WEST, histScroll);
+		lblHistoryPrevious.setFont(new Font("Iowan Old Style", Font.PLAIN, 13));
+		pan.add(lblHistoryPrevious);
 		
+		// Creation of the list of connected users
 		if(listUser != null) {
 			for(User user : listUser) {
 				if (!user.getPseudo().equals("undefined")) {
 					JButton newButton = new JButton();
-					System.out.println("création d'un user déjà sur le réseau...");
 					newButton.setText(user.getPseudo());
 					newButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							// Things to be done when the button is clicked.
 							String i = e.getActionCommand();
 							//testLabel.setText("Talking to "+ i +".");
-							c.displayConversation(i);
-							c.hv.setVisible(false);
+							cont.displayConversation(i);
+							cont.hv.setVisible(false);
 						}});
 					listPan.add(newButton);
 					listPan.revalidate();
@@ -137,6 +154,25 @@ public class HomeView extends JFrame {
 				}
 			}
 		}
+		// Creation of the history
+				if(history != null) {
+					for(Conversation c : history) {
+						if (!c.getDestinationUser().getPseudo().equals("undefined")) {
+							JButton newButton = new JButton();
+							newButton.setText(c.getDestinationUser().getPseudo());
+							newButton.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									// Things to be done when the button is clicked.
+									String i = e.getActionCommand();
+									// HERE DISPLAY THE PAST CONV form the history
+									cont.hv.setVisible(false);
+								}});
+							listPan.add(newButton);
+							listPan.revalidate();
+							listPan.repaint();	
+						}
+					}
+				}
 		
 		pan.revalidate();
 		pan.repaint();
@@ -155,8 +191,8 @@ public class HomeView extends JFrame {
 							// Things to be done when the button is clicked.
 							String i = e.getActionCommand();
 							//testLabel.setText("Talking to "+ i +".");
-							c.displayConversation(i);
-							c.hv.setVisible(false);
+							cont.displayConversation(i);
+							cont.hv.setVisible(false);
 						}});
 					listPan.add(newButton);
 					listPan.revalidate();
@@ -174,7 +210,6 @@ public class HomeView extends JFrame {
 			if((u.getAddress() == user.getAddress()) && (u.getNumPort() == user.getNumPort())) {
 				exists = true;
 				u.setPseudo(user.getPseudo());
-				System.out.println("addUser : update d'un utilisateur");
 				listPan.revalidate();
 				listPan.repaint();	
 				break;
@@ -191,9 +226,8 @@ public class HomeView extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						// Things to be done when the button is clicked.
 						String i = e.getActionCommand();
-						//testLabel.setText("Talking to "+ i +".");
-						c.displayConversation(i);
-						c.hv.setVisible(false);
+						cont.displayConversation(i);
+						cont.hv.setVisible(false);
 						System.out.println("fin du bouton");
 					}});
 				listPan.add(newButton);
@@ -206,23 +240,12 @@ public class HomeView extends JFrame {
 	
 	/*** Other methods ***/
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
-		//history = hist;
+		history = hist;
 		listUser = coUsers;
-		myself = m;
+//		myself = m;
 		setUpFrame();
 		pan.revalidate();
 		pan.repaint();
 		this.setVisible(true);
 	}
-
-/*
-	// Main to test without the controller .
-	public static void main(String[] args) {
-		Controller c = null;
-		HomeView hv = new HomeView(c);
-		hv.setVisible(true);
-
-		hv.displayView("Laure",null);
-	}
-*/
 }
