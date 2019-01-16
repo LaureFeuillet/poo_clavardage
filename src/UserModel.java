@@ -40,7 +40,10 @@ public class UserModel {
 			}
 		}
 		if(available) {
-			this.setMyself(pseudoToCheck);
+			if (!pseudoToCheck.equals("undefined"))
+				this.setMyself(pseudoToCheck);
+			else
+				available = false;
 		}
 		return available;
 	}
