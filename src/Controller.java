@@ -84,12 +84,10 @@ public class Controller {
 	
 	//Displays an already started conversation, or starts it and displays it if it was not
 	public void displayConversation(String pseudo) {
-		System.out.println("displayConv");
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			nw.addConv(u);
-			System.out.println("La conv n'existe pas encore avec " + u.getPseudo()+".");
 			cm.startConv(u);
 			c = cm.getConvByUser(u);
 		}	
