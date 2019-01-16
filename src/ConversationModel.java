@@ -26,6 +26,7 @@ public class ConversationModel {
 	public ConversationModel() {
 		currentConversations = new ArrayList<Conversation>();
 		currentConv = null;
+		history = new ArrayList<Conversation>();
 		// Establish a connection to the database
 		// to get all previous conversations for history
 		Connection con = null;
@@ -68,7 +69,6 @@ public class ConversationModel {
 		      stmt.executeUpdate(query);
 
 		      // Get previous conversations and corresponding messages from DB
-		      history = new ArrayList<Conversation>();
 		      // First, we get all previous conversations
 		      query = "SELECT pseudo, starting_date"
 		    		+ " FROM conversation";
@@ -100,7 +100,7 @@ public class ConversationModel {
 		    	  history.add(new Conversation(new User(pseudo, null, 0), startingDate, messages));
 		      }
 		    } catch (Exception e) {
-		      e.printStackTrace();
+		    	e.printStackTrace();
 		    } finally {
 		    	if (con != null) {
 		    		try {
@@ -275,12 +275,6 @@ public class ConversationModel {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
 		addMsgToDB(convToUpdate, newMsg);
-		for(Conversation conv : this.currentConversations) {
-			if(conv == convToUpdate) {
-				conv.messages.add(newMsg);
-				break;
-			}
-		}
 		for(Conversation conv : this.history) {
 			if(conv == convToUpdate) {
 				conv.messages.add(newMsg);
