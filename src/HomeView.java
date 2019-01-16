@@ -38,7 +38,7 @@ public class HomeView extends JFrame {
 	private ArrayList<Conversation> history;
 	
 	private JButton btnPseudo;
-
+	
 	
 	/*** Constructors ***/
 	public HomeView(Controller c) {
@@ -70,7 +70,7 @@ public class HomeView extends JFrame {
         this.setSize(550, 550);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		setUpFrame();
+		//setUpFrame();
 	}
 
 	/*** Setup method ***/
@@ -115,9 +115,8 @@ public class HomeView extends JFrame {
 		
 		btnPseudo = new JButton("Change pseudo");
 		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -30, SpringLayout.NORTH, btnPseudo);
-		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 34, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.SOUTH, btnPseudo, -25, SpringLayout.SOUTH, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 175, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 71, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 212, SpringLayout.WEST, pan);
 		btnPseudo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.
@@ -133,6 +132,17 @@ public class HomeView extends JFrame {
 		currentLayout.putConstraint(SpringLayout.WEST, lblHistoryPrevious, 0, SpringLayout.WEST, histScroll);
 		lblHistoryPrevious.setFont(new Font("Iowan Old Style", Font.PLAIN, 13));
 		pan.add(lblHistoryPrevious);
+		
+		JButton btnDeleteHistory = new JButton("Delete history");
+		currentLayout.putConstraint(SpringLayout.SOUTH, btnDeleteHistory, -25, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, btnPseudo, 0, SpringLayout.NORTH, btnDeleteHistory);
+		currentLayout.putConstraint(SpringLayout.EAST, btnDeleteHistory, -85, SpringLayout.EAST, pan);
+		btnDeleteHistory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Things to be done when the button is clicked.
+				cont.deleteHistory();
+			}});
+		pan.add(btnDeleteHistory);
 		
 		// Creation of the list of connected users
 		if(listUser != null) {
@@ -164,22 +174,21 @@ public class HomeView extends JFrame {
 								public void actionPerformed(ActionEvent e) {
 									// Things to be done when the button is clicked.
 									String i = e.getActionCommand();
-									// HERE DISPLAY THE PAST CONV form the history
-									cont.hv.setVisible(false);
+									showConv(i);
 								}});
-							listPan.add(newButton);
-							listPan.revalidate();
-							listPan.repaint();	
+							histPan.add(newButton);
+							histPan.revalidate();
+							histPan.repaint();	
 						}
 					}
 				}
-		
 		pan.revalidate();
 		pan.repaint();
+		histPan.revalidate();
+		histPan.repaint();
 	}
 	
 	public void removeUser(String pseudo) {
-		System.out.println("RemoveUser");
 		for(User u : listUser) {
 			if(u.getPseudo() == pseudo) {
 				listUser.remove(u);
@@ -220,7 +229,6 @@ public class HomeView extends JFrame {
 			{
 				listUser.add(user);
 				JButton newButton = new JButton();
-				System.out.println("addUser : création du bouton pour newUser");
 				newButton.setText(user.getPseudo());
 				newButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -228,7 +236,6 @@ public class HomeView extends JFrame {
 						String i = e.getActionCommand();
 						cont.displayConversation(i);
 						cont.hv.setVisible(false);
-						System.out.println("fin du bouton");
 					}});
 				listPan.add(newButton);
 				listPan.revalidate();
@@ -239,6 +246,41 @@ public class HomeView extends JFrame {
 	}
 	
 	/*** Other methods ***/
+	public void showConv(String pseudo) {
+		// All thats needed to show a conversation from history
+		JFrame convFrame = new JFrame();
+		JPanel convPan = new JPanel();
+		JPanel msgPan = new JPanel();
+		JScrollPane msgScroll = new JScrollPane(msgPan);
+		SpringLayout convLayout = new SpringLayout();
+		BoxLayout msgLayout = new BoxLayout(msgPan, BoxLayout.Y_AXIS);
+
+        convFrame.setSize(550, 550);
+        convFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		convPan.setLayout(convLayout);
+		convFrame.setContentPane(convPan);
+		msgPan.setLayout(msgLayout);
+		
+		msgScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		msgScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		JLabel pseudoLabel = new JLabel();
+		pseudoLabel.setText("Previous conv with : "+ pseudo+".");
+		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
+		currentLayout.putConstraint(SpringLayout.NORTH, pseudoLabel, 33, SpringLayout.NORTH, convPan);
+		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 19, SpringLayout.WEST, convPan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -434, SpringLayout.SOUTH, convPan);
+		convPan.add(pseudoLabel);
+		
+
+		convPan.revalidate();
+		convPan.repaint();	
+		
+		convFrame.setVisible(true);
+		cont.hv.setVisible(false);
+	}
+	
 	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
 		history = hist;
 		listUser = coUsers;
@@ -246,6 +288,7 @@ public class HomeView extends JFrame {
 		setUpFrame();
 		pan.revalidate();
 		pan.repaint();
+
 		this.setVisible(true);
 	}
 }
