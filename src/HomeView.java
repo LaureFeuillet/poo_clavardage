@@ -228,7 +228,7 @@ public class HomeView extends JFrame {
 			}
 		}
 		if(!exists) {
-			if(user.getPseudo() != null)
+			if(!user.getPseudo().equals("undefined"))
 			{
 				listUser.add(user);
 				JButton newButton = new JButton();
