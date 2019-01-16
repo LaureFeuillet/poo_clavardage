@@ -53,7 +53,7 @@ public class Controller {
 	public void sendMsg(String pseudo, String content) {
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getCurrentConv();
-		c = addMsg(c, content, true);
+		addMsg(c, content, true);
 		nw.sendMsg(u,content);
 		//The conversation view is refreshed to display the newly sent message
 		//cv.displayView(um.getMyself(), c);
@@ -63,7 +63,7 @@ public class Controller {
 	public void receiveMsg(InetAddress ip, String content) {
 		User u = um.getUserByIP(ip);
 		Conversation c = cm.getConvByUser(u);
-		c = addMsg(c, content, false);
+		addMsg(c, content, false);
 		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
 		if (c == cm.getCurrentConv()) {
 			cv.addMsg(content);
@@ -71,8 +71,8 @@ public class Controller {
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
-	private Conversation addMsg(Conversation conv, String content, boolean sent) {
-		return cm.addMsg(conv, content, sent);
+	private void addMsg(Conversation conv, String content, boolean sent) {
+		//return cm.addMsg(conv, content, sent);
 	}
 	
 	//Creates a new conversation (always initiated by a remote user) 
