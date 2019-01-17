@@ -151,7 +151,7 @@ public class ConversationModel {
 					// TP update the corresponding conversation according to the new pseudo
 					query = "UPDATE conversation"
 						  + " SET pseudo='" + conv.getDestinationUser().getPseudo() + "'"
-						  + " WHERE id = '" + rs.getInt("id_conv") + "';";
+						  + " WHERE id_conv = '" + rs.getInt("id_conv") + "';";
 					stmt.executeUpdate(query);
 					System.out.println("[DB] User updated.");
 				} else {
