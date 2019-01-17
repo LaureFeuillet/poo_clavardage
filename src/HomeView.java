@@ -320,7 +320,7 @@ public class HomeView extends JFrame {
 		convPan.add(backButton);
 		
 		//User user = cont.um.getUserByPseudo(pseudo);
-		ArrayList<Message> listMsg = cont.cm.getConvFromHistory(pseudo , date).getMessages();
+		ArrayList<Message> listMsg = cont.cm.getConvFromHistory(pseudo, date).getMessages();
 		if(listMsg != null) {
 			for(Message msg : listMsg) {
 				JLabel newMsg = new JLabel();

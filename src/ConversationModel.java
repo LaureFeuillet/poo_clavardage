@@ -178,7 +178,7 @@ public class ConversationModel {
 	public Conversation getConvFromHistory(String pseudo, String date){
 		Conversation goodConv = null;
 		for(Conversation conv : this.history) {
-			if((conv.getDestinationUser().getPseudo().equals(pseudo)) && conv.getStartingDate().equals(date)){
+			if((conv.getDestinationUser().getPseudo().equals(pseudo)) && (conv.getStartingDate().equals(date))){
 				goodConv = conv;
 				break;
 			}
