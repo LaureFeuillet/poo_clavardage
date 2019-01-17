@@ -195,7 +195,7 @@ public class HomeView extends JFrame {
 						public void actionPerformed(ActionEvent e) {
 							// Things to be done when the button is clicked.
 							//String i = e.getActionCommand();
-							showConv(c.getDestinationUser().getPseudo());
+							showConv(c.getDestinationUser().getPseudo(), c.getStartingDate());
 						}});
 					histPan.add(newButton);
 					histPan.revalidate();
@@ -272,7 +272,7 @@ public class HomeView extends JFrame {
 	*/
 	
 	/*** Other methods ***/
-	public void showConv(String pseudo) {
+	public void showConv(String pseudo, String date) {
 		// All thats needed to show a conversation from history
 		JFrame convFrame = new JFrame();
 		JPanel convPan = new JPanel();
@@ -320,7 +320,7 @@ public class HomeView extends JFrame {
 		convPan.add(backButton);
 		
 		//User user = cont.um.getUserByPseudo(pseudo);
-		ArrayList<Message> listMsg = cont.cm.getConvFromHistory(pseudo).getMessages();
+		ArrayList<Message> listMsg = cont.cm.getConvFromHistory(pseudo , date).getMessages();
 		if(listMsg != null) {
 			for(Message msg : listMsg) {
 				JLabel newMsg = new JLabel();
