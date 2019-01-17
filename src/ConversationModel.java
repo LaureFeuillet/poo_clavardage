@@ -285,7 +285,7 @@ public class ConversationModel {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
 		addMsgToDB(convToUpdate, newMsg);
-		for(Conversation conv : this.history) {
+		for(Conversation conv : this.currentConversations) {
 			if(conv == convToUpdate) {
 				conv.messages.add(newMsg);
 				break;

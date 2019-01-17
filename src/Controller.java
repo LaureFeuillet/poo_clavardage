@@ -174,6 +174,6 @@ public class Controller {
 		this.cv = new ConversationView(this);
 		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
-		cm.debugConversations();
+		cm.printHistory();
 	}
 }
