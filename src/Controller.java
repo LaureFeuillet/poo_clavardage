@@ -104,8 +104,10 @@ public class Controller {
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
 		//String pseudoDest = u.getPseudo();
+		String oldPseudo = "";
 		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
-		String oldPseudo = conv.getDestinationUser().getPseudo();
+		if (conv != null)
+			oldPseudo = conv.getDestinationUser().getPseudo();
 		um.refreshUser(u, a);
 		switch(a) {
 		case CONNECT:
