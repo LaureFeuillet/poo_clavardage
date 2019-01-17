@@ -130,7 +130,7 @@ public class ConversationModel {
 		}
 
 	// To update the pseudo of a user in DB if it changed
-	public void updatePseudoInDB(Conversation oldConv, String newPseudo) {
+	public void updatePseudoInDB(Conversation conv, String oldPseudo) {
 		if(dbSet) {
 			Connection con = null;
 			Statement stmt = null;
@@ -142,15 +142,15 @@ public class ConversationModel {
 				
 				// To find the id_conv of the old conversation
 				String query = " SELECT id_conv"
-						+ " FROM conversation "
-						+ " WHERE pseudo = '" + oldConv.getDestinationUser().getPseudo() +"'"
-						+ " AND starting_date = '" + oldConv.getStartingDate().toString() + "';";
+						+ " FROM Conversation "
+						+ " WHERE pseudo = '" + oldPseudo +"'"
+						+ " AND starting_date = '" + conv.getStartingDate().toString() + "';";
 				// rs store the id_conv 
 				rs = stmt.executeQuery(query);
 				if (rs.next()) {
 					// TP update the corresponding conversation according to the new pseudo
-					query = "UPDATE conversation"
-						  + "SET pseudo='" + newPseudo + "'"
+					query = "UPDATE Conversation"
+						  + "SET pseudo='" + conv.getDestinationUser().getPseudo() + "'"
 						  + "WHERE id=" + rs.getInt("id_conv") + ";";
 					stmt.executeUpdate(query);
 					System.out.println("[DB] User updated.");
