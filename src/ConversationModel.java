@@ -96,13 +96,12 @@ public class ConversationModel {
 		    	  startingDate = rs.getString("starting_date");
 		    	  query = "SELECT date, content, sent"
 		    	  		+ " FROM message"
-		    	  		+ " INNER JOIN conversation"
-		    	  		+ " ON message.conv = conversation.id_conv"
 		    	  		+ " WHERE message.conv = '" + id_conv + "';";
 		    	  rsMsg = stmtMsg.executeQuery(query);
 		    	  // rsMsg stores all messages corresponding to the current conversation
 		    	  messages = new ArrayList<Message>();
 		    	  while(rsMsg.next()) {
+		    		  //System.out.println(id_conv + " " + rsMsg.getString("date") + " " + rsMsg.getString("content") + " " + rsMsg.getBoolean("sent"));
 		    		  messages.add(new Message(rsMsg.getString("date"), rsMsg.getString("content"), rsMsg.getBoolean("sent")));
 		    	  }
 		    	  history.add(new Conversation(new User(pseudo, null, 0), startingDate, messages));
