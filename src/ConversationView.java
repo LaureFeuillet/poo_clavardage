@@ -46,6 +46,7 @@ public class ConversationView extends JFrame {
 		pan = new JPanel();
 		currentLayout = new SpringLayout();
 		listPan = new JPanel();
+		listPan.setBackground(new Color(255, 240, 245));
 		listScroll = new JScrollPane(listPan);
 		listLayout = new BoxLayout(listPan, BoxLayout.Y_AXIS);
 		
@@ -65,7 +66,7 @@ public class ConversationView extends JFrame {
 		listPan.setLayout(listLayout);
 		
 		/* Colors */
-		pan.setBackground(new Color(255, 212, 128));
+		pan.setBackground(new Color(220, 220, 220));
 		listScroll.setBackground(new Color(0, 0, 0));
 		
 		/* Scroll the list of users */
@@ -78,23 +79,22 @@ public class ConversationView extends JFrame {
 		/* Text field for a new message */
 		textField = new JTextField("");
 		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -6, SpringLayout.NORTH, textField);
-		currentLayout.putConstraint(SpringLayout.WEST, textField, 0, SpringLayout.WEST, listScroll);
+		currentLayout.putConstraint(SpringLayout.WEST, textField, 10, SpringLayout.WEST, pan);
+		textField.setFont(new Font("Lucida Grande", Font.PLAIN, 17));
 		currentLayout.putConstraint(SpringLayout.NORTH, textField, -82, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, textField, -10, SpringLayout.SOUTH, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, textField, -91, SpringLayout.EAST, pan);
 		textField.setColumns(10);
 		pan.add(textField);
 		
 		lblLui = new JLabel("Talking to : " + other);
-		currentLayout.putConstraint(SpringLayout.WEST, lblLui, 92, SpringLayout.WEST, pan);
+		lblLui.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		pan.add(lblLui);
 		
 		titleLabel = new JLabel("Chat room");
-		currentLayout.putConstraint(SpringLayout.NORTH, titleLabel, 20, SpringLayout.NORTH, pan);
-		currentLayout.putConstraint(SpringLayout.NORTH, lblLui, 4, SpringLayout.NORTH, titleLabel);
-		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 18, SpringLayout.SOUTH, titleLabel);
-		currentLayout.putConstraint(SpringLayout.EAST, titleLabel, -58, SpringLayout.EAST, pan);
-		titleLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
+		currentLayout.putConstraint(SpringLayout.NORTH, titleLabel, 12, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, lblLui, 5, SpringLayout.NORTH, titleLabel);
+		currentLayout.putConstraint(SpringLayout.EAST, titleLabel, -23, SpringLayout.EAST, pan);
+		titleLabel.setFont(new Font("Lucida Grande", Font.BOLD, 20));
 		pan.add(titleLabel);
 		
 		// Prints the current conversation
@@ -103,8 +103,12 @@ public class ConversationView extends JFrame {
 		
 		/* The send button */
 		JButton sendButton = new JButton("Send");
+		sendButton.setForeground(new Color(46, 139, 87));
+		currentLayout.putConstraint(SpringLayout.EAST, textField, -6, SpringLayout.WEST, sendButton);
+		currentLayout.putConstraint(SpringLayout.EAST, sendButton, 0, SpringLayout.EAST, listScroll);
+		sendButton.setFont(new Font("Lucida Grande", Font.BOLD, 15));
 		currentLayout.putConstraint(SpringLayout.NORTH, sendButton, 19, SpringLayout.SOUTH, listScroll);
-		currentLayout.putConstraint(SpringLayout.WEST, sendButton, 6, SpringLayout.EAST, textField);
+		currentLayout.putConstraint(SpringLayout.WEST, sendButton, 465, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, sendButton, -20, SpringLayout.SOUTH, pan);
 		sendButton.setBackground(new Color(0, 206, 209));
 		sendButton.addActionListener(new ActionListener() {
@@ -130,9 +134,12 @@ public class ConversationView extends JFrame {
 		pan.add(sendButton);
 		
 		JButton backButton = new JButton("<<<");
+		currentLayout.putConstraint(SpringLayout.WEST, lblLui, 18, SpringLayout.EAST, backButton);
+		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 10, SpringLayout.SOUTH, backButton);
+		currentLayout.putConstraint(SpringLayout.EAST, backButton, -476, SpringLayout.EAST, pan);
+		backButton.setFont(new Font("Lucida Grande", Font.BOLD, 15));
+		currentLayout.putConstraint(SpringLayout.NORTH, backButton, 14, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, backButton, 10, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.SOUTH, backButton, 0, SpringLayout.SOUTH, lblLui);
-		currentLayout.putConstraint(SpringLayout.EAST, backButton, -25, SpringLayout.WEST, lblLui);
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.

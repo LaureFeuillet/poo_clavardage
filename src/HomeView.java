@@ -38,6 +38,7 @@ public class HomeView extends JFrame {
 	private ArrayList<Conversation> history;
 	
 	private JButton btnPseudo;
+	private JLabel lblWelcomeMachin;
 	
 	
 	/*** Constructors ***/
@@ -49,14 +50,16 @@ public class HomeView extends JFrame {
 		homeLabel = new JLabel();
 		welcomeLabel = new JLabel();
 		currentLayout = new SpringLayout();
-		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 19, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.SOUTH, welcomeLabel, -434, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, homeLabel, 25, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, homeLabel, 34, SpringLayout.WEST, pan);
 		
 		listPan = new JPanel();
 		listScroll = new JScrollPane(listPan);
-		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 18, SpringLayout.SOUTH, welcomeLabel);
+		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 112, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 0, SpringLayout.WEST, listScroll);
+		currentLayout.putConstraint(SpringLayout.SOUTH, welcomeLabel, -6, SpringLayout.NORTH, listScroll);
+		currentLayout.putConstraint(SpringLayout.WEST, listScroll, 19, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, listScroll, 263, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, listScroll, 0, SpringLayout.WEST, welcomeLabel);
 		listLayout = new BoxLayout(listPan, BoxLayout.Y_AXIS);
 		
 		histPan = new JPanel();
@@ -83,10 +86,10 @@ public class HomeView extends JFrame {
 		histPan.setLayout(histLayout);
 		
 		/* Colors */
-		pan.setBackground(new Color(255, 212, 128));
+		pan.setBackground(new Color(220, 220, 220));
 		
-		listPan.setBackground(new Color(204, 255, 255));
-		histPan.setBackground(new Color(204, 255, 255));
+		listPan.setBackground(new Color(224, 255, 255));
+		histPan.setBackground(new Color(230, 230, 250));
 		listScroll.setBackground(new Color(0, 0, 0));
 		histScroll.setBackground(new Color(0, 0, 0));
 
@@ -102,19 +105,21 @@ public class HomeView extends JFrame {
 		
 		/* Title label : Home */
 		homeLabel.setText("H O M E");
-		homeLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
-		currentLayout.putConstraint(SpringLayout.NORTH, homeLabel, 33, SpringLayout.NORTH, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, homeLabel, 39, SpringLayout.WEST, pan);
+		homeLabel.setFont(new Font("Lucida Grande", Font.BOLD, 20));
 		pan.add(homeLabel);
 
 
 		/* Welcome label */
-		welcomeLabel.setText("Hi "+myself+". Currently connected users :");
-		welcomeLabel.setFont(new Font("Iowan Old Style", Font.PLAIN, 13));
+		welcomeLabel.setText("Currently connected users :");
+		welcomeLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		pan.add(welcomeLabel);
 		
 		btnPseudo = new JButton("Change pseudo");
+		btnPseudo.setBackground(new Color(255, 255, 255));
+		currentLayout.putConstraint(SpringLayout.SOUTH, btnPseudo, -25, SpringLayout.SOUTH, pan);
+		btnPseudo.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -30, SpringLayout.NORTH, btnPseudo);
+		btnPseudo.setForeground(new Color(255, 140, 0));
 		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 71, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 212, SpringLayout.WEST, pan);
 		btnPseudo.addActionListener(new ActionListener() {
@@ -129,14 +134,15 @@ public class HomeView extends JFrame {
 		
 		JLabel lblHistoryPrevious = new JLabel("History of previous conversations :");
 		currentLayout.putConstraint(SpringLayout.NORTH, lblHistoryPrevious, 0, SpringLayout.NORTH, welcomeLabel);
-		currentLayout.putConstraint(SpringLayout.WEST, lblHistoryPrevious, 0, SpringLayout.WEST, histScroll);
-		lblHistoryPrevious.setFont(new Font("Iowan Old Style", Font.PLAIN, 13));
+		currentLayout.putConstraint(SpringLayout.EAST, lblHistoryPrevious, 0, SpringLayout.EAST, histScroll);
+		lblHistoryPrevious.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		pan.add(lblHistoryPrevious);
 		
 		JButton btnDeleteHistory = new JButton("Delete history");
-		currentLayout.putConstraint(SpringLayout.SOUTH, btnDeleteHistory, -25, SpringLayout.SOUTH, pan);
-		currentLayout.putConstraint(SpringLayout.NORTH, btnPseudo, 0, SpringLayout.NORTH, btnDeleteHistory);
-		currentLayout.putConstraint(SpringLayout.EAST, btnDeleteHistory, -85, SpringLayout.EAST, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, btnDeleteHistory, 0, SpringLayout.NORTH, btnPseudo);
+		currentLayout.putConstraint(SpringLayout.EAST, btnDeleteHistory, -70, SpringLayout.EAST, pan);
+		btnDeleteHistory.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		btnDeleteHistory.setForeground(new Color(128, 0, 0));
 		btnDeleteHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.
@@ -147,6 +153,12 @@ public class HomeView extends JFrame {
 				histPan.repaint();
 			}});
 		pan.add(btnDeleteHistory);
+		
+		lblWelcomeMachin = new JLabel("Welcome "+ myself +" !");
+		currentLayout.putConstraint(SpringLayout.WEST, lblWelcomeMachin, 78, SpringLayout.EAST, homeLabel);
+		currentLayout.putConstraint(SpringLayout.SOUTH, lblWelcomeMachin, -18, SpringLayout.NORTH, welcomeLabel);
+		lblWelcomeMachin.setFont(new Font("Lucida Grande", Font.BOLD, 17));
+		pan.add(lblWelcomeMachin);
 		
 		// Creation of the list of connected users
 		if(listUser != null) {
