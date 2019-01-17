@@ -19,24 +19,22 @@ public class PseudoView extends javax.swing.JFrame {
 	protected SpringLayout currentLayout;
 	protected JPanel pan;
 	private JTextField pseudoField;
-	protected JLabel errorLabel;
 	
 	protected String myself;
+	private JLabel errorLabel;
     
     /* Constructors */
     public PseudoView(Controller c) {
         this.c = c;
 		currentLayout = new SpringLayout();
 		pan = new JPanel();
-		errorLabel = new JLabel("");
-		currentLayout.putConstraint(SpringLayout.SOUTH, errorLabel, -73, SpringLayout.SOUTH, pan);
 		
 		/* Size and of the frame */
         this.setSize(400, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Method that does everything */
-		//setUpFrame();
+		setUpFrame();
     }
     
     private void setUpFrame () {
@@ -57,16 +55,13 @@ public class PseudoView extends javax.swing.JFrame {
 		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 25));
 		pan.add(pseudoLabel);
 		
-		/* The text field to enter new pseudo */
+		/* The text field to enter new pseudo. */
 		pseudoField = new JTextField();
 		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -28, SpringLayout.NORTH, pseudoField);
-		currentLayout.putConstraint(SpringLayout.NORTH, errorLabel, 27, SpringLayout.SOUTH, pseudoField);
 		currentLayout.putConstraint(SpringLayout.NORTH, pseudoField, 100, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, pseudoField, 10, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoField, -100, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, pseudoField, -10, SpringLayout.EAST, pan);
-		currentLayout.putConstraint(SpringLayout.WEST, errorLabel, 50, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, errorLabel, 200, SpringLayout.EAST, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 12, SpringLayout.WEST, pseudoField);
 		pseudoField.setFont(new Font("Lucida Grande", Font.ITALIC, 35));
 		pseudoField.setText(myself);
@@ -75,7 +70,7 @@ public class PseudoView extends javax.swing.JFrame {
 		
 		/* The check button */
 		JButton checkButton = new JButton("Start chatting !");
-		currentLayout.putConstraint(SpringLayout.NORTH, checkButton, 0, SpringLayout.NORTH, errorLabel);
+		currentLayout.putConstraint(SpringLayout.NORTH, checkButton, 27, SpringLayout.SOUTH, pseudoField);
 		currentLayout.putConstraint(SpringLayout.WEST, checkButton, 119, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, checkButton, -121, SpringLayout.EAST, pan);
 		checkButton.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
@@ -91,10 +86,11 @@ public class PseudoView extends javax.swing.JFrame {
 		});
 		pan.add(checkButton);
 		
-		/* Error display label */
-		errorLabel.setForeground(new Color(139, 0, 0));
-		errorLabel.setFont(new Font("Lucida Grande", Font.BOLD, 15));
-		currentLayout.putConstraint(SpringLayout.WEST, errorLabel, 169, SpringLayout.WEST, pan);
+		errorLabel = new JLabel("");
+		errorLabel.setForeground(new Color(128, 0, 0));
+		errorLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		currentLayout.putConstraint(SpringLayout.NORTH, errorLabel, 6, SpringLayout.SOUTH, pseudoField);
+		currentLayout.putConstraint(SpringLayout.WEST, errorLabel, 0, SpringLayout.WEST, pseudoLabel);
 		pan.add(errorLabel);
     }
     
