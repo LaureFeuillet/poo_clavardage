@@ -34,6 +34,7 @@ public class ConversationView extends JFrame {
 	private JPanel listPan;
 	private JScrollPane listScroll;
 	private BoxLayout listLayout;
+	private JButton sendButton;
 		
 	/*** Constructors ***/
 	public ConversationView(Controller c) {
@@ -78,8 +79,9 @@ public class ConversationView extends JFrame {
 		
 		/* Text field for a new message */
 		textField = new JTextField("");
-		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -6, SpringLayout.NORTH, textField);
 		currentLayout.putConstraint(SpringLayout.WEST, textField, 10, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, textField, -101, SpringLayout.EAST, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -6, SpringLayout.NORTH, textField);
 		textField.setFont(new Font("Lucida Grande", Font.PLAIN, 17));
 		currentLayout.putConstraint(SpringLayout.NORTH, textField, -82, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, textField, -10, SpringLayout.SOUTH, pan);
@@ -102,13 +104,12 @@ public class ConversationView extends JFrame {
 		
 		
 		/* The send button */
-		JButton sendButton = new JButton("Send");
+		sendButton = new JButton("Send");
+		currentLayout.putConstraint(SpringLayout.WEST, sendButton, 6, SpringLayout.EAST, textField);
 		sendButton.setForeground(new Color(46, 139, 87));
-		currentLayout.putConstraint(SpringLayout.EAST, textField, -6, SpringLayout.WEST, sendButton);
 		currentLayout.putConstraint(SpringLayout.EAST, sendButton, 0, SpringLayout.EAST, listScroll);
 		sendButton.setFont(new Font("Lucida Grande", Font.BOLD, 15));
 		currentLayout.putConstraint(SpringLayout.NORTH, sendButton, 19, SpringLayout.SOUTH, listScroll);
-		currentLayout.putConstraint(SpringLayout.WEST, sendButton, 465, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.SOUTH, sendButton, -20, SpringLayout.SOUTH, pan);
 		sendButton.setBackground(new Color(0, 206, 209));
 		sendButton.addActionListener(new ActionListener() {
@@ -134,8 +135,8 @@ public class ConversationView extends JFrame {
 		pan.add(sendButton);
 		
 		JButton backButton = new JButton("<<<");
-		currentLayout.putConstraint(SpringLayout.WEST, lblLui, 18, SpringLayout.EAST, backButton);
 		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 10, SpringLayout.SOUTH, backButton);
+		currentLayout.putConstraint(SpringLayout.WEST, lblLui, 18, SpringLayout.EAST, backButton);
 		currentLayout.putConstraint(SpringLayout.EAST, backButton, -476, SpringLayout.EAST, pan);
 		backButton.setFont(new Font("Lucida Grande", Font.BOLD, 15));
 		currentLayout.putConstraint(SpringLayout.NORTH, backButton, 14, SpringLayout.NORTH, pan);
@@ -179,7 +180,20 @@ public class ConversationView extends JFrame {
 		updateMsg.setText("Your intermediary changed his pseudo to :" + other + ".");
 		listPan.add(updateMsg);
 		listPan.revalidate();
-		listPan.repaint();	
+		listPan.repaint();
+	}
+	
+	public void userLeft() {
+		// The button isn't click-able anymore.
+		sendButton.setEnabled(false);
+		// Creation of a message to notify the disconnection of the intermediary.
+		JLabel userLeftMsg = new JLabel();
+		userLeftMsg.setForeground(new Color(204, 0, 102));
+		userLeftMsg.setText("--- Your intermediary has disconnected ---");
+		listPan.add(userLeftMsg);
+		// Update of the message list
+		listPan.revalidate();
+		listPan.repaint();
 	}
 	
 	public void addMsg (String content)

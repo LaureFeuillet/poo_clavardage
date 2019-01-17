@@ -52,14 +52,15 @@ public class HomeView extends JFrame {
 		homeLabel = new JLabel();
 		welcomeLabel = new JLabel();
 		currentLayout = new SpringLayout();
+		currentLayout.putConstraint(SpringLayout.SOUTH, welcomeLabel, -422, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.NORTH, homeLabel, 25, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, homeLabel, 34, SpringLayout.WEST, pan);
 		
 		listPan = new JPanel();
 		listScroll = new JScrollPane(listPan);
-		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 112, SpringLayout.NORTH, pan);
+		currentLayout.putConstraint(SpringLayout.NORTH, listScroll, 6, SpringLayout.SOUTH, welcomeLabel);
+		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -77, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, welcomeLabel, 0, SpringLayout.WEST, listScroll);
-		currentLayout.putConstraint(SpringLayout.SOUTH, welcomeLabel, -6, SpringLayout.NORTH, listScroll);
 		currentLayout.putConstraint(SpringLayout.WEST, listScroll, 19, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, listScroll, 263, SpringLayout.WEST, pan);
 		listLayout = new BoxLayout(listPan, BoxLayout.Y_AXIS);
@@ -68,7 +69,7 @@ public class HomeView extends JFrame {
 		histScroll = new JScrollPane(histPan);
 		currentLayout.putConstraint(SpringLayout.NORTH, histScroll, 112, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, histScroll, 22, SpringLayout.EAST, listScroll);
-		currentLayout.putConstraint(SpringLayout.SOUTH, histScroll, -84, SpringLayout.SOUTH, pan);
+		currentLayout.putConstraint(SpringLayout.SOUTH, histScroll, 0, SpringLayout.SOUTH, listScroll);
 		currentLayout.putConstraint(SpringLayout.EAST, histScroll, -21, SpringLayout.EAST, pan);
 		histLayout = new BoxLayout(histPan, BoxLayout.Y_AXIS);
 		
@@ -117,13 +118,11 @@ public class HomeView extends JFrame {
 		pan.add(welcomeLabel);
 		
 		btnPseudo = new JButton("Change pseudo");
+		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 44, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 227, SpringLayout.WEST, pan);
 		btnPseudo.setBackground(new Color(255, 255, 255));
-		currentLayout.putConstraint(SpringLayout.SOUTH, btnPseudo, -25, SpringLayout.SOUTH, pan);
 		btnPseudo.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		currentLayout.putConstraint(SpringLayout.SOUTH, listScroll, -30, SpringLayout.NORTH, btnPseudo);
 		btnPseudo.setForeground(new Color(255, 140, 0));
-		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 71, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 212, SpringLayout.WEST, pan);
 		btnPseudo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Things to be done when the button is clicked.
@@ -136,12 +135,13 @@ public class HomeView extends JFrame {
 		
 		JLabel lblHistoryPrevious = new JLabel("History of previous conversations :");
 		currentLayout.putConstraint(SpringLayout.NORTH, lblHistoryPrevious, 0, SpringLayout.NORTH, welcomeLabel);
-		currentLayout.putConstraint(SpringLayout.EAST, lblHistoryPrevious, 0, SpringLayout.EAST, histScroll);
+		currentLayout.putConstraint(SpringLayout.EAST, lblHistoryPrevious, -21, SpringLayout.EAST, pan);
 		lblHistoryPrevious.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		pan.add(lblHistoryPrevious);
 		
 		JButton btnDeleteHistory = new JButton("Delete history");
-		currentLayout.putConstraint(SpringLayout.NORTH, btnDeleteHistory, 0, SpringLayout.NORTH, btnPseudo);
+		currentLayout.putConstraint(SpringLayout.NORTH, btnPseudo, 1, SpringLayout.NORTH, btnDeleteHistory);
+		currentLayout.putConstraint(SpringLayout.SOUTH, btnDeleteHistory, -25, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, btnDeleteHistory, -70, SpringLayout.EAST, pan);
 		btnDeleteHistory.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		btnDeleteHistory.setForeground(new Color(128, 0, 0));
