@@ -89,7 +89,7 @@ public class Network {
 	public ArrayList<User> findConnectedUsers(){
 		//System.out.print("[REQUEST] Starting request...\n");
 		//The duration in milliseconds while we are waiting for responses
-		final int EXIT_TIME = 500;
+		final int EXIT_TIME = 1000;
 		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
 		DatagramPacket sentPacket = null;
 		DatagramSocket s = null;
@@ -385,7 +385,8 @@ public class Network {
 
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("[CLIENT_THREAD] Ended conversation with : " + dest.getAddress());
+					break;
 				}
 			}			
 		}

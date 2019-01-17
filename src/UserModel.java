@@ -8,20 +8,21 @@ public class UserModel {
 	protected ArrayList<User> connectedUsers;
 	
 	/*** Constructors ***/
-	public UserModel( ArrayList<User> Cu) {
-		this.connectedUsers = new ArrayList<User>();
-		//this.connectedUsers = connectedUsers;
-		for(User u : Cu) {
-			System.out.println("[DEBUG] Added " + u.getPseudo() + " to the list of connected users.");
-			this.connectedUsers.add(u);
-		}
+	public UserModel( ArrayList<User> cU) {
+		connectedUsers = cU;
 	}
 
 	/*** Methods ***/
 
 	// Method that removes a specific user from the list of the connected users
 	public void deleteUser(User userToDelete) {
+		System.out.println("[DEBUG] REMOVING " + userToDelete.getPseudo() + " from the list of connected users.");
 		this.connectedUsers.remove(userToDelete);
+	}
+	
+	public void addUser(User userToAdd) {
+		System.out.println("[DEBUG] ADDING " + userToAdd.getPseudo() + " to the list of connected users.");
+		connectedUsers.add(userToAdd);
 	}
 
 	// Returns TRUE if we can use this pseudo, false if its already used.
@@ -59,7 +60,7 @@ public class UserModel {
 	public User getUserByIP(InetAddress adr) {
 		User goodUser = null;
 		for(User user : this.connectedUsers) {
-			if(user.getAddress().toString().compareTo(adr.toString()) == 0) {
+			if(user.getAddress().toString().equals(adr.toString())) {
 				goodUser = user;
 				break;
 			}
@@ -71,8 +72,7 @@ public class UserModel {
 	public void refreshUser(User userToUpdate, Action action) {
 		switch (action) {
         case CONNECT: 
-        			System.out.println("[DEBUG] Added " + userToUpdate.getPseudo() + " to the list of connected users.");
-        			this.connectedUsers.add(userToUpdate);
+        			addUser(userToUpdate);
                  break;
         case DISCONNECT: 
         			userToUpdate = getUserByIP(userToUpdate.getAddress());
@@ -80,12 +80,21 @@ public class UserModel {
                  break;
         case UPDATE: 
         			User updatedUser = null;
+        			boolean found = false;
         			for(User user : this.connectedUsers) {
-        				if((user.getAddress() == userToUpdate.getAddress()) && (user.getNumPort() == userToUpdate.getNumPort())) {
+        				if(user.getAddress().toString().equals(userToUpdate.getAddress().toString())) {
         					updatedUser = user;
         					updatedUser.setPseudo(userToUpdate.getPseudo());
+        					updatedUser.setNumPort(userToUpdate.getNumPort());
+        					found = true;
         					break;
         				}
+        			}
+        			//If somehow the user was not already known (typically when he is not answering the discovery broadcast)
+        			//We simply add him to the list
+        			if (found == false) {
+        				System.out.println("[DEBUG] The user " + userToUpdate.getPseudo() + " was not found in the list.");
+        				addUser(userToUpdate);
         			}
                  break;
 		}

@@ -33,7 +33,7 @@ public class HomeView extends JFrame {
 	private JLabel homeLabel;
 	private JLabel welcomeLabel;
 	
-	private ArrayList<User >listUser;
+	private ArrayList<User> listUser;
 	private String myself;
 	private ArrayList<Conversation> history;
 	
@@ -42,9 +42,11 @@ public class HomeView extends JFrame {
 	
 	
 	/*** Constructors ***/
-	public HomeView(Controller c) {
+	public HomeView(Controller c, String myself, ArrayList<User> listUser, ArrayList<Conversation> history) {
 		this.cont = c;
-		listUser = new ArrayList<User>();
+		this.listUser = listUser;
+		this.myself = myself;
+		this.history = history;
 		// Components of my frame
 		pan = new JPanel();
 		homeLabel = new JLabel();
@@ -204,30 +206,30 @@ public class HomeView extends JFrame {
 		histPan.repaint();
 	}
 	
-	public void removeUser(String pseudo) {
-		for(User u : listUser) {
-			if(u.getPseudo().equals(pseudo)) {
-				listUser.remove(u);
-				for(User user : listUser) {
-					JButton newButton = new JButton();
-					newButton.setText(user.getPseudo());
-					newButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							// Things to be done when the button is clicked.
-							String i = e.getActionCommand();
-							//testLabel.setText("Talking to "+ i +".");
-							cont.displayConversation(i);
-							cont.hv.setVisible(false);
-						}});
-					listPan.add(newButton);
-					listPan.revalidate();
-					listPan.repaint();	
-				}
-			}
+	public void refreshView() {
+		System.out.println("[DEBUG] Refreshed homeView.");
+		//listUser.remove(u);
+		for(User user : listUser) {
+			if (!user.getPseudo().equals("undefined")) {
+				JButton newButton = new JButton();
+				newButton.setText(user.getPseudo());
+				newButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Things to be done when the button is clicked.
+						String i = e.getActionCommand();
+						//testLabel.setText("Talking to "+ i +".");
+						cont.displayConversation(i);
+						cont.hv.setVisible(false);
+					}});
+				listPan.add(newButton);
+				listPan.revalidate();
+				listPan.repaint();	
+			}	
 		}
 	}
 	
 	/* A new user is connected */
+	/*
 	public void addUser(User user)
 	{
 		boolean exists = false;
@@ -243,7 +245,7 @@ public class HomeView extends JFrame {
 		if(!exists) {
 			if(!user.getPseudo().equals("undefined"))
 			{
-				listUser.add(user);
+				//listUser.add(user);
 				JButton newButton = new JButton();
 				newButton.setText(user.getPseudo());
 				newButton.addActionListener(new ActionListener() {
@@ -260,6 +262,7 @@ public class HomeView extends JFrame {
 		}
 
 	}
+	*/
 	
 	/*** Other methods ***/
 	public void showConv(String pseudo) {
@@ -335,10 +338,7 @@ public class HomeView extends JFrame {
 		cont.hv.setVisible(false);
 	}
 	
-	public void displayView(String m, ArrayList<User> coUsers, ArrayList<Conversation> hist) {
-		history = hist;
-		listUser = coUsers;
-		myself = m;
+	public void displayView() {
 		setUpFrame();
 		pan.revalidate();
 		pan.repaint();
