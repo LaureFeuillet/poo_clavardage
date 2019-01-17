@@ -102,7 +102,6 @@ public class ConversationModel {
 		    	  rsMsg = stmtMsg.executeQuery(query);
 		    	  // rsMsg stores all messages corresponding to the current conversation
 		    	  messages = new ArrayList<Message>();
-		    	  System.out.println("On est là");
 		    	  while(rsMsg.next()) {
 		    		  messages.add(new Message(rsMsg.getString("date"), rsMsg.getString("content"), rsMsg.getBoolean("sent")));
 		    	  }
@@ -179,7 +178,7 @@ public class ConversationModel {
 	// To ask the database about a conversation between myself and "pseudo" at a given date
 	public Conversation getConvFromHistory(String pseudo){
 		Conversation goodConv = null;
-		for(Conversation conv : this.history){
+		for(Conversation conv : this.history) {
 			if(conv.getDestinationUser().getPseudo().equals(pseudo)){
 				goodConv = conv;
 				break;
@@ -211,6 +210,7 @@ public class ConversationModel {
 	
 	public void addConvToHistory(Conversation conv) {
 		history.add(conv);
+		currentConversations.remove(conv);
 	}
 
 	public void addMsg (Conversation convToUpdate, String content, boolean sent){
@@ -228,8 +228,6 @@ public class ConversationModel {
 
 	// Adds a specific conversation in DB
 	public void addConvToDB(Conversation conv){
-		//history.add(conv);
-		
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {

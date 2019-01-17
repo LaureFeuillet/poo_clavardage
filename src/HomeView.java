@@ -188,7 +188,7 @@ public class HomeView extends JFrame {
 		// Creation of the history
 		if(history != null) {
 			for(Conversation c : history) {
-				if (!c.getDestinationUser().getPseudo().equals("undefined")) {
+				//if (!c.getDestinationUser().getPseudo().equals("undefined")) {
 					JButton newButton = new JButton();
 					newButton.setText(c.getDestinationUser().getPseudo() + " : " + c.getStartingDate());
 					newButton.addActionListener(new ActionListener() {
@@ -200,7 +200,7 @@ public class HomeView extends JFrame {
 					histPan.add(newButton);
 					histPan.revalidate();
 					histPan.repaint();	
-				}
+				//}
 			}
 		}
 		pan.revalidate();

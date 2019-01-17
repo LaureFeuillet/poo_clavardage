@@ -103,7 +103,7 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
-		String pseudoDest = u.getPseudo();
+		//String pseudoDest = u.getPseudo();
 		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
 		um.refreshUser(u, a);
 		switch(a) {
@@ -126,8 +126,8 @@ public class Controller {
 			}
 			break;
 		case DISCONNECT:
-			conv.setDestinationUser(new User(pseudoDest, null, 0));
-			cm.addConvToHistory(conv);
+			//conv.setDestinationUser(new User(pseudoDest, null, 0));
+			//cm.addConvToHistory(conv);
 			if (currentView == CurrentView.HOME) {
 				hv.refreshView();
 			}	
@@ -173,17 +173,17 @@ public class Controller {
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
-		um.debugUsers();
+		//um.debugUsers();
 		this.hv = new HomeView(this, um.getMyself(), um.getConnectedUsers(), cm.getHistory());
 		currentView = CurrentView.HOME;
 		hv.displayView();
 	}
 	//Called from the home view
 	public void displayConversationView() {
-		um.debugUsers();
+		//um.debugUsers();
 		this.cv = new ConversationView(this);
 		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
-		cm.printHistory();
+		//cm.printHistory();
 	}
 }
