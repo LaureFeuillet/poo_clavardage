@@ -21,11 +21,13 @@ public class ConversationModel {
 	protected String url = "jdbc:mysql://localhost:3306/clavardage?serverTimezone=" + TimeZone.getDefault().getID();
 	protected String user = "clavardage";
 	protected String pwd = "clavardage";
+	protected boolean dbSet;
 
 	
 	
 	/*** Constructors ***/
 	public ConversationModel() {
+		dbSet = true;
 		currentConversations = new ArrayList<Conversation>();
 		currentConv = null;
 		history = new ArrayList<Conversation>();
@@ -102,6 +104,7 @@ public class ConversationModel {
 		    	  history.add(new Conversation(new User(pseudo, null, 0), startingDate, messages));
 		      }
 		    } catch (Exception e) {
+		    	dbSet = false;
 		    	e.printStackTrace();
 		    } finally {
 		    	if (con != null) {
@@ -122,7 +125,9 @@ public class ConversationModel {
 		}
 
 	public void updatePseudoInDB(Conversation conv, String newPseudo) {
-		System.out.println("[DB] The pseudo should be updated in DB now !");
+		if (dbSet) {
+			System.out.println("[DB] The pseudo should be updated in DB now !");
+		}
 	}
 	
 	/*** Methods ***/
@@ -191,81 +196,85 @@ public class ConversationModel {
 
 	// Adds a specific conversation in DB
 	public void addConvToDB(Conversation conv){
-		history.add(conv);
-		
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		try {
-			con = DriverManager.getConnection(url, user, pwd);
-			String query = "INSERT INTO conversation"
-					+ " VALUES (NULL, ?, ?);";
-			pstmt = con.prepareStatement(query);
-	    	pstmt.setString(1, conv.getDestinationUser().getPseudo());
-	    	pstmt.setString(2, conv.getStartingDate());
-			pstmt.executeUpdate();
-			System.out.println("[DB] Inserted conversation in DB.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-	    	if (con != null) {
-	    		try {
-	    			con.close();
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    }
+		if (dbSet) {
+			history.add(conv);
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			try {
+				con = DriverManager.getConnection(url, user, pwd);
+				String query = "INSERT INTO conversation"
+						+ " VALUES (NULL, ?, ?);";
+				pstmt = con.prepareStatement(query);
+		    	pstmt.setString(1, conv.getDestinationUser().getPseudo());
+		    	pstmt.setString(2, conv.getStartingDate());
+				pstmt.executeUpdate();
+				System.out.println("[DB] Inserted conversation in DB.");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+		    	if (con != null) {
+		    		try {
+		    			con.close();
+						pstmt.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		    	}
+		    }
+		}
 	}
 	
 	//Add a specific message in DB
 	public void addMsgToDB(Conversation conv, Message msg) {
-		String query = null;
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
-		
-		try {
-			// First we need to get the id of the conversation in DB
-			con = DriverManager.getConnection(url, user, pwd);
-			query="SELECT id_conv FROM conversation"
-				+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
-				+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
-			stmt = con.createStatement();
-			// rs store the id_conv 
-			rs = stmt.executeQuery(query);
-			if (rs.next()) {
-				// Then we can add the msg in DB
-				query = "INSERT INTO message"
-						+ " VALUES (NULL, ?, ?, ?, ?);";
-				pstmt = con.prepareStatement(query);
-				pstmt.setInt(1, rs.getInt("id_conv"));
-		    	pstmt.setString(2, msg.getDate());
-		    	pstmt.setString(3, msg.getContent());
-		    	pstmt.setBoolean(4, msg.getSent());
-				pstmt.executeUpdate();
-				System.out.println("[DB] Inserted message in DB.");
-			} else {
-				System.out.println("[DB] Error : Conversation not found !");
-			}
+		if (dbSet) {
+			String query = null;
+			Connection con = null;
+			Statement stmt = null;
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
 			
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		} finally {
-			if (con != null) {
-	    		try {
-	    			con.close();
-	    			if (stmt != null)
-	    				stmt.close();
-	    			if (rs != null)
-						rs.close();
-	    			if (pstmt != null)
-	    				pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			try {
+				// First we need to get the id of the conversation in DB
+				con = DriverManager.getConnection(url, user, pwd);
+				query="SELECT id_conv FROM conversation"
+					+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
+					+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
+				stmt = con.createStatement();
+				// rs store the id_conv 
+				rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					// Then we can add the msg in DB
+					query = "INSERT INTO message"
+							+ " VALUES (NULL, ?, ?, ?, ?);";
+					pstmt = con.prepareStatement(query);
+					pstmt.setInt(1, rs.getInt("id_conv"));
+			    	pstmt.setString(2, msg.getDate());
+			    	pstmt.setString(3, msg.getContent());
+			    	pstmt.setBoolean(4, msg.getSent());
+					pstmt.executeUpdate();
+					System.out.println("[DB] Inserted message in DB.");
+				} else {
+					System.out.println("[DB] Error : Conversation not found !");
 				}
-	    	}
+				
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			} finally {
+				if (con != null) {
+		    		try {
+		    			con.close();
+		    			if (stmt != null)
+		    				stmt.close();
+		    			if (rs != null)
+							rs.close();
+		    			if (pstmt != null)
+		    				pstmt.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		    	}
+			}
 		}
 	}
 	
