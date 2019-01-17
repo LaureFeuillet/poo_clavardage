@@ -180,6 +180,7 @@ public class Controller {
 		this.hv = new HomeView(this, um.getMyself(), um.getConnectedUsers(), cm.getHistory());
 		currentView = CurrentView.HOME;
 		hv.displayView();
+		cm.printHistory();
 	}
 	//Called from the home view
 	public void displayConversationView() {
