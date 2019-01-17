@@ -209,6 +209,10 @@ public class HomeView extends JFrame {
 	public void refreshView() {
 		System.out.println("[DEBUG] Refreshed homeView.");
 		//listUser.remove(u);
+		listPan.removeAll();
+
+		listPan.revalidate();
+		listPan.repaint();
 		for(User user : listUser) {
 			if (!user.getPseudo().equals("undefined")) {
 				JButton newButton = new JButton();
