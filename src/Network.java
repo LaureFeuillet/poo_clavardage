@@ -331,7 +331,8 @@ public class Network {
 						System.out.println("[SERVER_THREAD] Received message : \"" + input + "\" from " + sock.getInetAddress() + ".");
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("[SERVER_THREAD] Ended conversation with : " +  sock.getInetAddress());
+					break;
 				}
 			}	
 		}
