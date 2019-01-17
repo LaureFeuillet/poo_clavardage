@@ -21,11 +21,14 @@ public class ConversationModel {
 	protected String url = "jdbc:mysql://localhost:3306/clavardage?serverTimezone=" + TimeZone.getDefault().getID();
 	protected String user = "clavardage";
 	protected String pwd = "clavardage";
+	// To know if the DB is operational
+	protected boolean dbSet;
 
 	
 	
 	/*** Constructors ***/
 	public ConversationModel() {
+		dbSet = true;
 		currentConversations = new ArrayList<Conversation>();
 		currentConv = null;
 		history = new ArrayList<Conversation>();
@@ -79,15 +82,16 @@ public class ConversationModel {
 		      
 		      String pseudo = null;
 		      String startingDate = null;
-		      String id_conv = null;
+		      int id_conv = 0;
 		      
 		      ArrayList<Message> messages = new ArrayList<Message>();
 		      // For each conversation, we get the corresponding messages
 		      // By checking for each message if the conv = id_conv
 		      
 		      // rs stores all conversations
+		      Statement stmtMsg = con.createStatement();
 		      while (rs.next()) {
-		    	  id_conv = rs.getString("id_conv");
+		    	  id_conv = rs.getInt("id_conv");
 		    	  pseudo = rs.getString("pseudo");
 		    	  startingDate = rs.getString("starting_date");
 		    	  query = "SELECT date, content, sent"
@@ -95,7 +99,7 @@ public class ConversationModel {
 		    	  		+ " INNER JOIN conversation"
 		    	  		+ " ON message.conv = conversation.id_conv"
 		    	  		+ " WHERE message.conv = " + id_conv + ";";
-		    	  rsMsg = stmt.executeQuery(query);
+		    	  rsMsg = stmtMsg.executeQuery(query);
 		    	  // rsMsg stores all messages corresponding to the current conversation
 		    	  messages.clear();
 		    	  while(rsMsg.next()) {
@@ -103,7 +107,10 @@ public class ConversationModel {
 		    	  }
 		    	  history.add(new Conversation(new User(pseudo, null, 0), startingDate, messages));
 		      }
+		    } catch (ClassNotFoundException e) {
+		    	dbSet = false;
 		    } catch (Exception e) {
+		    	System.out.println("On est là");
 		    	e.printStackTrace();
 		    } finally {
 		    	if (con != null) {
@@ -117,62 +124,63 @@ public class ConversationModel {
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
+						dbSet = false;
 					}
 		    	}
 		    }
 		}
 
-	// If the destinationUser of a current conversation changes his pseudo, we have to update it in DB
+	// To update the pseudo of a user in DB if it changed
 	public void updatePseudoInDB(Conversation oldConv, String newPseudo) {
-		System.out.println("[DB] The pseudo should be updated in DB now !");
-		
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		try {
-			con = DriverManager.getConnection(url, user, pwd);
-			stmt = con.createStatement();
+		if(dbSet) {
+			Connection con = null;
+			Statement stmt = null;
+			ResultSet rs = null;
 			
-			// We have to find the id_conv of the old conversation
-			String query = "SELECT id_conv"
-					+ "FROM Conversation "
-					+ "WHERE pseudo = " + oldConv.getDestinationUser().getPseudo()
-					+ "AND starting_date = " + oldConv.getStartingDate().toString() + ";";
-			// rs store the id_conv 
-			rs = stmt.executeQuery(query);
-			if (rs.next()) {
-				// We update the corresponding conversation according to the new pseudo
-				query = "UPDATE Conversation"
-					  + "SET pseudo='" + newPseudo + "'"
-					  + "WHERE id=" + rs.getInt("id_conv") + ";";
-				stmt.executeUpdate(query);
-				System.out.println("[DB] User updated.");
-			} else {
-				System.out.println("[DB] Error/updatePseudoInDB : Conversation not found.");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-	    	if (con != null) {
-	    		try {
-	    			con.close();
-	    			if (stmt != null) {
-	    				stmt.close();
-	    			}
-				} catch (SQLException e) {
-					e.printStackTrace();
+			try {
+				con = DriverManager.getConnection(url, user, pwd);
+				stmt = con.createStatement();
+				
+				// To find the id_conv of the old conversation
+				String query = "SELECT id_conv"
+						+ "FROM Conversation "
+						+ "WHERE pseudo = " + oldConv.getDestinationUser().getPseudo()
+						+ "AND starting_date = " + oldConv.getStartingDate().toString() + ";";
+				// rs store the id_conv 
+				rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					// TP update the corresponding conversation according to the new pseudo
+					query = "UPDATE Conversation"
+						  + "SET pseudo='" + newPseudo + "'"
+						  + "WHERE id=" + rs.getInt("id_conv") + ";";
+					stmt.executeUpdate(query);
+					System.out.println("[DB] User updated.");
+				} else {
+					System.out.println("[DB] Error/updatePseudoInDB : Conversation not found.");
 				}
-	    	}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+		    	if (con != null) {
+		    		try {
+		    			con.close();
+		    			if (stmt != null) {
+		    				stmt.close();
+		    			}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		    	}
+			}
 	    }
 	}
 	
 	/*** Methods ***/
-	// Asks the database about a conversation between myself and "pseudo" at a given date
+	// To ask the database about a conversation between myself and "pseudo" at a given date
 	public Conversation getConvFromHistory(String pseudo){
 		Conversation goodConv = null;
 		for(Conversation conv : this.history){
-			if(conv.getDestinationUser().getPseudo() == pseudo){
+			if(conv.getDestinationUser().getPseudo().equals(pseudo)){
 				goodConv = conv;
 				break;
 			}
@@ -193,43 +201,26 @@ public class ConversationModel {
 	}
 	
 	// Creates a new conversation, add to the DB, makes it THE current one, and adds it to the list of current convs.
-	public void startConv(User userConcerned) {
+	public void startConv(User userConcerned, boolean setCurrent) {
 		Conversation conv = new Conversation(userConcerned);
-		addConvToDB(conv);
+		if (dbSet) addConvToDB(conv);
 		this.currentConversations.add(conv);
-		this.currentConv = conv;
+		if (setCurrent)
+			this.currentConv = conv;
 	}
 
-	// Deletes all conversations in DB
-	public void deleteHistory(){
-		history.clear();
-
-		Connection con = null;
-		Statement stmt = null;
-		
-		try {
-			con = DriverManager.getConnection(url, user, pwd);
-			stmt = con.createStatement();
-			String query = "DELETE FROM message";
-			stmt.executeUpdate(query);
-			query = "DELETE FROM conversation";
-			stmt.executeUpdate(query);
-			System.out.println("[DB] Deleted history.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-	    	if (con != null) {
-	    		try {
-	    			con.close();
-	    			if (stmt != null) {
-	    				stmt.close();
-	    			}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    }
+	public void addMsg (Conversation convToUpdate, String content, boolean sent){
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
+		if(dbSet) addMsgToDB(convToUpdate, newMsg);
+		for(Conversation conv : this.currentConversations) {
+			if(conv == convToUpdate) {
+				conv.messages.add(newMsg);
+				break;
+			}
+		}
 	}
+
 
 	// Adds a specific conversation in DB
 	public void addConvToDB(Conversation conv){
@@ -262,68 +253,88 @@ public class ConversationModel {
 	
 	//Add a specific message in DB
 	public void addMsgToDB(Conversation conv, Message msg) {
-		String query = null;
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
-		
-		try {
-			// First we need to get the id of the conversation in DB
-			con = DriverManager.getConnection(url, user, pwd);
-			query="SELECT id_conv FROM conversation"
-				+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
-				+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
-			stmt = con.createStatement();
-			// rs store the id_conv 
-			rs = stmt.executeQuery(query);
-			if (rs.next()) {
-				// Then we can add the msg in DB
-				query = "INSERT INTO message"
-						+ " VALUES (NULL, ?, ?, ?, ?);";
-				pstmt = con.prepareStatement(query);
-				pstmt.setInt(1, rs.getInt("id_conv"));
-		    	pstmt.setString(2, msg.getDate());
-		    	pstmt.setString(3, msg.getContent());
-		    	pstmt.setBoolean(4, msg.getSent());
-				pstmt.executeUpdate();
-				System.out.println("[DB] Inserted message in DB.");
-			} else {
-				System.out.println("[DB] Error : Conversation not found !");
-			}
+		if (dbSet) {
+			String query = null;
+			Connection con = null;
+			Statement stmt = null;
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
 			
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		} finally {
-			if (con != null) {
-	    		try {
-	    			con.close();
-	    			if (stmt != null)
-	    				stmt.close();
-	    			if (rs != null)
-						rs.close();
-	    			if (pstmt != null)
-	    				pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			try {
+				// First we need to get the id of the conversation in DB
+				con = DriverManager.getConnection(url, user, pwd);
+				query="SELECT id_conv FROM conversation"
+					+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
+					+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
+				stmt = con.createStatement();
+				// rs store the id_conv 
+				rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					// Then we can add the msg in DB
+					query = "INSERT INTO message"
+							+ " VALUES (NULL, ?, ?, ?, ?);";
+					pstmt = con.prepareStatement(query);
+					pstmt.setInt(1, rs.getInt("id_conv"));
+			    	pstmt.setString(2, msg.getDate());
+			    	pstmt.setString(3, msg.getContent());
+			    	pstmt.setBoolean(4, msg.getSent());
+					pstmt.executeUpdate();
+					System.out.println("[DB] Inserted message in DB.");
+				} else {
+					System.out.println("[DB] Error : Conversation not found !");
 				}
-	    	}
+				
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			} finally {
+				if (con != null) {
+		    		try {
+		    			con.close();
+		    			if (stmt != null)
+		    				stmt.close();
+		    			if (rs != null)
+							rs.close();
+		    			if (pstmt != null)
+		    				pstmt.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		    	}
+			}
 		}
 	}
 	
-
-	public void addMsg (Conversation convToUpdate, String content, boolean sent){
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
-		addMsgToDB(convToUpdate, newMsg);
-		for(Conversation conv : this.history) {
-			if(conv == convToUpdate) {
-				conv.messages.add(newMsg);
-				break;
-			}
+	// To delete all conversations in DB
+	public void deleteHistory() {
+		history.clear();
+		if (dbSet) {
+			Connection con = null;
+			Statement stmt = null;
+			try {
+				con = DriverManager.getConnection(url, user, pwd);
+				stmt = con.createStatement();
+				String query = "DELETE FROM message";
+				stmt.executeUpdate(query);
+				query = "DELETE FROM conversation";
+				stmt.executeUpdate(query);
+				System.out.println("[DB] Deleted history.");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+		    	if (con != null) {
+		    		try {
+		    			con.close();
+		    			if (stmt != null) {
+		    				stmt.close();
+		    			}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+		    	}
+		    }
 		}
 	}
-
+	
 	/*** Getters & setters ***/
 	public ArrayList<Conversation> getHistory() {
 		return history;
@@ -344,6 +355,8 @@ public class ConversationModel {
 		this.currentConv = currentConv;
 	}
 	
+	/*** To help the debug ***/
+	
 	public void printHistory () {
 		ArrayList<Conversation> historique = this.getHistory();
 		System.out.println("[DB] History : ");
@@ -357,18 +370,26 @@ public class ConversationModel {
 		}
 	}
 	
+	public void debugConversations() {
+		System.out.println("[DEBUG] Current list of opened conversations : ");
+		for (Conversation c : this.currentConversations) {
+			debugConversation(c);
+		}
+		System.out.println("[DEBUG] End of list");
+	}
+	
 	public void debugConversation (Conversation c) {
-		System.out.println("[DEBUG] Conversation with : " + c.getDestinationUser().getPseudo());
+		System.out.println("	[DEBUG] Conversation with " + c.getDestinationUser().getPseudo() + " :");
 		for(Message m : c.getMessages())
 		{
 			if (m.getSent()) {
-				System.out.println("You : \"" + m.getContent() + "\"");
+				System.out.println("		You : \"" + m.getContent() + "\"");
 			}
 			else{
-				System.out.println(c.getDestinationUser().getPseudo() + " : \"" + m.getContent() + "\"");
+				System.out.println("		" + c.getDestinationUser().getPseudo() + " : \"" + m.getContent() + "\"");
 			}
 		}
-		System.out.println("[DEBUG] End of conversation");
+		System.out.println("	[DEBUG] End of conversation");
 	}
 
 	/*

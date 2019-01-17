@@ -77,7 +77,7 @@ public class Controller {
 	//for conversations started by our own, see displayConversation
 	public void startConversation(InetAddress adr) {
 		User u = um.getUserByIP(adr);
-		cm.startConv(u);
+		cm.startConv(u, false);
 	}
 	
 	//Displays an already started conversation, or starts it and displays it if it was not
@@ -86,7 +86,7 @@ public class Controller {
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			nw.addConv(u);
-			cm.startConv(u);
+			cm.startConv(u, true);
 			c = cm.getConvByUser(u);
 		}	
 		cm.setCurrentConv(c);
@@ -105,13 +105,13 @@ public class Controller {
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
 		um.refreshUser(u, a);
+		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
 		switch(a) {
 		case CONNECT:
 			if (currentView == CurrentView.HOME)
 				hv.refreshView();
 			break;
 		case UPDATE:
-			Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
 			if (conv != null)
 				cm.updatePseudoInDB(conv, u.getPseudo());
 			if (currentView == CurrentView.HOME) {
@@ -128,6 +128,13 @@ public class Controller {
 		case DISCONNECT:
 			if (currentView == CurrentView.HOME)
 				hv.refreshView();
+			else {
+				if (currentView == CurrentView.CONVERSATION) {
+					if (conv == cm.getCurrentConv()) {
+						cv.userLeft();
+					}
+				}
+			}
 			break;
 		}
 	}
@@ -174,5 +181,6 @@ public class Controller {
 		this.cv = new ConversationView(this);
 		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
+		cm.printHistory();
 	}
 }
