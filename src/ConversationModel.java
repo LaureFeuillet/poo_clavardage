@@ -266,7 +266,7 @@ public class ConversationModel {
 			con = DriverManager.getConnection(url, user, pwd);
 			query="SELECT id_conv FROM conversation"
 				+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
-				+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
+				+ " AND starting_date = '" + conv.getStartingDate().toString() + "';";
 			stmt = con.createStatement();
 			// rs store the id_conv 
 			rs = stmt.executeQuery(query);
@@ -313,9 +313,9 @@ public class ConversationModel {
 			try {
 				con = DriverManager.getConnection(url, user, pwd);
 				stmt = con.createStatement();
-				String query = "DELETE FROM message";
+				String query = "DELETE FROM message;";
 				stmt.executeUpdate(query);
-				query = "DELETE FROM conversation";
+				query = "DELETE FROM conversation;";
 				stmt.executeUpdate(query);
 				System.out.println("[DB] Deleted history.");
 			} catch (SQLException e) {
