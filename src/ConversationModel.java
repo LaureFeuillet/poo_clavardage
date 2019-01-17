@@ -326,18 +326,26 @@ public class ConversationModel {
 		}
 	}
 	
+	public void debugConversations() {
+		System.out.println("[DEBUG] Current list of opened conversations : ");
+		for (Conversation c : this.currentConversations) {
+			debugConversation(c);
+		}
+		System.out.println("[DEBUG] End of list");
+	}
+	
 	public void debugConversation (Conversation c) {
-		System.out.println("[DEBUG] Conversation with : " + c.getDestinationUser().getPseudo());
+		System.out.println("	[DEBUG] Conversation with " + c.getDestinationUser().getPseudo() + " :");
 		for(Message m : c.getMessages())
 		{
 			if (m.getSent()) {
-				System.out.println("You : \"" + m.getContent() + "\"");
+				System.out.println("		You : \"" + m.getContent() + "\"");
 			}
 			else{
-				System.out.println(c.getDestinationUser().getPseudo() + " : \"" + m.getContent() + "\"");
+				System.out.println("		" + c.getDestinationUser().getPseudo() + " : \"" + m.getContent() + "\"");
 			}
 		}
-		System.out.println("[DEBUG] End of conversation");
+		System.out.println("	[DEBUG] End of conversation");
 	}
 
 	/*
