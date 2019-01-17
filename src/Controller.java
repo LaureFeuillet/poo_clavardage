@@ -103,6 +103,7 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
+		String pseudoDest = u.getPseudo();
 		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
 		um.refreshUser(u, a);
 		switch(a) {
@@ -125,6 +126,8 @@ public class Controller {
 			}
 			break;
 		case DISCONNECT:
+			conv.setDestinationUser(new User(pseudoDest, null, 0));
+			cm.addConvToHistory(conv);
 			if (currentView == CurrentView.HOME) {
 				hv.refreshView();
 			}	
