@@ -85,6 +85,7 @@ public class UserModel {
         				if(user.getAddress().toString().equals(userToUpdate.getAddress().toString())) {
         					updatedUser = user;
         					updatedUser.setPseudo(userToUpdate.getPseudo());
+        					updatedUser.setNumPort(userToUpdate.getNumPort());
         					found = true;
         					break;
         				}
@@ -93,7 +94,7 @@ public class UserModel {
         			//We simply add him to the list
         			if (found == false) {
         				System.out.println("[DEBUG] The user " + userToUpdate.getPseudo() + " was not found in the list.");
-        				//addUser(userToUpdate);
+        				addUser(userToUpdate);
         			}
                  break;
 		}
