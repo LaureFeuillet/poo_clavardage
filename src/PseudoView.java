@@ -19,12 +19,12 @@ public class PseudoView extends javax.swing.JFrame {
 	protected JPanel pan;
 	private JTextField pseudoField;
 	protected JLabel errorLabel;
-
+	
+	protected String myself;
     
     /* Constructors */
     public PseudoView(Controller c) {
         this.c = c;
-        
 		currentLayout = new SpringLayout();
 		pan = new JPanel();
 		errorLabel = new JLabel("");
@@ -66,7 +66,7 @@ public class PseudoView extends javax.swing.JFrame {
 		currentLayout.putConstraint(SpringLayout.EAST, errorLabel, 200, SpringLayout.EAST, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 12, SpringLayout.WEST, pseudoField);
 		pseudoField.setFont(new Font("Lucida Grande", Font.ITALIC, 35));
-		pseudoField.setText("");
+		pseudoField.setText(myself);
 		pan.add(pseudoField);
 		pseudoField.setColumns(10);
 		
@@ -94,7 +94,8 @@ public class PseudoView extends javax.swing.JFrame {
 		pan.add(errorLabel);
     }
     
-    public void displayView() {
+    public void displayView(String pseudo) {
+    		myself = pseudo;
     		setUpFrame();
     		pan.revalidate();
     		pan.repaint();

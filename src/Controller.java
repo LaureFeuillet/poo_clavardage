@@ -2,7 +2,6 @@ import java.net.InetAddress;
 //import java.time.LocalDateTime;
 //import java.time.format.DateTimeFormatter;
 //import java.util.ArrayList;
-import java.util.ArrayList;
 
 /* Used to tell the user model how to refresh the connected user list
  * CONNECT to add a new user
@@ -40,7 +39,7 @@ public class Controller {
 		//The user model must be told of the already active users on the local network
 		um = new UserModel(nw.findConnectedUsers());
 		cm = new ConversationModel();
-		displayPseudoView();
+		displayPseudoView("");
 	}
 	
 	/***************************************************/
@@ -165,9 +164,9 @@ public class Controller {
 	/***************************************************/
 
 	//Called from the home view
-	public void displayPseudoView() {
+	public void displayPseudoView(String pseudo) {
 		currentView = CurrentView.PSEUDO;
-		pv.displayView();
+		pv.displayView(pseudo);
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
