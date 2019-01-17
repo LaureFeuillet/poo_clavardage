@@ -89,7 +89,7 @@ public class ConversationView extends JFrame {
 		pan.add(textField);
 		
 		lblLui = new JLabel("Talking to : " + other);
-		lblLui.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		lblLui.setFont(new Font("Lucida Grande", Font.PLAIN, 17));
 		pan.add(lblLui);
 		
 		titleLabel = new JLabel("Chat room");
