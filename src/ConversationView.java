@@ -143,13 +143,14 @@ public class ConversationView extends JFrame {
 		}
 	
 	private void f() {
+
 		for(Message msg : msgList) {
 			JLabel newMsg = new JLabel();
 			// If the message was sent by us ...
 			if(msg.getSent() == true) {
 				// Color of our message is black 
 				newMsg.setForeground(new Color(0, 0, 0));
-				newMsg.setText(msg.getDate() + " - " + myself + " : " + msg.getContent());
+				newMsg.setText(msg.getDate()  + " - " + myself + " : " + msg.getContent());
 			}
 			// If the message was sent by the other user ...
 			else

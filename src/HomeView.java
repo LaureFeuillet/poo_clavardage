@@ -267,6 +267,8 @@ public class HomeView extends JFrame {
 		convPan.setLayout(convLayout);
 		msgPan.setLayout(msgLayout);
 		
+		convPan.setBackground(new Color(255, 212, 128));
+
 		msgScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		msgScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
