@@ -130,7 +130,7 @@ public class HomeView extends JFrame {
 				PseudoView pv = new PseudoView(cont);
 				cont.pv = pv;
 				cont.hv.setVisible(false);
-				cont.displayPseudoView();
+				cont.displayPseudoView(myself);
 			}});
 		pan.add(btnPseudo);
 		
