@@ -209,7 +209,7 @@ public class ConversationModel {
 			this.currentConv = conv;
 	}
 	
-	public void addConvToHistory(Conversation conv, String pseudo) {
+	public void addConvToHistory(Conversation conv) {
 		history.add(conv);
 	}
 
