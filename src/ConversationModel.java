@@ -98,7 +98,7 @@ public class ConversationModel {
 		    	  		+ " FROM message"
 		    	  		+ " INNER JOIN conversation"
 		    	  		+ " ON message.conv = conversation.id_conv"
-		    	  		+ " WHERE message.conv = " + id_conv + ";";
+		    	  		+ " WHERE message.conv = '" + id_conv + "';";
 		    	  rsMsg = stmtMsg.executeQuery(query);
 		    	  // rsMsg stores all messages corresponding to the current conversation
 		    	  messages = new ArrayList<Message>();
@@ -141,17 +141,17 @@ public class ConversationModel {
 				stmt = con.createStatement();
 				
 				// To find the id_conv of the old conversation
-				String query = " SELECT id_conv"
+				String query = "SELECT id_conv"
 						+ " FROM conversation "
-						+ " WHERE pseudo = '" + oldPseudo +"'"
+						+ " WHERE pseudo = '" + oldPseudo + "'"
 						+ " AND starting_date = '" + conv.getStartingDate().toString() + "';";
 				// rs store the id_conv 
 				rs = stmt.executeQuery(query);
 				if (rs.next()) {
 					// TP update the corresponding conversation according to the new pseudo
 					query = "UPDATE conversation"
-						  + "SET pseudo='" + conv.getDestinationUser().getPseudo() + "'"
-						  + "WHERE id=" + rs.getInt("id_conv") + ";";
+						  + " SET pseudo='" + conv.getDestinationUser().getPseudo() + "'"
+						  + " WHERE id = '" + rs.getInt("id_conv") + "';";
 					stmt.executeUpdate(query);
 					System.out.println("[DB] User updated.");
 				} else {

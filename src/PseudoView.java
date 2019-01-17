@@ -34,7 +34,7 @@ public class PseudoView extends javax.swing.JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Method that does everything */
-		setUpFrame();
+		//setUpFrame();
     }
     
     private void setUpFrame () {
