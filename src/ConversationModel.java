@@ -119,6 +119,7 @@ public class ConversationModel {
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
+						dbSet = false;
 					}
 		    	}
 		    }
@@ -156,11 +157,12 @@ public class ConversationModel {
 	}
 	
 	// Creates a new conversation, add to the DB, makes it THE current one, and adds it to the list of current convs.
-	public void startConv(User userConcerned) {
+	public void startConv(User userConcerned, boolean setCurrent) {
 		Conversation conv = new Conversation(userConcerned);
 		addConvToDB(conv);
 		this.currentConversations.add(conv);
-		this.currentConv = conv;
+		if (setCurrent)
+			this.currentConv = conv;
 	}
 
 	// Deletes all conversations in DB

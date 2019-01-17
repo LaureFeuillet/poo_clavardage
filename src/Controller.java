@@ -77,7 +77,7 @@ public class Controller {
 	//for conversations started by our own, see displayConversation
 	public void startConversation(InetAddress adr) {
 		User u = um.getUserByIP(adr);
-		cm.startConv(u);
+		cm.startConv(u, false);
 	}
 	
 	//Displays an already started conversation, or starts it and displays it if it was not
@@ -86,7 +86,7 @@ public class Controller {
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			nw.addConv(u);
-			cm.startConv(u);
+			cm.startConv(u, true);
 			c = cm.getConvByUser(u);
 		}	
 		cm.setCurrentConv(c);
