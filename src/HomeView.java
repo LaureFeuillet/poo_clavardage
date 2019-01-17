@@ -195,7 +195,7 @@ public class HomeView extends JFrame {
 	public void removeUser(String pseudo) {
 		for(User u : listUser) {
 			if(u.getPseudo().equals(pseudo)) {
-				listUser.remove(u);
+				//listUser.remove(u);
 				for(User user : listUser) {
 					JButton newButton = new JButton();
 					newButton.setText(user.getPseudo());
@@ -231,7 +231,7 @@ public class HomeView extends JFrame {
 		if(!exists) {
 			if(!user.getPseudo().equals("undefined"))
 			{
-				listUser.add(user);
+				//listUser.add(user);
 				JButton newButton = new JButton();
 				newButton.setText(user.getPseudo());
 				newButton.addActionListener(new ActionListener() {

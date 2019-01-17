@@ -37,8 +37,6 @@ public class Controller {
 		currentView = CurrentView.PSEUDO;
 		nw = new Network(this);
 		pv = new PseudoView(this);
-		hv = new HomeView(this);
-		cv = new ConversationView(this);
 		//The user model must be told of the already active users on the local network
 		um = new UserModel(nw.findConnectedUsers());
 		cm = new ConversationModel();
@@ -169,9 +167,7 @@ public class Controller {
 		um.debugUsers();
 		this.hv = new HomeView(this);
 		currentView = CurrentView.HOME;
-		ArrayList<Conversation> history = cm.getHistory();
 		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
-		//System.out.println("Hist : "+history);
 	}
 	//Called from the home view
 	public void displayConversationView() {

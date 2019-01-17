@@ -161,12 +161,12 @@ public class ConversationModel {
 		
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("[DB] Connection established to delete history.");
 			stmt = con.createStatement();
 			String query = "DELETE FROM message";
 			stmt.executeUpdate(query);
 			query = "DELETE FROM conversation";
 			stmt.executeUpdate(query);
+			System.out.println("[DB] Deleted history.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -191,13 +191,13 @@ public class ConversationModel {
 		PreparedStatement pstmt = null;
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("[DB] Connection established to add a conv to history.");
 			String query = "INSERT INTO conversation"
 					+ " VALUES (NULL, ?, ?);";
 			pstmt = con.prepareStatement(query);
 	    	pstmt.setString(1, conv.getDestinationUser().getPseudo());
 	    	pstmt.setString(2, conv.getStartingDate());
 			pstmt.executeUpdate();
+			System.out.println("[DB] Inserted conversation in DB.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -223,9 +223,6 @@ public class ConversationModel {
 		try {
 			// First we need to get the id of the conversation in DB
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("[DB] Connection established to add a msg to history.");
-			System.out.println("pseudo : " + conv.getDestinationUser().getPseudo());
-			System.out.println("starting_date : " + conv.getStartingDate());
 			query="SELECT id_conv FROM conversation"
 				+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
 				+ " AND starting_date = '" + conv.getStartingDate().toString() + "'";
@@ -233,7 +230,6 @@ public class ConversationModel {
 			// rs store the id_conv 
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
-				System.out.println("[DB]On a trouvé la bonne conv.");
 				// Then we can add the msg in DB
 				query = "INSERT INTO message"
 						+ " VALUES (NULL, ?, ?, ?, ?);";
@@ -243,6 +239,7 @@ public class ConversationModel {
 		    	pstmt.setString(3, msg.getContent());
 		    	pstmt.setBoolean(4, msg.getSent());
 				pstmt.executeUpdate();
+				System.out.println("[DB] Inserted message in DB.");
 			} else {
 				System.out.println("[DB] Error");
 			}
