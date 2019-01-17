@@ -195,6 +195,7 @@ public class HomeView extends JFrame {
 	}
 	
 	public void refreshView() {
+		System.out.println("[DEBUG] Refreshed homeView.");
 		//listUser.remove(u);
 		for(User user : listUser) {
 			if (!user.getPseudo().equals("undefined")) {

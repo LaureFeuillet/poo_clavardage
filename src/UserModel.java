@@ -82,7 +82,7 @@ public class UserModel {
         			User updatedUser = null;
         			boolean found = false;
         			for(User user : this.connectedUsers) {
-        				if(user.getAddress() == userToUpdate.getAddress()) {
+        				if(user.getAddress().toString().equals(userToUpdate.getAddress().toString())) {
         					updatedUser = user;
         					updatedUser.setPseudo(userToUpdate.getPseudo());
         					found = true;
