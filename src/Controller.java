@@ -104,22 +104,22 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
+		um.refreshUser(u, a);
 		switch(a) {
 		case CONNECT:
 			if (currentView == CurrentView.HOME)
-				hv.addUser(u);
+				hv.refreshView();
 			break;
 		case UPDATE:
-			User us = um.getUserByIP(u.getAddress());
-			us.setPseudo(u.getPseudo());
-			us.setNumPort(u.getNumPort());
+			Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
+			if (conv != null)
+				cm.updatePseudoInDB(conv, u.getPseudo());
 			if (currentView == CurrentView.HOME) {
-				hv.addUser(u);
+				hv.refreshView();
 			}
 			else {
 				if (currentView == CurrentView.CONVERSATION) {
-					Conversation c = cm.getConvByUser(us);
-					if (c == cm.getCurrentConv()) {
+					if (conv == cm.getCurrentConv()) {
 						cv.updatePseudo(u.getPseudo());
 					}
 				}
@@ -127,10 +127,9 @@ public class Controller {
 			break;
 		case DISCONNECT:
 			if (currentView == CurrentView.HOME)
-				hv.removeUser(u.getPseudo());
+				hv.refreshView();
 			break;
 		}
-		um.refreshUser(u, a);
 	}
 
 	/***************************************************/
@@ -165,9 +164,9 @@ public class Controller {
 	//Called from the pseudo view
 	public void displayHomeView() {
 		um.debugUsers();
-		this.hv = new HomeView(this);
+		this.hv = new HomeView(this, um.getMyself(), um.getConnectedUsers(), cm.getHistory());
 		currentView = CurrentView.HOME;
-		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
+		hv.displayView();
 	}
 	//Called from the home view
 	public void displayConversationView() {

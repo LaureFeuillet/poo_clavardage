@@ -22,6 +22,8 @@ public class ConversationModel {
 	protected String user = "clavardage";
 	protected String pwd = "clavardage";
 
+	
+	
 	/*** Constructors ***/
 	public ConversationModel() {
 		currentConversations = new ArrayList<Conversation>();
@@ -119,6 +121,10 @@ public class ConversationModel {
 		    }
 		}
 
+	public void updatePseudoInDB(Conversation conv, String newPseudo) {
+		System.out.println("[DB] The pseudo should be updated in DB now !");
+	}
+	
 	/*** Methods ***/
 	// Asks the database about a conversation between myself and "pseudo" at a given date
 	public Conversation getConvFromHistory(String pseudo){
@@ -241,7 +247,7 @@ public class ConversationModel {
 				pstmt.executeUpdate();
 				System.out.println("[DB] Inserted message in DB.");
 			} else {
-				System.out.println("[DB] Error");
+				System.out.println("[DB] Error : Conversation not found !");
 			}
 			
 		} catch (SQLException e1) {
