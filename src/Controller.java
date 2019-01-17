@@ -105,6 +105,7 @@ public class Controller {
 	public void refreshUser(User u, Action a) {
 		//String pseudoDest = u.getPseudo();
 		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
+		String oldPseudo = conv.getDestinationUser().getPseudo();
 		um.refreshUser(u, a);
 		switch(a) {
 		case CONNECT:
@@ -113,7 +114,7 @@ public class Controller {
 			break;
 		case UPDATE:
 			if (conv != null)
-				cm.updatePseudoInDB(conv, u.getPseudo());
+				cm.updatePseudoInDB(conv, oldPseudo);
 			if (currentView == CurrentView.HOME) {
 				hv.refreshView();
 			}
