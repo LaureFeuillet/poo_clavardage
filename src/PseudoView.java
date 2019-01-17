@@ -2,6 +2,7 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -47,16 +48,18 @@ public class PseudoView extends javax.swing.JFrame {
 		pan.setBackground(new Color(220, 220, 220));
 		
 		/* The title label : CHOOSE ... */
-		JLabel pseudoLabel = new JLabel("   CHOOSE YOUR PSEUDO :");
-		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 139, SpringLayout.WEST, pan);
-		currentLayout.putConstraint(SpringLayout.EAST, pseudoLabel, 0, SpringLayout.EAST, pan);
+		JLabel pseudoLabel = new JLabel("CHOOSE YOUR PSEUDO :");
+		currentLayout.putConstraint(SpringLayout.WEST, pseudoLabel, 25, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, pseudoLabel, -24, SpringLayout.EAST, pan);
 		pseudoLabel.setForeground(new Color(0, 0, 0));
+		pseudoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		pseudoLabel.setVerticalAlignment(SwingConstants.CENTER);
 		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 25));
 		pan.add(pseudoLabel);
 		
 		/* The text field to enter new pseudo */
 		pseudoField = new JTextField();
-		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -30, SpringLayout.NORTH, pseudoField);
+		currentLayout.putConstraint(SpringLayout.SOUTH, pseudoLabel, -28, SpringLayout.NORTH, pseudoField);
 		currentLayout.putConstraint(SpringLayout.NORTH, errorLabel, 27, SpringLayout.SOUTH, pseudoField);
 		currentLayout.putConstraint(SpringLayout.NORTH, pseudoField, 100, SpringLayout.NORTH, pan);
 		currentLayout.putConstraint(SpringLayout.WEST, pseudoField, 10, SpringLayout.WEST, pan);
@@ -74,6 +77,7 @@ public class PseudoView extends javax.swing.JFrame {
 		JButton checkButton = new JButton("Start chatting !");
 		currentLayout.putConstraint(SpringLayout.NORTH, checkButton, 0, SpringLayout.NORTH, errorLabel);
 		currentLayout.putConstraint(SpringLayout.WEST, checkButton, 119, SpringLayout.WEST, pan);
+		currentLayout.putConstraint(SpringLayout.EAST, checkButton, -121, SpringLayout.EAST, pan);
 		checkButton.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		checkButton.setForeground(new Color(210, 105, 30));
 		checkButton.addActionListener(new ActionListener() {
