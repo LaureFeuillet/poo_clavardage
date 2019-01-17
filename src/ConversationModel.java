@@ -142,14 +142,14 @@ public class ConversationModel {
 				
 				// To find the id_conv of the old conversation
 				String query = " SELECT id_conv"
-						+ " FROM Conversation "
+						+ " FROM conversation "
 						+ " WHERE pseudo = '" + oldPseudo +"'"
 						+ " AND starting_date = '" + conv.getStartingDate().toString() + "';";
 				// rs store the id_conv 
 				rs = stmt.executeQuery(query);
 				if (rs.next()) {
 					// TP update the corresponding conversation according to the new pseudo
-					query = "UPDATE Conversation"
+					query = "UPDATE conversation"
 						  + "SET pseudo='" + conv.getDestinationUser().getPseudo() + "'"
 						  + "WHERE id=" + rs.getInt("id_conv") + ";";
 					stmt.executeUpdate(query);
