@@ -104,8 +104,8 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
-		um.refreshUser(u, a);
 		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
+		um.refreshUser(u, a);
 		switch(a) {
 		case CONNECT:
 			if (currentView == CurrentView.HOME)
@@ -126,11 +126,12 @@ public class Controller {
 			}
 			break;
 		case DISCONNECT:
-			if (currentView == CurrentView.HOME)
+			if (currentView == CurrentView.HOME) {
 				hv.refreshView();
+			}	
 			else {
 				if (currentView == CurrentView.CONVERSATION) {
-					if (conv == cm.getCurrentConv()) {
+					if (conv.getStartingDate().equals(cm.getCurrentConv().getStartingDate())) {
 						cv.userLeft();
 					}
 				}
