@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import java.awt.Font;
+import javax.swing.UIManager;
 
 public class HomeView extends JFrame {
 	
@@ -120,7 +121,7 @@ public class HomeView extends JFrame {
 		btnPseudo = new JButton("Change pseudo");
 		currentLayout.putConstraint(SpringLayout.WEST, btnPseudo, 44, SpringLayout.WEST, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, btnPseudo, 227, SpringLayout.WEST, pan);
-		btnPseudo.setBackground(new Color(255, 255, 255));
+		btnPseudo.setBackground(UIManager.getColor("Button.shadow"));
 		btnPseudo.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		btnPseudo.setForeground(new Color(255, 140, 0));
 		btnPseudo.addActionListener(new ActionListener() {
@@ -140,6 +141,7 @@ public class HomeView extends JFrame {
 		pan.add(lblHistoryPrevious);
 		
 		JButton btnDeleteHistory = new JButton("Delete history");
+		btnDeleteHistory.setBackground(UIManager.getColor("Button.shadow"));
 		currentLayout.putConstraint(SpringLayout.NORTH, btnPseudo, 1, SpringLayout.NORTH, btnDeleteHistory);
 		currentLayout.putConstraint(SpringLayout.SOUTH, btnDeleteHistory, -25, SpringLayout.SOUTH, pan);
 		currentLayout.putConstraint(SpringLayout.EAST, btnDeleteHistory, -70, SpringLayout.EAST, pan);
