@@ -84,7 +84,7 @@ public class ConversationModel {
 		      String startingDate = null;
 		      int id_conv = 0;
 		      
-		      ArrayList<Message> messages = null;
+		      ArrayList<Message> messages = new ArrayList<Message>();
 		      // For each conversation, we get the corresponding messages
 		      // By checking for each message if the conv = id_conv
 		      
@@ -141,10 +141,10 @@ public class ConversationModel {
 				stmt = con.createStatement();
 				
 				// To find the id_conv of the old conversation
-				String query = "SELECT id_conv"
-						+ "FROM Conversation "
-						+ "WHERE pseudo = " + oldConv.getDestinationUser().getPseudo()
-						+ "AND starting_date = " + oldConv.getStartingDate().toString() + ";";
+				String query = " SELECT id_conv"
+						+ " FROM Conversation "
+						+ " WHERE pseudo = " + oldConv.getDestinationUser().getPseudo()
+						+ " AND starting_date = " + oldConv.getStartingDate().toString() + ";";
 				// rs store the id_conv 
 				rs = stmt.executeQuery(query);
 				if (rs.next()) {
