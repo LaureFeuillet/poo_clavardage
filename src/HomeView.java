@@ -309,7 +309,7 @@ public class HomeView extends JFrame {
 		convLayout.putConstraint(SpringLayout.WEST, backButton, 33, SpringLayout.WEST, convPan);
 		convLayout.putConstraint(SpringLayout.NORTH, backButton, 15, SpringLayout.SOUTH, msgScroll);
 		
-		pseudoLabel.setText("Previous conv with : "+ pseudo+".");
+		pseudoLabel.setText("Previous conversation with "+ pseudo+".");
 		pseudoLabel.setFont(new Font("Lucida Grande", Font.BOLD, 17));
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

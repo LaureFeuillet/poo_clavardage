@@ -177,7 +177,7 @@ public class ConversationView extends JFrame {
 		JLabel updateMsg = new JLabel();
 		updateMsg.setForeground(new Color(204, 0, 102));
 		//updateMsg.setFont(Font.ITALIC);
-		updateMsg.setText("Your intermediary changed his pseudo to :" + other + ".");
+		updateMsg.setText("Your intermediary changed his/her pseudo to " + other + ".");
 		listPan.add(updateMsg);
 		listPan.revalidate();
 		listPan.repaint();
