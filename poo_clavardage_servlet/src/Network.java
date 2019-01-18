@@ -1,4 +1,7 @@
 import java.util.List;
+
+import sun.net.www.URLConnection;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +18,7 @@ import java.net.InterfaceAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -79,6 +83,22 @@ public class Network {
 	    }
 	    System.out.print("[INIT] Local address is : " + local.toString() + "\n");
 	    System.out.print("[INIT] Broadcast address is : " + broadcast.toString() + "\n");
+	}
+	
+	public static String get(String url) throws IOException{
+		 
+		String source ="";
+		URL urls = new URL(url);
+		URLConnection urlsc = urls.openConnection();
+		BufferedReader in = new BufferedReader(
+		new InputStreamReader(urlsc.getInputStream())
+		);
+		String inputLine;
+		 
+		while ((inputLine = in.readLine()) != null)
+			source +=inputLine;
+			in.close();
+			return source;
 	}
 	
 	/*****************************************************/

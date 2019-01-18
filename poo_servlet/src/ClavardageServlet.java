@@ -41,11 +41,14 @@ public class ClavardageServlet extends HttpServlet {
 			
 			switch(action) {
 			// The client wants to connect with the given pseudo
+			// ?action=CONNECT&pseudo=...&port=...
 			case "CONNECT":
 				System.out.println("CONNECT *** ");
 				pseudo = new String(request.getParameter("pseudo"));
+				port = Integer.parseInt(request.getParameter("port"));
+				
 				ip = InetAddress.getByName(request.getRemoteAddr());
-				port = request.getRemotePort();
+				
 				User newUser = new User(pseudo, ip, port);
 				if(users.contains(newUser)) {
 					System.out.println("[SERVLET] User already registered");
@@ -57,6 +60,7 @@ public class ClavardageServlet extends HttpServlet {
 				}
 				break;
 			// The client want to disconnect
+			// ?action=DISCONNECT&pseudo=...
 			case "DISCONNECT":
 				System.out.println("DISCONNECT *** ");
 				pseudo = new String(request.getParameter("pseudo"));
@@ -77,9 +81,10 @@ public class ClavardageServlet extends HttpServlet {
 				}
 				users.remove(userToDelete);
 				System.out.println(stringUsers());
-				pw.append(jsonUsers());
+				//pw.append(jsonUsers());
 				break;
 			// The client wants to change his pseudo to the given one
+			// // ?action=UPDATE&pseudo=...
 			case "UPDATE": 
 				System.out.println("UPDATE *** ");
 				pseudo = new String(request.getParameter("pseudo"));
@@ -96,9 +101,10 @@ public class ClavardageServlet extends HttpServlet {
 					}
 				}
 				System.out.println(stringUsers());
-				pw.append(jsonUsers());
+				//pw.append(jsonUsers());
 				break;
 			// The client wants to know all the connected users
+			// ?action=USERS
 			case "USERS":
 				System.out.println("USERS *** ");
 				pw.append(jsonUsers());
