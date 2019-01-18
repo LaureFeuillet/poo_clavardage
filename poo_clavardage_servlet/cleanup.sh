@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECTPATH="/home/feuillet/Bureau/4A/Orienté objet/poo_clavardage_servlet"
+PROJECTPATH="/home/feuillet/Bureau/4A/Orienté objet/poo_clavardage"
 
 cd ${PROJECTPATH}
 

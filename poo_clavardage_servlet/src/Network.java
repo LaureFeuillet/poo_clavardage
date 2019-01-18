@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.lang.Runtime;
 
 public class Network {
 	//These will be our IP address and the broadcast address corresponding to it
@@ -33,6 +34,7 @@ public class Network {
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
+	private ExitThread et = null;
 
 	public Network(Controller c) {
 		clients = new HashMap<InetAddress,ClientThread>();
@@ -45,6 +47,7 @@ public class Network {
 		//Used to get our local address and the broadcast address
 		init();
 		new WatchdogThread(this);
+		new ExitThread();
 	}
 	
 	//WARNING : VERY COMPLICATED ONE !!!
@@ -86,7 +89,7 @@ public class Network {
 	public ArrayList<User> findConnectedUsers(){
 		//System.out.print("[REQUEST] Starting request...\n");
 		//The duration in milliseconds while we are waiting for responses
-		final int EXIT_TIME = 500;
+		final int EXIT_TIME = 1000;
 		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
 		DatagramPacket sentPacket = null;
 		DatagramSocket s = null;
@@ -115,7 +118,7 @@ public class Network {
 	    		s.receive(receivedPacket);
 		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
 		    	User u = ReceiveMessageUser(receivedPacket.getData());
-		    	System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + ", pseudo is " + u.getPseudo() +"...\n");
+		    	System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + ", pseudo is \"" + u.getPseudo() +"\"...\n");
 		    	connectedUsers.add(u);
 	    	}catch (IOException e) {}
 		}
@@ -197,12 +200,14 @@ public class Network {
 		
 		public void run() {
 			User u;
-			try {
-				//Starts the watchdog on port PORT_WATCHDOG
-				sock = new DatagramSocket(PORT_WATCHDOG);
-				//System.out.print("[WATCHDOG] Socket created...\n");
-				
-			} catch (SocketException e) {}
+			while(sock == null) {
+				try {
+					//Starts the watchdog on port PORT_WATCHDOG
+					sock = new DatagramSocket(PORT_WATCHDOG);
+					//System.out.print("[WATCHDOG] Socket created...\n");
+					
+				} catch (SocketException e) {}
+			}
 			while(true) {
 				try {
 					//Waits for any broadcast packet
@@ -220,7 +225,7 @@ public class Network {
 							sock.send(sentPacket);
 							//A this moment, the remote user does not yet have a pseudo so its set to null, the port is set to
 							//0 and will be updated when the remote user chooses his pseudo
-							u = new User(null,receivedPacket.getAddress(), 0);
+							u = new User("undefined",receivedPacket.getAddress(), 0);
 							//The controller is noticed that a new user has actually connected
 							n.getController().refreshUser(u, Action.CONNECT);
 							break;
@@ -240,7 +245,7 @@ public class Network {
 						default:
 							//The user is contained in the data of the packet
 						    u = ReceiveMessageUser(receivedPacket.getData());
-						    System.out.print("[WATCHDOG] Received pseudo " + u.getPseudo() + " from " + receivedPacket.getAddress() + "...\n");
+						    System.out.print("[WATCHDOG] Received pseudo \"" + u.getPseudo() + "\" from " + receivedPacket.getAddress() + "...\n");
 							//The controller is notified that the user behind an IP address that we already know has
 							//changed his pseudo
 							n.getController().refreshUser(u, Action.UPDATE);
@@ -326,7 +331,8 @@ public class Network {
 						System.out.println("[SERVER_THREAD] Received message : \"" + input + "\" from " + sock.getInetAddress() + ".");
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("[SERVER_THREAD] Ended conversation with : " +  sock.getInetAddress());
+					break;
 				}
 			}	
 		}
@@ -380,7 +386,8 @@ public class Network {
 
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("[CLIENT_THREAD] Ended conversation with : " + dest.getAddress());
+					break;
 				}
 			}			
 		}
@@ -390,7 +397,38 @@ public class Network {
 		{
 			out.println(content);
 		}
-	}	
+	}
+	
+	//Used to send a message to the connected users when exiting the application
+	private class ExitThread extends Thread{
+		
+		public ExitThread() {
+			super("EXIT THREAD");
+			//This is used to specify that this thread should be executed on exiting the app
+			Runtime.getRuntime().addShutdownHook(this);
+		}
+		
+		public void run() {
+			sendExitMessage();
+		}
+		
+		//Performs a broadcast message
+		private void sendExitMessage() {
+			DatagramPacket sentPacket = null;
+			DatagramSocket s = null;
+			try {
+				//Creates a broadcast UDP socket
+				s = new DatagramSocket(0);
+				s.setBroadcast(true);
+			} catch (SocketException e) {}
+			//Sends the packet containing our pseudo the remote users
+	        sentPacket = new DatagramPacket("DISCONNECT".getBytes(), "DISCONNECT".length(), broadcast, PORT_WATCHDOG);
+	        try {
+	        	System.out.println("[EXIT THREAD] Sending DISCONNECT message");
+				s.send(sentPacket);
+			} catch (IOException e) {}
+		}
+	}
 	
 	/*****************************************************/
 	/***************        TOOLS        *****************/

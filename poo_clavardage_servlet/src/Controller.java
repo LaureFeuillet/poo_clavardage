@@ -2,7 +2,6 @@ import java.net.InetAddress;
 //import java.time.LocalDateTime;
 //import java.time.format.DateTimeFormatter;
 //import java.util.ArrayList;
-import java.util.ArrayList;
 
 /* Used to tell the user model how to refresh the connected user list
  * CONNECT to add a new user
@@ -37,12 +36,10 @@ public class Controller {
 		currentView = CurrentView.PSEUDO;
 		nw = new Network(this);
 		pv = new PseudoView(this);
-		hv = new HomeView(this);
-		cv = new ConversationView(this);
 		//The user model must be told of the already active users on the local network
 		um = new UserModel(nw.findConnectedUsers());
 		cm = new ConversationModel();
-		displayPseudoView();
+		displayPseudoView("");
 	}
 	
 	/***************************************************/
@@ -53,7 +50,7 @@ public class Controller {
 	public void sendMsg(String pseudo, String content) {
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getCurrentConv();
-		c = addMsg(c, content, true);
+		addMsg(c, content, true);
 		nw.sendMsg(u,content);
 		//The conversation view is refreshed to display the newly sent message
 		//cv.displayView(um.getMyself(), c);
@@ -63,7 +60,7 @@ public class Controller {
 	public void receiveMsg(InetAddress ip, String content) {
 		User u = um.getUserByIP(ip);
 		Conversation c = cm.getConvByUser(u);
-		c = addMsg(c, content, false);
+		addMsg(c, content, false);
 		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
 		if (c == cm.getCurrentConv()) {
 			cv.addMsg(content);
@@ -71,26 +68,24 @@ public class Controller {
 	}
 	
 	//Inserts a message in the local DB, sent is used to tell if the message comes from us 
-	private Conversation addMsg(Conversation conv, String content, boolean sent) {
-		return cm.addMsg(conv, content, sent);
+	private void addMsg(Conversation conv, String content, boolean sent) {
+		cm.addMsg(conv, content, sent);
 	}
 	
 	//Creates a new conversation (always initiated by a remote user) 
 	//for conversations started by our own, see displayConversation
 	public void startConversation(InetAddress adr) {
 		User u = um.getUserByIP(adr);
-		cm.startConv(u);
+		cm.startConv(u, false);
 	}
 	
 	//Displays an already started conversation, or starts it and displays it if it was not
 	public void displayConversation(String pseudo) {
-		System.out.println("displayConv");
 		User u = um.getUserByPseudo(pseudo);
 		Conversation c = cm.getConvByUser(u);
 		if (c == null) {
 			nw.addConv(u);
-			System.out.println("La conv n'existe pas encore avec " + u.getPseudo()+".");
-			cm.startConv(u);
+			cm.startConv(u, true);
 			c = cm.getConvByUser(u);
 		}	
 		cm.setCurrentConv(c);
@@ -108,33 +103,46 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUser(User u, Action a) {
+		//String pseudoDest = u.getPseudo();
+		String oldPseudo = "";
+		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
+		if (conv != null)
+			oldPseudo = conv.getDestinationUser().getPseudo();
+		um.refreshUser(u, a);
 		switch(a) {
 		case CONNECT:
 			if (currentView == CurrentView.HOME)
-				hv.addUser(u);
+				hv.refreshView();
 			break;
 		case UPDATE:
-			User us = um.getUserByIP(u.getAddress());
-			us.setPseudo(u.getPseudo());
-			us.setNumPort(u.getNumPort());
+			if (conv != null)
+				cm.updatePseudoInDB(conv, oldPseudo);
 			if (currentView == CurrentView.HOME) {
-				hv.addUser(u);
+				hv.refreshView();
 			}
 			else {
 				if (currentView == CurrentView.CONVERSATION) {
-					Conversation c = cm.getConvByUser(us);
-					if (c == cm.getCurrentConv()) {
+					if (conv == cm.getCurrentConv()) {
 						cv.updatePseudo(u.getPseudo());
 					}
 				}
 			}
 			break;
 		case DISCONNECT:
-			if (currentView == CurrentView.HOME)
-				hv.removeUser(u.getPseudo());
+			//conv.setDestinationUser(new User(pseudoDest, null, 0));
+			//cm.addConvToHistory(conv);
+			if (currentView == CurrentView.HOME) {
+				hv.refreshView();
+			}	
+			else {
+				if (currentView == CurrentView.CONVERSATION) {
+					if (conv.getStartingDate().equals(cm.getCurrentConv().getStartingDate())) {
+						cv.userLeft();
+					}
+				}
+			}
 			break;
 		}
-		um.refreshUser(u, a);
 	}
 
 	/***************************************************/
@@ -162,24 +170,24 @@ public class Controller {
 	/***************************************************/
 
 	//Called from the home view
-	public void displayPseudoView() {
+	public void displayPseudoView(String pseudo) {
 		currentView = CurrentView.PSEUDO;
-		pv.displayView();
+		pv.displayView(pseudo);
 	}
 	//Called from the pseudo view
 	public void displayHomeView() {
-		um.debugUsers();
-		this.hv = new HomeView(this);
+		//um.debugUsers();
+		this.hv = new HomeView(this, um.getMyself(), um.getConnectedUsers(), cm.getHistory());
 		currentView = CurrentView.HOME;
-		ArrayList<Conversation> history = cm.getHistory();
-		hv.displayView(um.getMyself(), um.getConnectedUsers(),cm.getHistory());
-		System.out.println("Hist : "+history);
+		hv.displayView();
+		//cm.printHistory();
 	}
 	//Called from the home view
 	public void displayConversationView() {
-		um.debugUsers();
+		//um.debugUsers();
 		this.cv = new ConversationView(this);
 		currentView = CurrentView.CONVERSATION;
 		cv.displayView(um.getMyself(), cm.getCurrentConv());
+		//cm.printHistory();
 	}
 }
