@@ -15,20 +15,24 @@ import java.net.InterfaceAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.lang.Runtime;
+import org.json.*;
 
 public class Network {
 	//These will be our IP address and the broadcast address corresponding to it
-	private InetAddress local, broadcast;
+	private InetAddress local;
 	private int localPort = 0;
 	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	private final int PORT_WATCHDOG = 17171;
+	//private final int PORT_WATCHDOG = 17171;
 	//Size of the packets sent by the application
-	private final int PACKET_SIZE = 1024;
+	//private final int PACKET_SIZE = 1024;
+	private final String urlServlet = "http://localhost:8080/poo_sevlet/ClavardageServlet?action=";
 	private String pseudo = "undefined";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
@@ -39,14 +43,14 @@ public class Network {
 	public Network(Controller c) {
 		clients = new HashMap<InetAddress,ClientThread>();
 		servers = new HashMap<InetAddress,ServerThread>();
-		local = broadcast = null;
+		local = null;
 		this.controller = c;
 		//Launches a "waiting for discussion initiated by remote users" thread
 		new ListenerThread(this);
 		//Launches a thread that will handle every broadcast messages sent by remote users
 		//Used to get our local address and the broadcast address
 		init();
-		new WatchdogThread(this);
+		//new WatchdogThread(this);
 		new ExitThread();
 	}
 	
@@ -72,57 +76,50 @@ public class Network {
 	      while (it.hasNext()) {
 	        InterfaceAddress ia = it.next();
 	        if (ia.getAddress().isSiteLocalAddress()) {
-	        	broadcast = ia.getBroadcast();
+	        	//broadcast = ia.getBroadcast();
 	        	local = ia.getAddress();
 	        }
 	      }
 	    }
 	    System.out.print("[INIT] Local address is : " + local.toString() + "\n");
-	    System.out.print("[INIT] Broadcast address is : " + broadcast.toString() + "\n");
+	    //System.out.print("[INIT] Broadcast address is : " + broadcast.toString() + "\n");
 	}
 	
 	/*****************************************************/
 	/*********       APPLICATION METHODS       ***********/
 	/*****************************************************/
 	
+	public static String get(String url) throws IOException{ 
+		String source ="";
+		URL urls = new URL(url);
+		URLConnection urlsc = urls.openConnection();
+		BufferedReader in = new BufferedReader(new InputStreamReader(urlsc.getInputStream()));
+		String inputLine;
+		while ((inputLine = in.readLine()) != null)
+			source +=inputLine;
+		in.close();
+		return source;
+	}
+	
 	// At the launch of the application, we need to know all the connected users on the network
 	public ArrayList<User> findConnectedUsers(){
-		//System.out.print("[REQUEST] Starting request...\n");
-		//The duration in milliseconds while we are waiting for responses
-		final int EXIT_TIME = 1000;
-		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
-		DatagramPacket sentPacket = null;
-		DatagramSocket s = null;
 		ArrayList<User> connectedUsers = new ArrayList<User>();
-		long startTime;
+		JSONObject usersObject;
+		JSONArray usersArray;
+		String users = "";
 		try {
-			//Creates a broadcast UDP socket
-			s = new DatagramSocket(0);
-			if (s != null)
-				//System.out.print("[REQUEST] Socket created...\n");
-			s.setBroadcast(true);
-			s.setSoTimeout(10);
-		} catch (SocketException e) {}
-		//Sends a packet to notify the remote users that we are connected
-        sentPacket = new DatagramPacket("CONNECT".getBytes(), "CONNECT".length(), broadcast, PORT_WATCHDOG);
-        try {
-			s.send(sentPacket);
-			System.out.print("[REQUEST] Request sent to " + broadcast.toString() + "...\n");
-		} catch (IOException e) {}
-        //Starts the timer
-	    startTime = System.currentTimeMillis();
-	    //System.out.print("[REQUEST] Starting timer...\n");
-	    //While there is still time, we are waiting for answers from remote users
-	    while(System.currentTimeMillis() - startTime < EXIT_TIME) {
-	    	try {
-	    		s.receive(receivedPacket);
-		    	//We create and add to our contacts a new user for every response, in the packet data is the remote users's pseudo
-		    	User u = ReceiveMessageUser(receivedPacket.getData());
-		    	System.out.print("[REQUEST] Reply received from " + receivedPacket.getAddress().toString() + ", pseudo is \"" + u.getPseudo() +"\"...\n");
-		    	connectedUsers.add(u);
-	    	}catch (IOException e) {}
+			users = get(urlServlet + "USERS");
+			usersObject = new JSONObject(users);
+			usersArray = usersObject.getJSONArray("Users");
+			for (int i = 0 ; i < usersArray.length() ; i++) {
+				User u = new User(usersArray.getJSONObject(i).getString("pseudo"), 
+									InetAddress.getByName(usersArray.getJSONObject(i).getString("ip")), 
+										Integer.parseInt(usersArray.getJSONObject(i).getString("port")));
+				connectedUsers.add(u);
+			}
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
 		}
-	    System.out.print("[REQUEST] Ending request...\n");
 		return connectedUsers;
 	}
 	
@@ -152,6 +149,7 @@ public class Network {
 	//Notifies the remote users that the local one has changed or set his pseudo
 	public void notifyPseudo(String pseudo) {
 		this.pseudo = pseudo;
+		/*
 		DatagramPacket sentPacket = null;
 		DatagramSocket s = null;
 		try {
@@ -165,6 +163,7 @@ public class Network {
         try {
 			s.send(sentPacket);
 		} catch (IOException e) {}
+		*/
 	}
 		
 	public Controller getController() {
@@ -183,7 +182,7 @@ public class Network {
 	/*****************************************************/
 	/***************       THREADS       *****************/
 	/*****************************************************/
-	
+	/*
 	//A thread that catches all broadcast messages, runs on PORT_WATCHDOG port
 	private class WatchdogThread extends Thread{
 		DatagramSocket sock;
@@ -256,7 +255,7 @@ public class Network {
 			}
 		}
 	}
-	
+	*/
 	//A thread that is listening to remote users' requests for starting a conversation with us
 	private class ListenerThread extends Thread
 	{
@@ -433,7 +432,7 @@ public class Network {
 	/*****************************************************/
 	/***************        TOOLS        *****************/
 	/*****************************************************/
-	
+	/*
 	//Used to send a User object in a packet
 	public byte[] createMessageUser(String pseudo) {
 		//Prepare Data
@@ -476,5 +475,6 @@ public class Network {
         }
         return u;
 	}
+	*/
 }
 
