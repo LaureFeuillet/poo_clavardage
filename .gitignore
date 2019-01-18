@@ -1,4 +1,11 @@
-/bin/
-.DS_Store
-.goutputstream*
-.classpath
+poo_clavardage/bin/
+poo_clavardage/.DS_Store
+poo_clavardage/.goutputstream*
+poo_clavardage/.classpath
+poo_clavardage_servlet/bin/
+poo_clavardage_servlet/.DS_Store
+poo_clavardage_servlet/.goutputstream*
+poo_clavardage_servlet/.classpath
+poo_servlet/build/
+poo_servlet/.classpath
+poo_servlet/.settings/
