@@ -1,14 +1,9 @@
 import java.util.List;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.net.NetworkInterface;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -119,8 +114,6 @@ public class Network {
 				pseudo = new String(usersArray.getJSONObject(i).getString("pseudo"));
 				ip = new String(usersArray.getJSONObject(i).getString("ip").substring(1));
 				port = new String(usersArray.getJSONObject(i).getString("port"));
-				//System.out.println("User : " + pseudo + " " + ip + " " + port);
-				//User u = new User(usersArray.getJSONObject(i).getString("pseudo"), InetAddress.getByName(usersArray.getJSONObject(i).getString("ip")), Integer.parseInt(usersArray.getJSONObject(i).getString("port")));
 				User u = new User(pseudo, InetAddress.getByName(ip), Integer.parseInt(port));
 				connectedUsers.add(u);
 			}
@@ -167,21 +160,6 @@ public class Network {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		/*
-		DatagramPacket sentPacket = null;
-		DatagramSocket s = null;
-		try {
-			//Creates a broadcast UDP socket
-			s = new DatagramSocket(0);
-			s.setBroadcast(true);
-		} catch (SocketException e) {}
-		byte[] dataToSend = createMessageUser(pseudo);
-		//Sends the packet containing our pseudo the remote users
-        sentPacket = new DatagramPacket(dataToSend, dataToSend.length, broadcast, PORT_WATCHDOG);
-        try {
-			s.send(sentPacket);
-		} catch (IOException e) {}
-		*/
 	}
 	
 	//Notifies the remote users that the local one has changed or set his pseudo
@@ -386,70 +364,7 @@ public class Network {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			/*
-			DatagramPacket sentPacket = null;
-			DatagramSocket s = null;
-			try {
-				//Creates a broadcast UDP socket
-				s = new DatagramSocket(0);
-				s.setBroadcast(true);
-			} catch (SocketException e) {}
-			//Sends the packet containing our pseudo the remote users
-	        sentPacket = new DatagramPacket("DISCONNECT".getBytes(), "DISCONNECT".length(), broadcast, PORT_WATCHDOG);
-	        try {
-	        	System.out.println("[EXIT THREAD] Sending DISCONNECT message");
-				s.send(sentPacket);
-			} catch (IOException e) {}
-			*/
 		}
 	}
-	
-	/*****************************************************/
-	/***************        TOOLS        *****************/
-	/*****************************************************/
-	/*
-	//Used to send a User object in a packet
-	public byte[] createMessageUser(String pseudo) {
-		//Prepare Data
-        User u = new User(pseudo,local,localPort);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = null;
-		try {
-			oos = new ObjectOutputStream(baos);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-        try {
-			oos.writeObject(u);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-        return baos.toByteArray();
-	}
-
-	//Used to get a User object from a packet
-	public static User ReceiveMessageUser(byte[] buf) {
-		//Getting the object MessageSync
-        ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-        ObjectInputStream ois = null;
-        User u = null;
-		try {
-			ois = new ObjectInputStream(bais);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-        try {
-            Object readObject = ois.readObject();
-            if (readObject instanceof User) {
-            	u = (User) readObject;
-            } else {
-                System.out.println("The object is not a MessageSync");
-            }
-        } catch (Exception e) {
-            System.out.println("There are no object in this packet");
-        }
-        return u;
-	}
-	*/
 }
 
