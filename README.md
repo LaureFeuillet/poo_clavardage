@@ -1,7 +1,7 @@
  PLEASE MAKE SURE TO READ THIS FILE BEFORE TRYING ANYTHING ELSE 
 
 
-                                   THIS REPOSITORY CONTAINS THREE ECLIPSE JAVA PROJECT :
+                                  THIS REPOSITORY CONTAINS THREE ECLIPSE JAVA PROJECT :
 
 -> POO_CLAVARDAGE : CONTAINS THE SOURCE CODE OF THE CLIENT THAT WORKS USING BROADCAST MESSAGES, THE CORRESPONDING JAR CAN BE
    FOUND IN THE JARS FOLDER. SIMPLY EXECUTE IT TO START CHATTING WITH YOUR COLLEAGUES LOCATED ON THE SAME LAN.
@@ -15,23 +15,23 @@
                    
 *********************************************************************************************************************************
               
-                                                 IMPLEMENTED FEATURES :  
+                                              IMPLEMENTED FEATURES :  
 
-                            -> PSEUDO SELECTION (UNICITY CHECK)
-                            -> CONNECTED USERS DISCOVERY USING BROADCAST OR PRESENCE SERVER
-                            -> CHATTING WITH OTHER USERS LOCATED ON THE SAME LAN
-                            -> PSEUDO CHANGE NOTIFICATION
-                            -> HISTORY OF PREVIOUS CONVERSATIONS (REQUIRES MYSQL CONFIGURATION)
-                               
+                         -> PSEUDO SELECTION (UNICITY CHECK)
+                         -> CONNECTED USERS DISCOVERY USING BROADCAST OR PRESENCE SERVER
+                         -> CHATTING WITH OTHER USERS LOCATED ON THE SAME LAN
+                         -> PSEUDO CHANGE NOTIFICATION
+                         -> HISTORY OF PREVIOUS CONVERSATIONS (REQUIRES MYSQL CONFIGURATION)
+
 *********************************************************************************************************************************
 
-                                                  THANKS FOR READING !
+                                               THANKS FOR READING !
 
-                                         THIS AWESOME APP WAS BROUGHT TO YOU BY :
+                                      THIS AWESOME APP WAS BROUGHT TO YOU BY :
 
-                                                     LAURE FEUILLET
-                                                      MAEL PLANTEC
-                                                    THOMAS CAZAUBON
+                                                  LAURE FEUILLET
+                                                   MAEL PLANTEC
+                                                 THOMAS CAZAUBON
 
-                       ALL THREE STUDENTS AT THE INSA OF TOULOUSE IN 4TH YEAR OF COMPUTER ENGINEERING
-                                                      2018 - 2019
+                    ALL THREE STUDENTS AT THE INSA OF TOULOUSE IN 4TH YEAR OF COMPUTER ENGINEERING
+                                                   2018 - 2019
