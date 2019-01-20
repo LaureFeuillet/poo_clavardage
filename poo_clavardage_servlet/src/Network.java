@@ -32,7 +32,7 @@ public class Network {
 	//private final int PORT_WATCHDOG = 17171;
 	//Size of the packets sent by the application
 	//private final int PACKET_SIZE = 1024;
-	private final String urlServlet = "http://localhost:8080/poo_servlet/ClavardageServlet?action=";
+	private final String urlServlet = "http://172.20.10.13:8080/poo_servlet/ClavardageServlet?action=";
 	private String pseudo = "undefined";
 	private Controller controller = null;
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
@@ -119,7 +119,7 @@ public class Network {
 				pseudo = new String(usersArray.getJSONObject(i).getString("pseudo"));
 				ip = new String(usersArray.getJSONObject(i).getString("ip").substring(1));
 				port = new String(usersArray.getJSONObject(i).getString("port"));
-				System.out.println("User : " + pseudo + " " + ip + " " + port);
+				//System.out.println("User : " + pseudo + " " + ip + " " + port);
 				//User u = new User(usersArray.getJSONObject(i).getString("pseudo"), InetAddress.getByName(usersArray.getJSONObject(i).getString("ip")), Integer.parseInt(usersArray.getJSONObject(i).getString("port")));
 				User u = new User(pseudo, InetAddress.getByName(ip), Integer.parseInt(port));
 				connectedUsers.add(u);

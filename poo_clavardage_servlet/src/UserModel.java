@@ -27,7 +27,29 @@ public class UserModel {
 	}
 	
 	public void refreshUsers(ArrayList<User> users) {
-		connectedUsers = users;
+		for (User newU : users) {
+			boolean found = false;
+			for (User u : connectedUsers) {
+				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
+					found = true;
+					if (!newU.getPseudo().equals(u.getPseudo())) {
+						u.setPseudo(newU.getPseudo());
+					}
+				}
+			}
+			if (!found)
+				addUser(newU);
+		}
+		for (User u : connectedUsers) {
+			boolean found = false;
+			for (User newU : users) {
+				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
+					found = true;
+				}
+			}
+			if (!found)
+				deleteUser(u);
+		}
 	}
 
 	// Returns TRUE if we can use this pseudo, false if its already used.
@@ -53,7 +75,7 @@ public class UserModel {
 	public User getUserByPseudo(String pseudo) {
 		User goodUser = null;
 		for(User user : this.connectedUsers) {
-			if(user.getPseudo() == pseudo) {
+			if(user.getPseudo().equals(pseudo)) {
 				goodUser = user;
 				break;
 			}

@@ -210,7 +210,7 @@ public class HomeView extends JFrame {
 	}
 	
 	public void refreshView() {
-		System.out.println("[DEBUG] Refreshed homeView.");
+		//System.out.println("[DEBUG] Refreshed homeView.");
 		//listUser.remove(u);
 		listPan.removeAll();
 
@@ -289,7 +289,7 @@ public class HomeView extends JFrame {
 		convPan.setLayout(convLayout);
 		msgPan.setLayout(msgLayout);
 		
-		convPan.setBackground(new Color(255, 212, 128));
+		convPan.setBackground(new Color(220, 220, 220));
 
 		msgScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		msgScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
