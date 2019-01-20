@@ -59,10 +59,10 @@ public class Controller {
 
 	//Handles a message reception and displays it if it is linked to the current conversation
 	public void receiveMsg(InetAddress ip, String content) {
-		um.debugUsers();
-		System.out.println(ip.toString());
+		//um.debugUsers();
+		//System.out.println(ip.toString());
 		User u = um.getUserByIP(ip);
-		System.out.println(u.getAddress().toString());
+		//System.out.println(u.getAddress().toString());
 		Conversation c = cm.getConvByUser(u);
 		addMsg(c, content, false);
 		//If the message is linked to the conversation that's currently displayed, then the view is refreshed to display it
@@ -156,7 +156,7 @@ public class Controller {
 		case CONVERSATION:
 			break;
 		case HOME:
-			hv.setListUser(users);
+			//hv.setListUser(users);
 			hv.refreshView();
 			break;
 		case PSEUDO:

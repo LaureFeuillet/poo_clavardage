@@ -27,6 +27,7 @@ public class UserModel {
 	}
 	
 	public void refreshUsers(ArrayList<User> users) {
+		ArrayList<User> usersToDelete = new ArrayList<User>();
 		for (User newU : users) {
 			boolean found = false;
 			for (User u : connectedUsers) {
@@ -48,7 +49,10 @@ public class UserModel {
 				}
 			}
 			if (!found)
-				deleteUser(u);
+				usersToDelete.add(u);
+		}
+		for (User u : usersToDelete) {
+			deleteUser(u);
 		}
 	}
 
