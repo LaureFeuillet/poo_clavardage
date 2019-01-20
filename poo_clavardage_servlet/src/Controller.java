@@ -153,6 +153,7 @@ public class Controller {
 		case CONVERSATION:
 			break;
 		case HOME:
+			hv.setListUser(users);
 			hv.refreshView();
 			break;
 		case PSEUDO:

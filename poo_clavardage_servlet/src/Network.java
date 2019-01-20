@@ -109,7 +109,7 @@ public class Network {
 		JSONArray usersArray;
 		String users = "";
 		try {
-			users = get(urlServlet + "USERS");
+			users = get(urlServlet + "USERS&pseudo=" + pseudo);
 			usersObject = new JSONObject(users);
 			usersArray = usersObject.getJSONArray("Users");
 			String pseudo = null;

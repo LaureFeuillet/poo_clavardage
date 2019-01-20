@@ -43,7 +43,7 @@ public class ClavardageServlet extends HttpServlet {
 			// The client wants to connect with the given pseudo
 			// ?action=CONNECT&pseudo=...&port=...
 			case "CONNECT":
-				System.out.println("CONNECT *** ");
+				System.out.println();
 				pseudo = new String(request.getParameter("pseudo"));
 				port = Integer.parseInt(request.getParameter("port"));
 				
@@ -54,28 +54,27 @@ public class ClavardageServlet extends HttpServlet {
 				if(users.contains(newUser)) {
 					System.out.println("[SERVLET] User already registered");
 				} else {
-					System.out.println(newUser.toString());
+					System.out.println("[SERVLET] CONNECT : " + newUser.toString());
 					users.add(newUser);
-					System.out.println(stringUsers());
+					System.out.println(jsonUsers(pseudo));
 				}
 				break;
 			// The client want to disconnect
 			// ?action=DISCONNECT&pseudo=...
 			case "DISCONNECT":
-				System.out.println("DISCONNECT *** ");
+				System.out.println("[SERVLET] DISCONNECT");
 				pseudo = new String(request.getParameter("pseudo"));
 				ip = InetAddress.getByName(request.getRemoteAddr());
 				port = request.getRemotePort();
-				System.out.println(pseudo + " " + ip + " /" + port);
 				User userToDelete = null;
 				//System.out.println(userToDelete.toString());
 				// We remove the corresponding user from the list of connected users.
 				for(User u : this.users) {
 					// The condition on pseudo is sufficient, each pseudo beeing unique.
 					if(u.getPseudo().equals(pseudo)) {
-						System.out.println(u.toString());
 						userToDelete=u;
-						System.out.println("[SERVLET] We found the user to remove.");
+						System.out.println("[SERVLET] DISCONNECT : " + u.toString());
+						System.out.println(jsonUsers(pseudo));
 						break;
 					}
 				}
@@ -86,17 +85,15 @@ public class ClavardageServlet extends HttpServlet {
 			// The client wants to change his pseudo to the given one
 			// // ?action=UPDATE&pseudo=...
 			case "UPDATE": 
-				System.out.println("UPDATE *** ");
 				pseudo = new String(request.getParameter("pseudo"));
 				ip = InetAddress.getByName(request.getRemoteAddr());
 				port = request.getRemotePort();
-				System.out.println(pseudo + " " + ip + " /" + port);
 				for (User u : users) {
 					// The condition on the ip address is sufficient, because there is only a client by machine
 					if(u.getAddress().equals(ip)) {
-						System.out.println("[SERVLET] We found the user to update.");
+						System.out.println("[SERVLET] UPDATE : " + pseudo);
 						u.setPseudo(pseudo);
-						System.out.println(u.toString());
+						System.out.println(jsonUsers(pseudo));
 						break;
 					}
 				}
@@ -104,10 +101,12 @@ public class ClavardageServlet extends HttpServlet {
 				//pw.append(jsonUsers());
 				break;
 			// The client wants to know all the connected users
-			// ?action=USERS
+			// ?action=USERS&pseudo=...
 			case "USERS":
-				System.out.println("USERS *** ");
-				pw.append(jsonUsers());
+				System.out.println("[SERVLET] USERS");
+				System.out.println(jsonUsers(pseudo));
+				pseudo = new String(request.getParameter("pseudo"));
+				pw.append(jsonUsers(pseudo));
 				break;
 			default: 
 				System.out.println("[SERVLET]Don't understand request.");
@@ -137,17 +136,23 @@ public class ClavardageServlet extends HttpServlet {
 	}
 	
 	// Return the JSON form of the list of users
-	protected String jsonUsers() {
+	protected String jsonUsers(String pseudo) {
 		String usersToJson = "{\"Users\": [ ";
 		Iterator<User> iter = users.iterator();
 		User u = null;
-		if(iter.hasNext()) {
+		boolean first = true;
+		while(iter.hasNext() && first) {
 			u=iter.next();
-			usersToJson += u.toJson();
+			if(!u.getPseudo().equals(pseudo)) {
+				usersToJson += u.toJson();
+				first = false;
+			}
 		}
 		while(iter.hasNext()) {
 			u=iter.next();
-			usersToJson += ", " + u.toJson();
+			if(!u.getPseudo().equals(pseudo)) {
+				usersToJson += ", " + u.toJson();
+			}
 		}
 		usersToJson = usersToJson + "]}";
 		return usersToJson;
