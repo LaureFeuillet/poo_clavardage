@@ -1,4 +1,5 @@
 import java.net.InetAddress;
+import java.util.ArrayList;
 //import java.time.LocalDateTime;
 //import java.time.format.DateTimeFormatter;
 //import java.util.ArrayList;
@@ -141,6 +142,20 @@ public class Controller {
 					}
 				}
 			}
+			break;
+		}
+	}
+	
+	//Adds, udpates or removes a user from the connectedUsers list
+	public void refreshUsers(ArrayList<User> users) {
+		um.refreshUsers(users);
+		switch(currentView) {
+		case CONVERSATION:
+			break;
+		case HOME:
+			hv.refreshView();
+			break;
+		case PSEUDO:
 			break;
 		}
 	}

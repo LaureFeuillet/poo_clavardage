@@ -25,6 +25,10 @@ public class UserModel {
 		System.out.println("[DEBUG] ADDING " + userToAdd.getPseudo() + " to the list of connected users.");
 		connectedUsers.add(userToAdd);
 	}
+	
+	public void refreshUsers(ArrayList<User> users) {
+		connectedUsers = users;
+	}
 
 	// Returns TRUE if we can use this pseudo, false if its already used.
 	public boolean availablePseudo(String pseudoToCheck){

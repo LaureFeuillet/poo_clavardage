@@ -51,7 +51,7 @@ public class Network {
 		//Launches a thread that will handle every broadcast messages sent by remote users
 		//Used to get our local address and the broadcast address
 		init();
-		//new WatchdogThread(this);
+		new RefreshThread(this);
 		et = new ExitThread();
 	}
 	
@@ -183,6 +183,11 @@ public class Network {
 		} catch (IOException e) {}
 		*/
 	}
+	
+	//Notifies the remote users that the local one has changed or set his pseudo
+	public void refreshUsers() {
+		controller.refreshUsers(findConnectedUsers());
+	}
 		
 	public Controller getController() {
 		return controller;
@@ -200,80 +205,25 @@ public class Network {
 	/*****************************************************/
 	/***************       THREADS       *****************/
 	/*****************************************************/
-	/*
+	
 	//A thread that catches all broadcast messages, runs on PORT_WATCHDOG port
-	private class WatchdogThread extends Thread{
-		DatagramSocket sock;
-		DatagramPacket receivedPacket = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
-		DatagramPacket sentPacket = null;
+	private class RefreshThread extends Thread{
 		Network n = null;
 		
-		public WatchdogThread(Network n) {
+		public RefreshThread(Network n) {
 			this.n = n;
-			sock = null;
-			//System.out.print("[WATCHDOG] Starting watchdog...\n");
 			start();
 		}
 		
 		public void run() {
-			User u;
-			while(sock == null) {
-				try {
-					//Starts the watchdog on port PORT_WATCHDOG
-					sock = new DatagramSocket(PORT_WATCHDOG);
-					//System.out.print("[WATCHDOG] Socket created...\n");
-					
-				} catch (SocketException e) {}
-			}
 			while(true) {
-				try {
-					//Waits for any broadcast packet
-					sock.receive(receivedPacket);
-					if (receivedPacket.getAddress().toString().compareTo(local.toString()) != 0) {
-						//Gets the content of the packet
-						String data = new String(receivedPacket.getData(),0,receivedPacket.getLength());
-						switch(data) {
-						//This happens when a remote user connects and sends a request to find the already connected users
-						case "CONNECT":
-							System.out.print("[WATCHDOG] Received request from" + receivedPacket.getAddress() + "...\n");
-							//We start by answering his request and telling him that we are here
-							byte[] dataToSend = createMessageUser(pseudo);
-							sentPacket = new DatagramPacket(dataToSend,dataToSend.length,receivedPacket.getAddress(), receivedPacket.getPort());
-							sock.send(sentPacket);
-							//A this moment, the remote user does not yet have a pseudo so its set to null, the port is set to
-							//0 and will be updated when the remote user chooses his pseudo
-							u = new User("undefined",receivedPacket.getAddress(), 0);
-							//The controller is noticed that a new user has actually connected
-							n.getController().refreshUser(u, Action.CONNECT);
-							break;
-						//This happens when a remote user closes the application, before actually exiting, he notifies 
-						//all the other users that he is leaving
-						case "DISCONNECT":
-							System.out.print("[WATCHDOG] Received disconnect from" + receivedPacket.getAddress() + "...\n");
-							//The pseudo is set to null because we have no way to know it at this point,
-							//anyway, it is not required to remove the user from our contacts
-							u = new User(null,receivedPacket.getAddress(), receivedPacket.getPort());
-							//The controller is notified that a user is leaving
-							n.getController().refreshUser(u, Action.DISCONNECT);
-							break;
-						//This happens when a remote user updates his pseudo, note that this usually happens right after
-						//receiving a CONNECT packet from the same user so that we can actually identify him by something more
-						//user friendly than his IP
-						default:
-							//The user is contained in the data of the packet
-						    u = ReceiveMessageUser(receivedPacket.getData());
-						    System.out.print("[WATCHDOG] Received pseudo \"" + u.getPseudo() + "\" from " + receivedPacket.getAddress() + "...\n");
-							//The controller is notified that the user behind an IP address that we already know has
-							//changed his pseudo
-							n.getController().refreshUser(u, Action.UPDATE);
-							break;
-						}
-					}
-				} catch (IOException e) {}
-			}
+				long startTime = System.currentTimeMillis();
+				while(System.currentTimeMillis() - startTime < 1000) {}
+				n.refreshUsers();
+			}	
 		}
 	}
-	*/
+	
 	//A thread that is listening to remote users' requests for starting a conversation with us
 	private class ListenerThread extends Thread
 	{
