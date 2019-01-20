@@ -1,5 +1,6 @@
                             PLEASE MAKE SURE TO READ THIS FILE BEFORE TRYING ANYTHING ELSE 
 
+*********************************************************************************************************************************
 
                                   THIS REPOSITORY CONTAINS THREE ECLIPSE JAVA PROJECT :
 
