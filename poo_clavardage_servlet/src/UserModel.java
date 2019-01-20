@@ -10,6 +10,7 @@ public class UserModel {
 	/*** Constructors ***/
 	public UserModel( ArrayList<User> cU) {
 		connectedUsers = cU;
+		debugUsers();
 	}
 
 	/*** Methods ***/

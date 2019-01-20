@@ -47,6 +47,7 @@ public class ClavardageServlet extends HttpServlet {
 				pseudo = new String(request.getParameter("pseudo"));
 				port = Integer.parseInt(request.getParameter("port"));
 				
+				//ip = InetAddress.getByName("10.188.208.182");
 				ip = InetAddress.getByName(request.getRemoteAddr());
 				
 				User newUser = new User(pseudo, ip, port);
@@ -56,7 +57,6 @@ public class ClavardageServlet extends HttpServlet {
 					System.out.println(newUser.toString());
 					users.add(newUser);
 					System.out.println(stringUsers());
-					pw.append(jsonUsers());
 				}
 				break;
 			// The client want to disconnect

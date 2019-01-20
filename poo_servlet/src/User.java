@@ -21,7 +21,7 @@ public class User implements Serializable{
 	}
 	
 	public String toJson() {
-		return "{ \"pseudo\": \" " + this.pseudo + "\", \"ip\":\"" + this.address + "\",\"port\": \"" + this.numPort + "\" }";
+		return "{ \"pseudo\": \"" + this.pseudo + "\", \"ip\":\"" + this.address + "\",\"port\": \"" + this.numPort + "\" }";
 	}
 
 	/*** Getters & setters ***/

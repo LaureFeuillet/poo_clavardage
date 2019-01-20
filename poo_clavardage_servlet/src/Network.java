@@ -39,6 +39,7 @@ public class Network {
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
 	private ExitThread et = null;
+	private boolean alreadyConnected = false;
 
 	public Network(Controller c) {
 		clients = new HashMap<InetAddress,ClientThread>();
@@ -51,7 +52,7 @@ public class Network {
 		//Used to get our local address and the broadcast address
 		init();
 		//new WatchdogThread(this);
-		new ExitThread();
+		et = new ExitThread();
 	}
 	
 	//WARNING : VERY COMPLICATED ONE !!!
@@ -90,15 +91,15 @@ public class Network {
 	/*****************************************************/
 	
 	public static String get(String url) throws IOException{ 
-		String source ="";
+		String result ="";
 		URL urls = new URL(url);
 		URLConnection urlsc = urls.openConnection();
 		BufferedReader in = new BufferedReader(new InputStreamReader(urlsc.getInputStream()));
 		String inputLine;
 		while ((inputLine = in.readLine()) != null)
-			source +=inputLine;
+			result +=inputLine;
 		in.close();
-		return source;
+		return result;
 	}
 	
 	// At the launch of the application, we need to know all the connected users on the network
@@ -111,10 +112,16 @@ public class Network {
 			users = get(urlServlet + "USERS");
 			usersObject = new JSONObject(users);
 			usersArray = usersObject.getJSONArray("Users");
+			String pseudo = null;
+			String ip = null;
+			String port = null;
 			for (int i = 0 ; i < usersArray.length() ; i++) {
-				User u = new User(usersArray.getJSONObject(i).getString("pseudo"), 
-									InetAddress.getByName(usersArray.getJSONObject(i).getString("ip")), 
-										Integer.parseInt(usersArray.getJSONObject(i).getString("port")));
+				pseudo = new String(usersArray.getJSONObject(i).getString("pseudo"));
+				ip = new String(usersArray.getJSONObject(i).getString("ip").substring(1));
+				port = new String(usersArray.getJSONObject(i).getString("port"));
+				System.out.println("User : " + pseudo + " " + ip + " " + port);
+				//User u = new User(usersArray.getJSONObject(i).getString("pseudo"), InetAddress.getByName(usersArray.getJSONObject(i).getString("ip")), Integer.parseInt(usersArray.getJSONObject(i).getString("port")));
+				User u = new User(pseudo, InetAddress.getByName(ip), Integer.parseInt(port));
 				connectedUsers.add(u);
 			}
 		} catch (IOException | JSONException e) {
@@ -149,6 +156,17 @@ public class Network {
 	//Notifies the remote users that the local one has changed or set his pseudo
 	public void notifyPseudo(String pseudo) {
 		this.pseudo = pseudo;
+		try {
+			// If 
+			if(!alreadyConnected) {
+				get(urlServlet + "CONNECT&pseudo=" + pseudo + "&port=" + localPort);
+				alreadyConnected = true;
+			} else {
+				get(urlServlet + "UPDATE&pseudo=" + pseudo);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		/*
 		DatagramPacket sentPacket = null;
 		DatagramSocket s = null;
@@ -413,6 +431,11 @@ public class Network {
 		
 		//Performs a broadcast message
 		private void sendExitMessage() {
+			try {
+				get(urlServlet + "DISCONNECT" + "&pseudo=" + pseudo);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			/*
 			DatagramPacket sentPacket = null;
 			DatagramSocket s = null;
