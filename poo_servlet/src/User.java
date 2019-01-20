@@ -16,10 +16,12 @@ public class User implements Serializable{
 		this.address = address;
 	}
 	
+	// Convert a User to an understanding String
 	public String toString() {
 		return this.pseudo + " " + this.address + " /" + this.numPort + " ";
 	}
 	
+	// Convert a User to a JSON format
 	public String toJson() {
 		return "{ \"pseudo\": \"" + this.pseudo + "\", \"ip\":\"" + this.address + "\",\"port\": \"" + this.numPort + "\" }";
 	}

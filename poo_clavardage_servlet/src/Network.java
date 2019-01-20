@@ -29,7 +29,6 @@ public class Network {
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
-	private ExitThread et = null;
 	private boolean alreadyConnected = false;
 
 	public Network(Controller c) {
@@ -43,7 +42,7 @@ public class Network {
 		init();
 		//Launches a thread that will refresh the connected users list every second
 		new RefreshThread(this);
-		et = new ExitThread();
+		new ExitThread();
 	}
 	
 	//WARNING : VERY COMPLICATED ONE !!!

@@ -12,18 +12,19 @@ import java.util.TimeZone;
 public class ConversationModel {
 
 	/*** Attributes ***/
+	// Past conversations stored in DB
 	protected ArrayList<Conversation> history;
+	// Conversations started during the session with the receiver still connected
 	protected ArrayList<Conversation> currentConversations;
-	// List of the conversation that are remembered
+	// Conversation currently show
 	protected Conversation currentConv;
 	
 	// To connect to the database
 	protected String url = "jdbc:mysql://localhost:3306/clavardage?serverTimezone=" + TimeZone.getDefault().getID();
 	protected String user = "clavardage";
 	protected String pwd = "clavardage";
-	// To know if the DB is operational
+	// To know if the DB is operational, if not, we will skip all manipulations with the DB.
 	protected boolean dbSet;
-
 	
 	
 	/*** Constructors ***/
@@ -33,14 +34,14 @@ public class ConversationModel {
 		currentConv = null;
 		history = new ArrayList<Conversation>();
 		// Establish a connection to the database
-		// to get all previous conversations for history
+		// To get all previous conversations for history
 		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		String query = null;
 	    ResultSet rsMsg = null;
 		try {
-			  // Load to the MySQL Driver
+			  // Load the MySQL Driver to Eclipse
 		      Class.forName("com.mysql.cj.jdbc.Driver");
 		      System.out.println("[DB] Driver OK.");
 		      
@@ -50,7 +51,7 @@ public class ConversationModel {
 		      
 		      stmt = con.createStatement();
 		      
-		      // Create in the table Conversation in DB
+		      // Create the table Conversation in DB
 		      query = "CREATE TABLE IF NOT EXISTS conversation ("
 		      		+ " id_conv SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,"
 		      		+ " pseudo VARCHAR(50) NOT NULL,"
@@ -136,6 +137,7 @@ public class ConversationModel {
 			ResultSet rs = null;
 			
 			try {
+				// To connect to the DB
 				con = DriverManager.getConnection(url, user, pwd);
 				stmt = con.createStatement();
 				
@@ -198,7 +200,7 @@ public class ConversationModel {
 		return goodConv;
 	}
 	
-	// Creates a new conversation, add to the DB, makes it THE current one, and adds it to the list of current convs.
+	// Creates a new conversation, add it to the DB, makes it THE current one, and adds it to the list of current convs.
 	public void startConv(User userConcerned, boolean setCurrent) {
 		Conversation conv = new Conversation(userConcerned);
 		if (dbSet) addConvToDB(conv);
@@ -207,11 +209,13 @@ public class ConversationModel {
 			this.currentConv = conv;
 	}
 	
+	// Add the given conv to the history
 	public void addConvToHistory(Conversation conv) {
 		history.add(conv);
 		currentConversations.remove(conv);
 	}
 
+	// There is a new msg to add to the corresponding conversation and in DB
 	public void addMsg (Conversation convToUpdate, String content, boolean sent){
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
@@ -390,32 +394,4 @@ public class ConversationModel {
 		}
 		System.out.println("	[DEBUG] End of conversation");
 	}
-
-	/*
-	public static void main(String[] args)
-	{
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		ConversationModel cm = new ConversationModel();
-		
-		cm.deleteHistory();
-		cm.printHistory();
-		
-		/*
-		User dest = new User("toto", null, 0);
-		ArrayList<Message> messages = new ArrayList<Message>();
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "5", true));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "6", false));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "7", true));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "8", false));
-		
-		
-		Conversation conv = new Conversation(dest, dateFormat.format(LocalDateTime.now()), new ArrayList<Message>());
-		
-		cm.addConvToDB(conv);
-		cm.printHistory();
-		
-		cm.addMsg(conv, "C'est Moi", false);
-		cm.printHistory();
-	} 
-	*/
 }

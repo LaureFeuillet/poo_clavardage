@@ -316,8 +316,4 @@ public class HomeView extends JFrame {
 
 		this.setVisible(true);
 	}
-	
-	public void setListUser(ArrayList<User> listUser) {
-		this.listUser = listUser;
-	}
 }

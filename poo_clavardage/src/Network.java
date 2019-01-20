@@ -34,7 +34,6 @@ public class Network {
 	//These correspond to the current launched conversations, clients have been started by us, servers by remote users
 	private HashMap<InetAddress,ClientThread> clients = null;
 	private HashMap<InetAddress,ServerThread> servers = null;
-	private ExitThread et = null;
 
 	public Network(Controller c) {
 		clients = new HashMap<InetAddress,ClientThread>();

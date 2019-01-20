@@ -21,9 +21,8 @@ public class ConversationModel {
 	protected String url = "jdbc:mysql://localhost:3306/clavardage?serverTimezone=" + TimeZone.getDefault().getID();
 	protected String user = "clavardage";
 	protected String pwd = "clavardage";
-	// To know if the DB is operational
+	// To know if the DB is operational, if not, we will skip all manipulations with the DB.
 	protected boolean dbSet;
-
 	
 	
 	/*** Constructors ***/

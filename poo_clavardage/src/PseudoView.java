@@ -114,14 +114,4 @@ public class PseudoView extends javax.swing.JFrame {
         errorLabel.setText("This pseudo is not valid !");
         //pseudoField.setText("Please try another one ...");
     }
-    
-/*
-	// Main to test without the controller .
-	public static void main(String[] args) {
-		Controller c = null;
-		PseudoView pv = new PseudoView(c);
-		pv.displayView();
-		pv.setVisible(true);
-	}
-*/ 
 }
