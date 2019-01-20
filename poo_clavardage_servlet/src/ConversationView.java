@@ -219,25 +219,4 @@ public class ConversationView extends JFrame {
 		pan.repaint();
 		this.setVisible(true);
 	}
-
-	/*
-	public static void main(String[] args) {
-		Controller c = null;
-		ConversationView cv = new ConversationView(c);
-		User user = new User("Thomas", null, 0);
-		Conversation conv = new Conversation(user);
-		ArrayList<Message> messages = new ArrayList<Message>();
-		
-		messages.add(new Message("12h03", "Bonjour.", true));
-		messages.add(new Message("13h18", "Salut !", false));
-		messages.add(new Message("13h19", "Plus d'une heure après la réponse ...", true));
-		messages.add(new Message("13h22", "Désolé j'étais aux toilettes.", false));
-		messages.add(new Message("13h23", "Ouais c'est ça ouais.", true));
-		messages.add(new Message("13h23", "Des bises, à demain.", true));
-
-		conv.setMessages(messages);
-		cv.displayView("Laure", conv);
-		cv.setVisible(true);
-	}
-	*/
 }

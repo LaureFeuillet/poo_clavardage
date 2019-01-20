@@ -235,42 +235,6 @@ public class HomeView extends JFrame {
 		}
 	}
 	
-	/* A new user is connected */
-	/*
-	public void addUser(User user)
-	{
-		boolean exists = false;
-		for(User u : listUser) {
-			if((u.getAddress() == user.getAddress()) && (u.getNumPort() == user.getNumPort())) {
-				exists = true;
-				u.setPseudo(user.getPseudo());
-				listPan.revalidate();
-				listPan.repaint();	
-				break;
-			}
-		}
-		if(!exists) {
-			if(!user.getPseudo().equals("undefined"))
-			{
-				//listUser.add(user);
-				JButton newButton = new JButton();
-				newButton.setText(user.getPseudo());
-				newButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						// Things to be done when the button is clicked.
-						String i = e.getActionCommand();
-						cont.displayConversation(i);
-						cont.hv.setVisible(false);
-					}});
-				listPan.add(newButton);
-				listPan.revalidate();
-				listPan.repaint();	
-			}
-		}
-
-	}
-	*/
-	
 	/*** Other methods ***/
 	public void showConv(String pseudo, String date) {
 		// All thats needed to show a conversation from history

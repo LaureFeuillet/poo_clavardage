@@ -263,6 +263,7 @@ public class ConversationModel {
 		try {
 			// First we need to get the id of the conversation in DB
 			con = DriverManager.getConnection(url, user, pwd);
+			System.out.println("Conversation : " + conv.getDestinationUser().getPseudo() + " " +  conv.getStartingDate().toString());
 			query="SELECT id_conv FROM conversation"
 				+ " WHERE pseudo = '" + conv.getDestinationUser().getPseudo() + "'"
 				+ " AND starting_date = '" + conv.getStartingDate().toString() + "';";
@@ -378,7 +379,7 @@ public class ConversationModel {
 	}
 	
 	public void debugConversation (Conversation c) {
-		System.out.println("	[DEBUG] Conversation with " + c.getDestinationUser().getPseudo() + " :");
+		System.out.println("[DEBUG] Conversation with " + c.getDestinationUser().getPseudo() + " :");
 		for(Message m : c.getMessages())
 		{
 			if (m.getSent()) {
@@ -388,34 +389,6 @@ public class ConversationModel {
 				System.out.println("		" + c.getDestinationUser().getPseudo() + " : \"" + m.getContent() + "\"");
 			}
 		}
-		System.out.println("	[DEBUG] End of conversation");
+		System.out.println("[DEBUG] End of conversation");
 	}
-
-	/*
-	public static void main(String[] args)
-	{
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		ConversationModel cm = new ConversationModel();
-		
-		cm.deleteHistory();
-		cm.printHistory();
-		
-		/*
-		User dest = new User("toto", null, 0);
-		ArrayList<Message> messages = new ArrayList<Message>();
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "5", true));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "6", false));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "7", true));
-		messages.add(new Message(dateFormat.format(LocalDateTime.now()), "8", false));
-		
-		
-		Conversation conv = new Conversation(dest, dateFormat.format(LocalDateTime.now()), new ArrayList<Message>());
-		
-		cm.addConvToDB(conv);
-		cm.printHistory();
-		
-		cm.addMsg(conv, "C'est Moi", false);
-		cm.printHistory();
-	} 
-	*/
 }
