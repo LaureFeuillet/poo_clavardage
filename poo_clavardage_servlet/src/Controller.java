@@ -105,49 +105,6 @@ public class Controller {
 	/************** NETWORK MANAGEMENT *****************/
 	/***************************************************/
 	
-	//Adds, udpates or removes a user from the connectedUsers list
-	public void refreshUser(User u, Action a) {
-		//String pseudoDest = u.getPseudo();
-		String oldPseudo = "";
-		Conversation conv = cm.getConvByUser(um.getUserByIP(u.getAddress()));
-		if (conv != null)
-			oldPseudo = conv.getDestinationUser().getPseudo();
-		um.refreshUser(u, a);
-		switch(a) {
-		case CONNECT:
-			if (currentView == CurrentView.HOME)
-				hv.refreshView();
-			break;
-		case UPDATE:
-			if (conv != null)
-				cm.updatePseudoInDB(conv, oldPseudo);
-			if (currentView == CurrentView.HOME) {
-				hv.refreshView();
-			}
-			else {
-				if (currentView == CurrentView.CONVERSATION) {
-					if (conv == cm.getCurrentConv()) {
-						cv.updatePseudo(u.getPseudo());
-					}
-				}
-			}
-			break;
-		case DISCONNECT:
-			//conv.setDestinationUser(new User(pseudoDest, null, 0));
-			//cm.addConvToHistory(conv);
-			if (currentView == CurrentView.HOME) {
-				hv.refreshView();
-			}	
-			else {
-				if (currentView == CurrentView.CONVERSATION) {
-					if (conv.getStartingDate().equals(cm.getCurrentConv().getStartingDate())) {
-						cv.userLeft();
-					}
-				}
-			}
-			break;
-		}
-	}
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUsers(ArrayList<User> users) {
@@ -164,7 +121,12 @@ public class Controller {
 						if (convWithU == cm.getCurrentConv()) {
 							cv.updatePseudo(newU.getPseudo());
 						}
+						String oldPseudo = "";
+						Conversation conv = cm.getConvByUser(um.getUserByIP(newU.getAddress()));
+						if (conv != null)
+							oldPseudo = conv.getDestinationUser().getPseudo();
 						um.refreshUser(newU, Action.UPDATE);
+						cm.updatePseudoInDB(convWithU, oldPseudo);		
 					}
 				}
 			}
