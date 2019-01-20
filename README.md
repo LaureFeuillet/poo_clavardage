@@ -16,7 +16,7 @@ THE FOLLOWING CONTAINS THE SOURCE CODE OF THE CLAVARDAGE PROJECT, A SIMPLE AND L
    PROJECT SINCE IT CAN ONLY BE EXECUTED USING ECLIPSE AND MODYFING LINE 30 OF THE NETWORK.JAVA FILE IN THE SRC SUBFOLDER IN ORDER 
    TO SPECIFY THE ADDRESS OF YOU PRESENCE SERVER.
                               
--> POO_SERVLET : CONTAINS THE SOURCE CODE OF THE SERVLET ITSELF, MUST BE EXECUTED BEFORE TRYING TO USE THE POO_CLAVARDAGE_SERVLE APPLICATION.
+-> POO_SERVLET : CONTAINS THE SOURCE CODE OF THE SERVLET ITSELF, MUST BE EXECUTED BEFORE TRYING TO USE THE POO_CLAVARDAGE_SERVLET APPLICATION.
                    
 *********************************************************************************************************************************
               
@@ -34,9 +34,9 @@ THE FOLLOWING CONTAINS THE SOURCE CODE OF THE CLAVARDAGE PROJECT, A SIMPLE AND L
 
                                     THIS AWESOME APP WAS BROUGHT TO YOU BY :
 
+                                                THOMAS CAZAUBON
                                                 LAURE FEUILLET
-                                                 MAEL PLANTEC
-                                               THOMAS CAZAUBON
+                                                 MAEL PLANTEC                                           
 
                   ALL THREE STUDENTS AT THE INSA OF TOULOUSE IN 4TH YEAR OF COMPUTER ENGINEERING
                                                  2018 - 2019
