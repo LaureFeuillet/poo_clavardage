@@ -1,5 +1,8 @@
                             PLEASE MAKE SURE TO READ THIS FILE BEFORE TRYING ANYTHING ELSE 
 
+THE FOLLOWING CONTAINS THE SOURCE CODE OF THE CLAVARDAGE PROJECT, A SIMPLE AND LIGHTWEIGHT APPLICATION THAT ALLOW YOU AND YOUR COLLEAGUES TO CHAT TOGETHER DURING YOUR BORING WORKING HOURS !
+
+
 *********************************************************************************************************************************
 *********************************************************************************************************************************
 *********************************************************************************************************************************
