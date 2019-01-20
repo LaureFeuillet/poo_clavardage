@@ -82,6 +82,9 @@ public class PseudoView extends javax.swing.JFrame {
 				{
 					c.setPseudo(pseudo);
 				}
+				else {
+					printError();
+				}
 			}
 		});
 		pan.add(checkButton);
@@ -104,6 +107,11 @@ public class PseudoView extends javax.swing.JFrame {
     
     public void printMsgError(){
         errorLabel.setText("This pseudo is not available.");
+        //pseudoField.setText("Please try another one ...");
+    }
+    
+    public void printError(){
+        errorLabel.setText("This pseudo is not valid !");
         //pseudoField.setText("Please try another one ...");
     }
     
