@@ -103,17 +103,20 @@ public class Controller {
 	/***************************************************/
 	
 	
-	//Adds, udpates or removes a user from the connectedUsers list
+	//Refreshes the list of connected users
 	public void refreshUsers(ArrayList<User> users) {
 		ArrayList<User> usersToDelete = new ArrayList<User>();
 		ArrayList<User> connectedUsers = um.getConnectedUsers();
 		Conversation convWithU;
+		//First we check whether new users have connected, or if pseudos have been updated
 		for (User newU : users) {
 			boolean found = false;
 			for (User u : connectedUsers) {
 				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
 					found = true;
+					//If there is a different pseudo
 					if (!newU.getPseudo().equals(u.getPseudo())) {
+						//If it is the user we are currently talking to
 						convWithU = cm.getConvByUser(u);
 						if (convWithU == cm.getCurrentConv()) {
 							cv.updatePseudo(newU.getPseudo());
@@ -122,14 +125,20 @@ public class Controller {
 						Conversation conv = cm.getConvByUser(um.getUserByIP(newU.getAddress()));
 						if (conv != null)
 							oldPseudo = conv.getDestinationUser().getPseudo();
+						//Refreshes the list
 						um.refreshUser(newU, Action.UPDATE);
-						cm.updatePseudoInDB(convWithU, oldPseudo);		
+						//Updates the conversation in DB in order to change the pseudo that was previously in there
+						if (convWithU != null)
+							cm.updatePseudoInDB(convWithU, oldPseudo);		
 					}
 				}
 			}
-			if (!found)
+			if (!found) {
+				//If the user was not in the already known list
 				um.refreshUser(newU, Action.CONNECT);
+			}
 		}
+		//Now checks if some users have left
 		for (User u : connectedUsers) {
 			boolean found = false;
 			for (User newU : users) {
@@ -138,16 +147,21 @@ public class Controller {
 				}
 			}
 			if (!found) {
+				//If a user has left, it is added to the list of the users to delete
 				usersToDelete.add(u);
 			}	
 		}
+		//Actually removes the users that have left
 		for (User u : usersToDelete) {
 			convWithU = cm.getConvByUser(u);
+			//Notifies the user that his intermediary has left if he was associated to the current conversation
 			if (convWithU == cm.getCurrentConv()) {
 				cv.userLeft();
 			}
+			//User removal
 			um.refreshUser(u, Action.DISCONNECT);
 		}
+		//Refreshes the home view if we are currently displaying it
 		if(currentView == CurrentView.HOME) {
 			hv.refreshView();
 		}

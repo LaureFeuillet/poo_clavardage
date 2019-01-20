@@ -78,6 +78,7 @@ public class PseudoView extends javax.swing.JFrame {
 		checkButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pseudo = pseudoField.getText();
+				//The pseudo must not be empty or contain any spaces because those are not compatible with URLs
 				if(!pseudo.equals("") && noSpaces(pseudo))
 				{
 					c.setPseudo(pseudo);
@@ -97,6 +98,7 @@ public class PseudoView extends javax.swing.JFrame {
 		pan.add(errorLabel);
     }
     
+    //Checks if the pseudo contains spaces
     private boolean noSpaces(String pseudo) {
     	boolean valid = true;
     	for (int i = 0 ; i < pseudo.length() ; i++) {

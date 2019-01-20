@@ -23,10 +23,6 @@ public class Network {
 	//These will be our IP address and the broadcast address corresponding to it
 	private InetAddress local;
 	private int localPort = 0;
-	//This port is common to every user using the application, it corresponds to the destination port of every broadcast
-	//private final int PORT_WATCHDOG = 17171;
-	//Size of the packets sent by the application
-	//private final int PACKET_SIZE = 1024;
 	private final String urlServlet = "http://172.20.10.13:8080/poo_servlet/ClavardageServlet?action=";
 	private String pseudo = "undefined";
 	private Controller controller = null;
@@ -43,15 +39,15 @@ public class Network {
 		this.controller = c;
 		//Launches a "waiting for discussion initiated by remote users" thread
 		new ListenerThread(this);
-		//Launches a thread that will handle every broadcast messages sent by remote users
 		//Used to get our local address and the broadcast address
 		init();
+		//Launches a thread that will refresh the connected users list every second
 		new RefreshThread(this);
 		et = new ExitThread();
 	}
 	
 	//WARNING : VERY COMPLICATED ONE !!!
-	//Just get our local address and the broadcast one
+	//Just get our local address and the broadcast one (the last is useless in this version)
 	private void init(){
 		Enumeration<NetworkInterface> en = null;
 		DatagramSocket sock = null;
@@ -85,6 +81,7 @@ public class Network {
 	/*********       APPLICATION METHODS       ***********/
 	/*****************************************************/
 	
+	//Used to get the answer from the presence server as a JSON string 
 	public static String get(String url) throws IOException{ 
 		String result ="";
 		URL urls = new URL(url);
@@ -104,12 +101,15 @@ public class Network {
 		JSONArray usersArray;
 		String users = "";
 		try {
+			//Server request
 			users = get(urlServlet + "USERS&pseudo=" + pseudo);
+			//Turns the json string into objects easier to manipulate
 			usersObject = new JSONObject(users);
 			usersArray = usersObject.getJSONArray("Users");
 			String pseudo = null;
 			String ip = null;
 			String port = null;
+			//Creates a user object for each connected user
 			for (int i = 0 ; i < usersArray.length() ; i++) {
 				pseudo = new String(usersArray.getJSONObject(i).getString("pseudo"));
 				ip = new String(usersArray.getJSONObject(i).getString("ip").substring(1));
@@ -150,7 +150,6 @@ public class Network {
 	public void notifyPseudo(String pseudo) {
 		this.pseudo = pseudo;
 		try {
-			// If 
 			if(!alreadyConnected) {
 				get(urlServlet + "CONNECT&pseudo=" + pseudo + "&port=" + localPort);
 				alreadyConnected = true;
@@ -162,7 +161,7 @@ public class Network {
 		}
 	}
 	
-	//Notifies the remote users that the local one has changed or set his pseudo
+	//Notifies the controller of the newest list of connected users
 	public void refreshUsers() {
 		controller.refreshUsers(findConnectedUsers());
 	}
@@ -184,7 +183,7 @@ public class Network {
 	/***************       THREADS       *****************/
 	/*****************************************************/
 	
-	//A thread that catches all broadcast messages, runs on PORT_WATCHDOG port
+	//A thread that makes a USERS request on the presence server every second in order to have the freshest data possible
 	private class RefreshThread extends Thread{
 		Network n = null;
 		
@@ -196,6 +195,7 @@ public class Network {
 		public void run() {
 			while(true) {
 				long startTime = System.currentTimeMillis();
+				//Waits one second then performs the request
 				while(System.currentTimeMillis() - startTime < 1000) {}
 				n.refreshUsers();
 			}	

@@ -1,7 +1,4 @@
 import java.net.InetAddress;
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
-//import java.util.ArrayList;
 
 /* Used to tell the user model how to refresh the connected user list
  * CONNECT to add a new user
@@ -129,8 +126,6 @@ public class Controller {
 			}
 			break;
 		case DISCONNECT:
-			//conv.setDestinationUser(new User(pseudoDest, null, 0));
-			//cm.addConvToHistory(conv);
 			if (currentView == CurrentView.HOME) {
 				hv.refreshView();
 			}	
