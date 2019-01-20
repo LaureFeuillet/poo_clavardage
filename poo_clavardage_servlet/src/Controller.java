@@ -1,8 +1,5 @@
 import java.net.InetAddress;
 import java.util.ArrayList;
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
-//import java.util.ArrayList;
 
 /* Used to tell the user model how to refresh the connected user list
  * CONNECT to add a new user
