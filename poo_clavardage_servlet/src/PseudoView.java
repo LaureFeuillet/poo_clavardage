@@ -78,9 +78,12 @@ public class PseudoView extends javax.swing.JFrame {
 		checkButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pseudo = pseudoField.getText();
-				if(!pseudo.equals(""))
+				if(!pseudo.equals("") && noSpaces(pseudo))
 				{
 					c.setPseudo(pseudo);
+				}
+				else {
+					printError();
 				}
 			}
 		});
@@ -94,6 +97,17 @@ public class PseudoView extends javax.swing.JFrame {
 		pan.add(errorLabel);
     }
     
+    private boolean noSpaces(String pseudo) {
+    	boolean valid = true;
+    	for (int i = 0 ; i < pseudo.length() ; i++) {
+    		if (pseudo.charAt(i) == ' ') {
+    			valid = false;
+    			break;
+    		}
+    	}
+    	return valid;
+    }
+    
     public void displayView(String pseudo) {
     		myself = pseudo;
     		setUpFrame();
@@ -104,6 +118,11 @@ public class PseudoView extends javax.swing.JFrame {
     
     public void printMsgError(){
         errorLabel.setText("This pseudo is not available.");
+        //pseudoField.setText("Please try another one ...");
+    }
+    
+    public void printError(){
+        errorLabel.setText("This pseudo is not valid !");
         //pseudoField.setText("Please try another one ...");
     }
     
