@@ -15,23 +15,23 @@
                    
 *********************************************************************************************************************************
               
-                                                      IMPLEMENTED FEATURES :  
-                                                      
-                                 -> PSEUDO SELECTION (UNICITY CHECK)
-                                 -> CONNECTED USERS DISCOVERY USING BROADCAST OR PRESENCE SERVER
-                                 -> CHATTING WITH OTHER USERS LOCATED ON THE SAME LAN
-                                 -> PSEUDO CHANGE NOTIFICATION
-                                 -> HISTORY OF PREVIOUS CONVERSATIONS (REQUIRES MYSQL CONFIGURATION)
+                                                 IMPLEMENTED FEATURES :  
+
+                            -> PSEUDO SELECTION (UNICITY CHECK)
+                            -> CONNECTED USERS DISCOVERY USING BROADCAST OR PRESENCE SERVER
+                            -> CHATTING WITH OTHER USERS LOCATED ON THE SAME LAN
+                            -> PSEUDO CHANGE NOTIFICATION
+                            -> HISTORY OF PREVIOUS CONVERSATIONS (REQUIRES MYSQL CONFIGURATION)
                                
 *********************************************************************************************************************************
 
-                                                       THANKS FOR READING !
-                                                       
-                                              THIS AWESOME APP WAS BROUGHT TO YOU BY :
-                                              
-                                                          LAURE FEUILLET
-                                                           MAEL PLANTEC
-                                                         THOMAS CAZAUBON
-                                                         
-                            ALL THREE STUDENTS AT THE INSA OF TOULOUSE IN 4TH YEAR OF COMPUTER ENGINEERING
-                                                           2018 - 2019
+                                                  THANKS FOR READING !
+
+                                         THIS AWESOME APP WAS BROUGHT TO YOU BY :
+
+                                                     LAURE FEUILLET
+                                                      MAEL PLANTEC
+                                                    THOMAS CAZAUBON
+
+                       ALL THREE STUDENTS AT THE INSA OF TOULOUSE IN 4TH YEAR OF COMPUTER ENGINEERING
+                                                      2018 - 2019
