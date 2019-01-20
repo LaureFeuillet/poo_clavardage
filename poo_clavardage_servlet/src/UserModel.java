@@ -8,7 +8,7 @@ public class UserModel {
 	protected ArrayList<User> connectedUsers;
 	
 	/*** Constructors ***/
-	public UserModel( ArrayList<User> cU) {
+	public UserModel(ArrayList<User> cU) {
 		connectedUsers = cU;
 		debugUsers();
 	}
@@ -24,36 +24,6 @@ public class UserModel {
 	public void addUser(User userToAdd) {
 		System.out.println("[DEBUG] ADDING " + userToAdd.getPseudo() + " to the list of connected users.");
 		connectedUsers.add(userToAdd);
-	}
-	
-	public void refreshUsers(ArrayList<User> users) {
-		ArrayList<User> usersToDelete = new ArrayList<User>();
-		for (User newU : users) {
-			boolean found = false;
-			for (User u : connectedUsers) {
-				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
-					found = true;
-					if (!newU.getPseudo().equals(u.getPseudo())) {
-						u.setPseudo(newU.getPseudo());
-					}
-				}
-			}
-			if (!found)
-				addUser(newU);
-		}
-		for (User u : connectedUsers) {
-			boolean found = false;
-			for (User newU : users) {
-				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
-					found = true;
-				}
-			}
-			if (!found)
-				usersToDelete.add(u);
-		}
-		for (User u : usersToDelete) {
-			deleteUser(u);
-		}
 	}
 
 	// Returns TRUE if we can use this pseudo, false if its already used.

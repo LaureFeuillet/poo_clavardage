@@ -151,16 +151,42 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUsers(ArrayList<User> users) {
-		um.refreshUsers(users);
-		switch(currentView) {
-		case CONVERSATION:
-			break;
-		case HOME:
-			//hv.setListUser(users);
+		ArrayList<User> connectedUsers = um.getConnectedUsers();
+		Conversation convWithU;
+		for (User newU : users) {
+			boolean found = false;
+			for (User u : connectedUsers) {
+				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
+					found = true;
+					if (!newU.getPseudo().equals(u.getPseudo())) {
+						convWithU = cm.getConvByUser(u);
+						if (convWithU == cm.getCurrentConv()) {
+							cv.updatePseudo(newU.getPseudo());
+						}
+						um.refreshUser(newU, Action.UPDATE);
+					}
+				}
+			}
+			if (!found)
+				um.refreshUser(newU, Action.CONNECT);
+		}
+		for (User u : connectedUsers) {
+			boolean found = false;
+			for (User newU : users) {
+				if (newU.getAddress().toString().equals(u.getAddress().toString())) {
+					found = true;
+				}
+			}
+			if (!found) {
+				convWithU = cm.getConvByUser(u);
+				if (convWithU == cm.getCurrentConv()) {
+					cv.userLeft();
+				}
+				um.refreshUser(u, Action.DISCONNECT);
+			}	
+		}
+		if(currentView == CurrentView.HOME) {
 			hv.refreshView();
-			break;
-		case PSEUDO:
-			break;
 		}
 	}
 
