@@ -215,7 +215,7 @@ public class ConversationModel {
 	public void addMsg (Conversation convToUpdate, String content, boolean sent){
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		Message newMsg = new Message(dateFormat.format(LocalDateTime.now()),content, sent);
-		if(!dbSet) addMsgToDB(convToUpdate, newMsg);
+		if(dbSet) addMsgToDB(convToUpdate, newMsg);
 		for(Conversation conv : this.currentConversations) {
 			if(conv == convToUpdate) {
 				conv.messages.add(newMsg);

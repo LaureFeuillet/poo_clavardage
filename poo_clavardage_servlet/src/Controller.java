@@ -151,6 +151,7 @@ public class Controller {
 	
 	//Adds, udpates or removes a user from the connectedUsers list
 	public void refreshUsers(ArrayList<User> users) {
+		ArrayList<User> usersToDelete = new ArrayList<User>();
 		ArrayList<User> connectedUsers = um.getConnectedUsers();
 		Conversation convWithU;
 		for (User newU : users) {
@@ -178,12 +179,15 @@ public class Controller {
 				}
 			}
 			if (!found) {
-				convWithU = cm.getConvByUser(u);
-				if (convWithU == cm.getCurrentConv()) {
-					cv.userLeft();
-				}
-				um.refreshUser(u, Action.DISCONNECT);
+				usersToDelete.add(u);
 			}	
+		}
+		for (User u : usersToDelete) {
+			convWithU = cm.getConvByUser(u);
+			if (convWithU == cm.getCurrentConv()) {
+				cv.userLeft();
+			}
+			um.refreshUser(u, Action.DISCONNECT);
 		}
 		if(currentView == CurrentView.HOME) {
 			hv.refreshView();
